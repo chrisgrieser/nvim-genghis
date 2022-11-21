@@ -102,18 +102,13 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 ---copying file information
 ---@param operation string filename|filepath
 local function copyOp(operation)
-	local useSystemClipb = false
-	local clipboard = vim.opt.clipboard:get();
-	if #clipboard ~= 0 then useSystemClipb = clipboard[1]:find("unnamed") end
 	local reg = '"'
+	local clipboardOpt = vim.opt.clipboard:get();
+	local useSystemClipb = #clipboardOpt > 0 and clipboardOpt[1]:find("unnamed")
 	if useSystemClipb then reg = "+" end
 
-	local toCopy
-	if operation == "filename" then
-		toCopy = expand("%:t")
-	elseif operation == "filepath" then
-		toCopy = expand("%:p")
-	end
+	local toCopy = expand("%:p")
+	if operation == "filename" then toCopy = expand("%:t") end
 
 	fn.setreg(reg, toCopy)
 	vim.notify(" COPIED\n " .. toCopy)
@@ -139,8 +134,8 @@ end
 function M.trashFile(opts)
 	if not (opts) then opts = {trashLocation = "$HOME/.Trash/"} end
 
-	local currentFile = fn.expand("%:p")
-	local filename = fn.expand("%:t")
+	local currentFile = expand("%:p")
+	local filename = expand("%:t")
 	cmd [[update!]]
 	os.execute('mv -f "' .. currentFile .. '" "' .. opts.trashLocation .. '"')
 	cmd [[bdelete]]
