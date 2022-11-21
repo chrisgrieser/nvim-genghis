@@ -1,6 +1,7 @@
 local M = {}
 
 local error = vim.log.levels.ERROR
+local trace = vim.log.levels.TRACE
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
@@ -22,7 +23,7 @@ local function fileOp(op)
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
-		print("prevReg: ", prevReg)
+		vim.notify("prevReg: ".. prevReg, trace)
 		leaveVisualMode()
 		cmd [['<,'>delete z]]
 	end
@@ -38,23 +39,12 @@ local function fileOp(op)
 		if newName then
 			invalidName = newName:find("^%s*$") or newName:find("/") or newName:find(":") or newName:find("\\")
 		end
-
 		if not (newName) or invalidName then -- cancel
 			if op == "newFromSel" then
 				cmd [[undo]] -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName then vim.notify(" Invalid Filename.", error) end
-			return
-		end
-		if not (newName) or invalidName then -- cancel
-			if op == "newFromSel" then
-				cmd [[undo]] -- undo deletion
-				fn.setreg("z", prevReg) -- restore register content
-			end
-			if invalidName then
-				vim.notify(" Invalid Filename.", error)
-			end
 			return
 		end
 
