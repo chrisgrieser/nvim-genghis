@@ -23,7 +23,7 @@ local function fileOp(op)
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
-		vim.notify("prevReg: ".. prevReg, trace)
+		vim.notify("prevReg: " .. prevReg, trace)
 		leaveVisualMode()
 		cmd [['<,'>delete z]]
 	end
@@ -64,14 +64,13 @@ local function fileOp(op)
 			cmd("edit " .. filepath)
 			cmd("bdelete #")
 			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'.")
-		elseif op == "new" then
+		elseif op == "new" or op == "newFromSel" then
 			cmd("edit " .. filepath)
 			cmd("write " .. filepath)
-		elseif op == "newFromSel" then
-			cmd("edit " .. filepath)
-			cmd("write " .. filepath)
-			cmd("put z")
-			fn.setreg("z", prevReg) -- restore register content
+			if op == "newFromSel" then
+				cmd("put z")
+				fn.setreg("z", prevReg) -- restore register content
+			end
 		end
 	end)
 end
