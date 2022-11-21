@@ -55,6 +55,7 @@ local function fileOp(op)
 		end
 		local filepath = dir .. "/" .. newName
 
+		cmd[[update]] -- save current file; needed for people using `vim.opt.hidden=false`
 		if op == "duplicate" then
 			cmd("saveas " .. filepath)
 			cmd("edit " .. filepath)
