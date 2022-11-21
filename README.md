@@ -49,7 +49,6 @@ keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 ## Why that name?
 A tribute to [vim.eunuch](https://github.com/tpope/vim-eunuch) – as opposed to childless eunuchs, it is said that [Ghengis Khan has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
 
-
 ---
 
 This is my very first neovim plugin, so suggestions for improvements in the code are welcome. 🙏
