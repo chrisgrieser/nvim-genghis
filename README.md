@@ -21,7 +21,7 @@ Convenience file operations for neovim written in lua.
 use "chrisgrieser/nvim-ghengis"
 ```
 
-`ghengis` requires no `.setup()` function. Just create keybindings for the commands you want to use.
+`ghengis` requires no `.setup()` function. Just create keybindings for the commands you want to use:
 
 ```lua
 local ghengis = require("ghengis")
