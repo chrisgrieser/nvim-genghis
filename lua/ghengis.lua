@@ -102,7 +102,9 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 ---copying file information
 ---@param operation string filename|filepath
 local function copyOp(operation)
-	local useSystemClipb = vim.opt.clipboard:get()[1]:find("unnamed")
+	local useSystemClipb = false
+	local clipboard = vim.opt.clipboard:get();
+	if #clipboard ~= 0 then useSystemClipb = clipboard[1]:find("unnamed") end
 	local reg = '"'
 	if useSystemClipb then reg = "+" end
 
