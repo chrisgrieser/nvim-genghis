@@ -37,17 +37,17 @@ keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 ```
 
 ## Available Commands
-- `ghengis.copyFilepath`: Copy the absolute file path. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
-- `ghengis.copyFilename`: Copy file name. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
-- `ghengis.chmodx`: Run `chmod +x` on the current file.
-- `ghengis.renameFile`: Rename the current file. If no extension is provided, will keep the current file extension.
-- `ghengis.createNewFile`: Create a new file. If no extension is provided, will keep use the extension of the current file.
-- `ghengis.duplicateFile`: Duplicate the current file. If no extension is provided, will keep the current file extension.
-- `ghengis.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `ghengis.trashFile{trashLocation = "your/path/"}`. (Requires macOS or Linux, since using `mv`.) 
-- `ghengis.moveSelectionToNewFile`: Visual Mode Command. Prompts for a new file name and moves the current selection to that new file.
+- `.copyFilepath`: Copy the absolute file path. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
+- `.copyFilename`: Copy file name. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
+- `.chmodx`: Run `chmod +x` on the current file.
+- `.renameFile`: Rename the current file. If no extension is provided, will keep the current file extension.
+- `.createNewFile`: Create a new file. If no extension is provided, will keep use the extension of the current file.
+- `.duplicateFile`: Duplicate the current file. If no extension is provided, will keep the current file extension.
+- `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. (Requires macOS or Linux, since using `mv`.) 
+- `.moveSelectionToNewFile`: Visual Mode Command. Prompts for a new file name and moves the current selection to that new file.
 
 ## Why that name?
-A tribute to [vim.eunuch](https://github.com/tpope/vim-eunuch) – as opposed to childless eunuchs, it is said that [Ghengis Khan has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
+A tribute to [vim.eunuch](https://github.com/tpope/vim-eunuch) – as opposed to childless eunuchs, it is said that Ghengis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
 
 ---
 
