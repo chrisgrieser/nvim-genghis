@@ -22,6 +22,7 @@ local function fileOp(op)
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
+		print("prevReg: ", prevReg)
 		leaveVisualMode()
 		cmd [['<,'>delete z]]
 	end
