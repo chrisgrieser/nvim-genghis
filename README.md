@@ -11,7 +11,7 @@ Convenience file operations for neovim written in lua.
 ## How is this different from `vim.eunuch`?
 - Written 100% in lua.
 - Uses up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nice confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
-- Some minor improvements like automatically keeping the extensions when no extension is given.
+- Some minor improvements like automatically keeping the extensions when no extension is given, or moving to the trash instead of removing files.
 - Except for `trashFile` and `chmodx` only vim commands or lua os-modules are used to keep shell requirements to a minimum. 
 
 ## Installation and Setup
@@ -43,7 +43,7 @@ keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 - `ghengis.renameFile`: Rename the current file. If no extension is provided, will keep the current file extension.
 - `ghengis.createNewFile`: Create a new file. If no extension is provided, will keep use the extension of the current file.
 - `ghengis.duplicateFile`: Duplicate the current file. If no extension is provided, will keep the current file extension.
-- `ghengis.trashFile`: Move the current file to `$HOME/.Trash`. (Requires macOS or Linux, since is using `mv`.)
+- `ghengis.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `ghengis.trashFile{trashLocation = "your/path/"}`. (Requires macOS or Linux, since using `mv`.) 
 - `ghengis.moveSelectionToNewFile`: Visual Mode Command. Prompts for a new file name and moves the current selection to that new file.
 
 ## Why that name?
