@@ -17,11 +17,14 @@ Convenience file operations for neovim written in lua.
 ## Installation and Setup
 
 ```lua
--- Packer
+-- Recommended (Packer)
+use {"chrisgrieser/nvim-ghengis", requires = "stevearc/dressing.nvim"}
+
+-- if you do not care about nice input fields
 use "chrisgrieser/nvim-ghengis"
 ```
 
-`ghengis` requires no `.setup()` function. Just create keybindings for the commands you want to use:
+`nvim-ghengis` (and `dressign.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
 
 ```lua
 local ghengis = require("ghengis")
@@ -32,7 +35,7 @@ keymap("n", "<leader>cx", ghengis.chmodx)
 keymap("n", "<leader>rf", ghengis.renameFile)
 keymap("n", "<leader>nf", ghengis.createNewFile)
 keymap("n", "<leader>yf", ghengis.duplicateFile)
-keymap("n", "<leader>df", ghengis.trashFile) -- requires macOS or Linux `mv` command
+keymap("n", "<leader>df", function () ghengis.trashFile{trashLocation = "your/path"} end) -- ; default '~/.Trash'. Requires macOS or Linux for `mv`.
 keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 ```
 
@@ -51,4 +54,4 @@ A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) – as opposed to chi
 
 ---
 
-This is my very first neovim plugin, so suggestions for improvements in the code are welcome. 🙏
+This is my very first neovim plugin, so suggestions for code improvements are welcome. 🙏

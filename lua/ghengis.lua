@@ -33,7 +33,7 @@ local function fileOp(op)
 	end
 
 	vim.ui.input({prompt = promptStr}, function(newName)
-		local invalidName
+		local invalidName = false
 		if newName then
 			invalidName = newName:find("^%s*$") or newName:find("/") or newName:find(":") or newName:find("\\")
 		end
