@@ -69,8 +69,8 @@ local function fileOp(op)
 			cmd("write " .. filepath)
 		elseif op == "newFromSel" then
 			cmd("edit " .. filepath)
-			cmd("put z")
 			cmd("write " .. filepath)
+			cmd("put z")
 			fn.setreg("z", prevReg) -- restore register content
 		end
 	end)
