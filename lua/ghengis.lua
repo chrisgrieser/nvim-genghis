@@ -23,7 +23,6 @@ local function fileOp(op)
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
-		vim.notify("prevReg: " .. prevReg, trace)
 		leaveVisualMode()
 		cmd [['<,'>delete z]]
 	end
