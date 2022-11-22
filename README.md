@@ -47,7 +47,7 @@ keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 - `.createNewFile`: Create a new file. If no extension is provided, will keep use the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, will keep the current file extension.
 - `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. (Requires macOS or Linux, since using `mv`.) 
-- `.moveSelectionToNewFile`: Visual Mode Command. Prompts for a new file name and moves the current selection to that new file.
+- `.moveSelectionToNewFile`: Visual (Line) Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
 
 ## Why that name?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) – as opposed to childless eunuchs, it is said that Ghengis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
