@@ -66,11 +66,11 @@ local function fileOp(op)
 			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'.")
 		elseif op == "new" or op == "newFromSel" then
 			cmd("edit " .. filepath)
-			cmd("write " .. filepath)
 			if op == "newFromSel" then
 				cmd("put z")
 				fn.setreg("z", prevReg) -- restore register content
 			end
+			cmd("write " .. filepath)
 		end
 	end)
 end
