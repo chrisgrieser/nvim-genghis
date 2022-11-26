@@ -1,5 +1,5 @@
 # nvim-genghis
-Convenience file operations for neovim written in lua. 
+Convenience file operations for neovim, written in lua. 
 
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
