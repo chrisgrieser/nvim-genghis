@@ -12,23 +12,23 @@ Convenience file operations for neovim written in lua.
 - Written 100% in lua.
 - Uses up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
 - Some small improvements like automatically keeping the extensions when no extension is given, or moving to the trash instead of removing files.
-- Except for `trashFile` and `chmodx` only vim commands or lua os-modules are used to keep shell requirements to a minimum. 
+- Except for `trashFile` and `chmodx`, only vim commands or lua os-modules are used to keep shell requirements to a minimum. 
 
 ## Installation and setup
 
 ```lua
 -- Recommended (Packer)
-use {"chrisgrieser/nvim-ghengis", requires = "stevearc/dressing.nvim"}
+use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
 
 -- if you do not care about nice input fields
-use "chrisgrieser/nvim-ghengis"
+use "chrisgrieser/nvim-genghis"
 ```
 
 `nvim-genghis` (and `dressign.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
 
 ```lua
-local ghengis = require("ghengis")
 local keymap = vim.keymap.set
+local genghis = require("genghis")
 keymap("n", "<leader>yp", genghis.copyFilepath)
 keymap("n", "<leader>yn", genghis.copyFilename)
 keymap("n", "<leader>cx", genghis.chmodx)
@@ -54,4 +54,4 @@ A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to child
 
 ---
 
-This is my very first neovim plugin, so suggestions for code improvements are welcome. 🙏
+This is my first neovim plugin, so suggestions for improvements are welcome.
