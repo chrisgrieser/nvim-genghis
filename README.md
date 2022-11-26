@@ -1,4 +1,4 @@
-# nvim-ghengis
+# nvim-genghis
 Convenience file operations for neovim written in lua. 
 
 <!--toc:start-->
@@ -24,19 +24,19 @@ use {"chrisgrieser/nvim-ghengis", requires = "stevearc/dressing.nvim"}
 use "chrisgrieser/nvim-ghengis"
 ```
 
-`nvim-ghengis` (and `dressign.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
+`nvim-genghis` (and `dressign.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
 
 ```lua
 local ghengis = require("ghengis")
 local keymap = vim.keymap.set
-keymap("n", "<leader>yp", ghengis.copyFilepath)
-keymap("n", "<leader>yn", ghengis.copyFilename)
-keymap("n", "<leader>cx", ghengis.chmodx)
-keymap("n", "<leader>rf", ghengis.renameFile)
-keymap("n", "<leader>nf", ghengis.createNewFile)
-keymap("n", "<leader>yf", ghengis.duplicateFile)
-keymap("n", "<leader>df", function () ghengis.trashFile{trashLocation = "your/path"} end) -- ; default '~/.Trash'. Requires macOS or Linux for `mv`.
-keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
+keymap("n", "<leader>yp", genghis.copyFilepath)
+keymap("n", "<leader>yn", genghis.copyFilename)
+keymap("n", "<leader>cx", genghis.chmodx)
+keymap("n", "<leader>rf", genghis.renameFile)
+keymap("n", "<leader>nf", genghis.createNewFile)
+keymap("n", "<leader>yf", genghis.duplicateFile)
+keymap("n", "<leader>df", function () genghis.trashFile{trashLocation = "your/path"} end) -- ; default '~/.Trash'. Requires macOS or Linux for `mv`.
+keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
 ## Available commands
@@ -50,7 +50,7 @@ keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 - `.moveSelectionToNewFile`: Visual (Line) Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
 
 ## Why that name?
-A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Ghengis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
+A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Genghis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
 
 ---
 
