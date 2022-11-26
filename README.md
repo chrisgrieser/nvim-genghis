@@ -50,7 +50,7 @@ keymap("x", "<leader>x", ghengis.moveSelectionToNewFile)
 - `.moveSelectionToNewFile`: Visual (Line) Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
 
 ## Why that name?
-A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) – as opposed to childless eunuchs, it is said that Ghengis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
+A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Ghengis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
 
 ---
 
