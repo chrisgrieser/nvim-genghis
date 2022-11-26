@@ -4,6 +4,8 @@ Convenience file operations for neovim, written in lua.
 > __Note__  
 > Previously, "genghis" was spelled wrong, at various places, including the GitHub-URL and the package name. :see_no_evil: By fixing that, the repo-address and package name changed. Sorry for the inconvenience!
 
+---
+
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
 - [Installation and Setup](#installation-and-setup)
