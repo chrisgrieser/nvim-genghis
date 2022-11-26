@@ -1,11 +1,14 @@
 # nvim-genghis
 Convenience file operations for neovim, written in lua. 
 
+> __Note__  
+> Previously, "genghis" was spelled wrong, at various places, including the GitHub-URL and the package name. :see_no_evil: By fixing that, the repo-address and package name changed. Sorry for the inconvenience!
+
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
 - [Installation and Setup](#installation-and-setup)
 - [Available Commands](#available-commands)
-- [Why that name?](#why-that-name)
+- [Why that name](#why-that-name)
 <!--toc:end-->
 
 ## How is this different from `vim.eunuch`?
@@ -47,9 +50,9 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, keeps the current file extension.
 - `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. Requires macOS or Linux, since dependent on `mv`. 
-- `.moveSelectionToNewFile`: Visual (Line) Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
+- `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
 
-## Why that name?
+## Why that name
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Genghis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
 
 ---
