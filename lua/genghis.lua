@@ -63,10 +63,14 @@ local function fileOp(op)
 			cmd {cmd = "edit", args = {filepath}}
 			vim.notify(" Duplicated '" .. oldName .. "' as '" .. newName .. "'. ")
 		elseif op == "rename" then
-			os.rename(oldName, newName)
-			cmd {cmd = "edit", args = {filepath}}
-			cmd("bdelete #")
-			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'. ")
+			local success, errormsg = os.rename(oldName, newName)
+			if success then
+				cmd {cmd = "edit", args = {filepath}}
+				cmd("bdelete #")
+				vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'. ")
+			else
+				vim.notify(" Could not rename file: "..errormsg, error)
+			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd {cmd = "edit", args = {filepath}}
 			if op == "newFromSel" then
