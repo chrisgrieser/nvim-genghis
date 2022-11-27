@@ -45,7 +45,7 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
 ## Available commands
-- `.copyFilepath`: Copy the absolute file path. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
+- `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"`, copies to the `+` register, otherwise to `"`.
 - `.copyFilename`: Copy the file name. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
 - `.chmodx`: Makes current file executable. (Equivalent to `chmod +x`.)
 - `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
