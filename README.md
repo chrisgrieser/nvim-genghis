@@ -51,7 +51,7 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, uses the current file extension.
-- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making it that file irretrievable.
+- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
 - `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. Note that the selection is moved linewise.
 
 ## Why that name
