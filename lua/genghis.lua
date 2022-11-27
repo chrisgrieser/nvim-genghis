@@ -131,20 +131,23 @@ end
 ---@param opts? table
 function M.trashFile(opts)
 	cmd [[update!]]
-	if not (opts) then opts = {trashLocation = os.getenv("HOME") .. "/.Trash/"} end
-	if not(opts.trashLocation:find("/$")) then
-		opts.trashLocation = opts.trashLocation.. "/"
+	local trash = os.getenv("HOME") .. "/.Trash/"
+	if opts and opts.trashLocation then
+		trash = opts.trashLocation
+		if not (trash:find("/$")) then
+			trash = trash .. "/"
+		end
 	end
 
 	local currentFile = expand("%:p")
 	local filename = expand("%:t")
-	local success, errormsg = os.rename(currentFile, opts.trashLocation .. filename)
+	local success, errormsg = os.rename(currentFile, trash .. filename)
 
 	if success then
 		cmd [[bdelete]]
 		vim.notify(" '" .. filename .. "' deleted. ")
 	else
-		vim.notify("Could not delete file: " .. errormsg, error)
+		vim.notify(" Could not delete file: " .. errormsg, error)
 	end
 end
 
