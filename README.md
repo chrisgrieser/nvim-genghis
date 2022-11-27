@@ -1,7 +1,4 @@
 # nvim-genghis
-
-![](https://img.shields.io/github/downloads/chrisgrieser/nvim-genghis/total?label=Total%20Downloads&style=plastic) ![](https://img.shields.io/github/v/release/chrisgrieser/nvim-genghis?label=Latest%20Release&style=plastic)
-
 Convenience file operations for neovim, written in lua. 
 
 > __Note__  
