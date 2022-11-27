@@ -20,6 +20,9 @@ local function fileOp(op)
 	local dir = expand("%:p:h")
 	local oldName = expand("%:t")
 	local oldExt = expand("%:e")
+  if oldExt ~= "" then
+    oldExt = "." .. oldExt
+  end
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
@@ -48,29 +51,28 @@ local function fileOp(op)
 		end
 
 		local extProvided = newName:find(".%.") -- non-leading dot to exclude dotfile-dots
-		local isDotfile = newName:match("^%.")
-		if not (extProvided) and not (isDotfile) then
-			newName = newName .. "." .. oldExt
+		if not (extProvided) then
+			newName = newName .. oldExt
 		end
 		local filepath = dir .. "/" .. newName
 
 		cmd[[update]] -- save current file; needed for people using `vim.opt.hidden=false`
 		if op == "duplicate" then
-			cmd("saveas " .. filepath)
-			cmd("edit " .. filepath)
+			cmd{cmd = "saveas", args = {filepath}}
+			cmd{cmd = "edit", args = {filepath}}
 			vim.notify(" Duplicated '" .. oldName .. "' as '" .. newName .. "'.")
 		elseif op == "rename" then
 			os.rename(oldName, newName)
-			cmd("edit " .. filepath)
+			cmd{cmd = "edit", args = {filepath}}
 			cmd("bdelete #")
 			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'.")
 		elseif op == "new" or op == "newFromSel" then
-			cmd("edit " .. filepath)
+			cmd{cmd = "edit", args = {filepath}}
 			if op == "newFromSel" then
 				cmd("put z")
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			cmd("write " .. filepath)
+			cmd{cmd = "write", args = {filepath}}
 		end
 	end)
 end
@@ -112,11 +114,23 @@ function M.copyFilename() copyOp("filename") end
 
 --------------------------------------------------------------------------------
 
----Run `chmod +x` on the current file. Requires `chmod`.
+---Makes current file executable
 function M.chmodx()
-	local currentFile = expand("%:p")
-	os.execute("chmod +x '" .. currentFile .. "'")
-	vim.notify(" Execution permission granted. ")
+  local filename = vim.fn.expand('%')
+  local perm = vim.fn.getfperm(filename)
+  local res = ''
+  local r
+  for j = 1, perm:len() do
+    local char = perm:sub(j, j)
+    if j % 3 == 1 then
+      r = char == 'r'
+    end
+    if j % 3 == 0 and r then
+      char = 'x'
+    end
+    res = res .. char
+  end
+  vim.fn.setfperm(filename, res)
 end
 
 ---Trash the Current File. Requires `mv`.
