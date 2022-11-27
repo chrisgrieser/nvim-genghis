@@ -69,7 +69,7 @@ local function fileOp(op)
 				cmd("bdelete #")
 				vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'. ")
 			else
-				vim.notify(" Could not rename file: "..errormsg, error)
+				vim.notify(" Could not rename file: " .. errormsg, error)
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd {cmd = "edit", args = {filepath}}
