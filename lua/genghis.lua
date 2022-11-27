@@ -56,21 +56,21 @@ local function fileOp(op)
 
 		cmd[[update]] -- save current file; needed for people using `vim.opt.hidden=false`
 		if op == "duplicate" then
-			cmd("saveas " .. filepath)
-			cmd("edit " .. filepath)
+			cmd{cmd = "saveas", args = {filepath}}
+			cmd{cmd = "edit", args = {filepath}}
 			vim.notify(" Duplicated '" .. oldName .. "' as '" .. newName .. "'.")
 		elseif op == "rename" then
 			os.rename(oldName, newName)
-			cmd("edit " .. filepath)
+			cmd{cmd = "edit", args = {filepath}}
 			cmd("bdelete #")
 			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'.")
 		elseif op == "new" or op == "newFromSel" then
-			cmd("edit " .. filepath)
+			cmd{cmd = "edit", args = {filepath}}
 			if op == "newFromSel" then
 				cmd("put z")
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			cmd("write " .. filepath)
+			cmd{cmd = "write", args = {filepath}}
 		end
 	end)
 end
