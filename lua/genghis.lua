@@ -114,11 +114,23 @@ function M.copyFilename() copyOp("filename") end
 
 --------------------------------------------------------------------------------
 
----Run `chmod +x` on the current file. Requires `chmod`.
+---Makes current file executable
 function M.chmodx()
-	local currentFile = expand("%:p")
-	os.execute("chmod +x '" .. currentFile .. "'")
-	vim.notify(" Execution permission granted. ")
+  local filename = vim.fn.expand('%')
+  local perm = vim.fn.getfperm(filename)
+  local res = ''
+  local r
+  for j = 1, perm:len() do
+    local char = perm:sub(j, j)
+    if j % 3 == 1 then
+      r = char == 'r'
+    end
+    if j % 3 == 0 and r then
+      char = 'x'
+    end
+    res = res .. char
+  end
+  vim.fn.setfperm(filename, res)
 end
 
 ---Trash the Current File. Requires `mv`.
