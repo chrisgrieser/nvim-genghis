@@ -1,4 +1,7 @@
 # nvim-genghis
+
+![](https://img.shields.io/github/downloads/chrisgrieser/nvim-ghengis/total?label=Total%20Downloads&style=plastic) ![](https://img.shields.io/github/v/release/chrisgrieser/nvim-ghengis?label=Latest%20Release&style=plastic)
+
 Convenience file operations for neovim, written in lua. 
 
 > __Note__  
@@ -68,6 +71,10 @@ __Profiles__
 - [Twitter](https://twitter.com/pseudo_meta)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
+
+
+__Donate__
+<a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ---
 
