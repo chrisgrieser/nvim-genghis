@@ -1,7 +1,6 @@
 local M = {}
 
 local error = vim.log.levels.ERROR
-local trace = vim.log.levels.TRACE
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
@@ -20,10 +19,9 @@ local function fileOp(op)
 	local dir = expand("%:p:h")
 	local oldName = expand("%:t")
 	local oldExt = expand("%:e")
-  if oldExt ~= "" then
-    oldExt = "." .. oldExt
-  end
+	if oldExt ~= "" then oldExt = "." .. oldExt end
 	local prevReg
+
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
 		leaveVisualMode()
@@ -39,40 +37,43 @@ local function fileOp(op)
 	vim.ui.input({prompt = promptStr}, function(newName)
 		local invalidName = false
 		if newName then
-			invalidName = newName:find("^%s*$") or newName:find("/") or newName:find(":") or newName:find("\\")
+			invalidName = newName:find("^%s*$") or newName:find("[/\\:]")
+			sameName = newName == oldName
 		end
-		if not (newName) or invalidName then -- cancel
+		if not (newName) or invalidName or sameName then -- cancel
 			if op == "newFromSel" then
 				cmd [[undo]] -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			if invalidName then vim.notify(" Invalid Filename.", error) end
+			if invalidName then
+				vim.notify(" Invalid filename. ", error)
+			elseif sameName then
+				vim.notify(" Cannot use the same filename. ", error)
+			end
 			return
 		end
 
 		local extProvided = newName:find(".%.") -- non-leading dot to exclude dotfile-dots
-		if not (extProvided) then
-			newName = newName .. oldExt
-		end
+		if not (extProvided) then newName = newName .. oldExt end
 		local filepath = dir .. "/" .. newName
 
-		cmd[[update]] -- save current file; needed for people using `vim.opt.hidden=false`
+		cmd [[update]] -- save current file; needed for people using `vim.opt.hidden=false`
 		if op == "duplicate" then
-			cmd{cmd = "saveas", args = {filepath}}
-			cmd{cmd = "edit", args = {filepath}}
-			vim.notify(" Duplicated '" .. oldName .. "' as '" .. newName .. "'.")
+			cmd {cmd = "saveas", args = {filepath}}
+			cmd {cmd = "edit", args = {filepath}}
+			vim.notify(" Duplicated '" .. oldName .. "' as '" .. newName .. "'. ")
 		elseif op == "rename" then
 			os.rename(oldName, newName)
-			cmd{cmd = "edit", args = {filepath}}
+			cmd {cmd = "edit", args = {filepath}}
 			cmd("bdelete #")
-			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'.")
+			vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'. ")
 		elseif op == "new" or op == "newFromSel" then
-			cmd{cmd = "edit", args = {filepath}}
+			cmd {cmd = "edit", args = {filepath}}
 			if op == "newFromSel" then
 				cmd("put z")
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			cmd{cmd = "write", args = {filepath}}
+			cmd {cmd = "write", args = {filepath}}
 		end
 	end)
 end
@@ -116,21 +117,10 @@ function M.copyFilename() copyOp("filename") end
 
 ---Makes current file executable
 function M.chmodx()
-  local filename = vim.fn.expand('%')
-  local perm = vim.fn.getfperm(filename)
-  local res = ''
-  local r
-  for j = 1, perm:len() do
-    local char = perm:sub(j, j)
-    if j % 3 == 1 then
-      r = char == 'r'
-    end
-    if j % 3 == 0 and r then
-      char = 'x'
-    end
-    res = res .. char
-  end
-  vim.fn.setfperm(filename, res)
+	local filename = expand("%")
+	local perm = fn.getfperm(filename)
+	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
+	fn.setfperm(filename, perm)
 end
 
 ---Trash the Current File. Requires `mv`.
