@@ -2,7 +2,7 @@
 Convenience file operations for neovim, written in lua. 
 
 > __Note__  
-> Previously, "genghis" was spelled wrong, at various places, including the GitHub-URL and the package name. :see_no_evil: By fixing that, the repo-address and package name changed. Sorry for the inconvenience!
+> Previously, "genghis" was spelled wrong at various places, including the GitHub-URL and the package name. :see_no_evil: By fixing that, the repo-address and package name have changed. Sorry for the inconvenience!
 
 ---
 
@@ -50,7 +50,7 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, keeps the current file extension.
-- `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. 
+- `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. Note that any existing files in the trash location with the same name may be overwritten.
 - `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
 
 ## Why that name
