@@ -51,13 +51,13 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, keeps the current file extension.
-- `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. Note that any existing files in the trash location with the same name may be overwritten.
-- `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
+- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making it that file irretrievable.
+- `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. Note that the selection is moved linewise.
 
 ## Why that name
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Genghis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
 
-<!-- vale Google.FirstPerson = NO --> <!-- vale Microsoft.FirstPerson = NO -->
+<!-- vale Google.FirstPerson = NO -->
 ## About me
 In my day job, I am a sociologist studying the social mechanisms underlying the digital economy. For my PhD project, I investigate the governance of the app economy and how software ecosystems manage the tension between innovation and compatibility. If you are interested in this subject, feel free to get in touch.
 
