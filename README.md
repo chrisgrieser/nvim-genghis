@@ -8,9 +8,10 @@ Convenience file operations for neovim, written in lua.
 
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
-- [Installation and Setup](#installation-and-setup)
-- [Available Commands](#available-commands)
+- [Installation and setup](#installation-and-setup)
+- [Available commands](#available-commands)
 - [Why that name](#why-that-name)
+- [About me](#about-me)
 <!--toc:end-->
 
 ## How is this different from `vim.eunuch`?
@@ -55,6 +56,18 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 
 ## Why that name
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Genghis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
+
+<!-- vale Google.FirstPerson = NO --> <!-- vale Microsoft.FirstPerson = NO -->
+## About me
+In my day job, I am a sociologist studying the social mechanisms underlying the digital economy. For my PhD project, I investigate the governance of the app economy and how software ecosystems manage the tension between innovation and compatibility. If you are interested in this subject, feel free to get in touch.
+
+__Profiles__
+- [Discord](https://discordapp.com/users/462774483044794368/)
+- [Academic Website](https://chris-grieser.de/)
+- [GitHub](https://github.com/chrisgrieser/)
+- [Twitter](https://twitter.com/pseudo_meta)
+- [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
+- [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
 
 ---
 
