@@ -53,11 +53,11 @@ local function fileOp(op)
 			return
 		end
 
-		local extProvided = newName:find(".%.") -- non-leading dot to exclude dotfile-dots
+		local extProvided = newName:find(".%.") -- non-leading dot to not include dotfiles without extension
 		if not (extProvided) then newName = newName .. oldExt end
 		local filepath = dir .. "/" .. newName
 
-		cmd [[update]] -- save current file; needed for people using `vim.opt.hidden=false`
+		cmd [[update]] -- save current file; needed for users with `vim.opt.hidden=false`
 		if op == "duplicate" then
 			cmd {cmd = "saveas", args = {filepath}}
 			cmd {cmd = "edit", args = {filepath}}
@@ -123,7 +123,7 @@ function M.chmodx()
 	fn.setfperm(filename, perm)
 end
 
----Trash the Current File. Requires `mv`.
+---Trash the current File. Requires `mv`.
 ---@param opts? table
 function M.trashFile(opts)
 	if not (opts) then opts = {trashLocation = "$HOME/.Trash/"} end
