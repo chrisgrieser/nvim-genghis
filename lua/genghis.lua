@@ -20,6 +20,9 @@ local function fileOp(op)
 	local dir = expand("%:p:h")
 	local oldName = expand("%:t")
 	local oldExt = expand("%:e")
+  if oldExt ~= "" then
+    oldExt = "." .. oldExt
+  end
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
@@ -48,9 +51,8 @@ local function fileOp(op)
 		end
 
 		local extProvided = newName:find(".%.") -- non-leading dot to exclude dotfile-dots
-		local isDotfile = newName:match("^%.")
-		if not (extProvided) and not (isDotfile) then
-			newName = newName .. "." .. oldExt
+		if not (extProvided) then
+			newName = newName .. oldExt
 		end
 		local filepath = dir .. "/" .. newName
 
