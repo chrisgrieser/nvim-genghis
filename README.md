@@ -14,10 +14,9 @@ Convenience file operations for neovim, written in lua.
 <!--toc:end-->
 
 ## How is this different from `vim.eunuch`?
-- Written 100% in lua.
+- Written 100% in lua. Uses only vim-commands or lua os-modules and no shell commands to it works on every platform.
 - Uses up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
 - Some small improvements like automatically keeping the extensions when no extension is given, or moving to the trash instead of removing files.
-- Except for `trashFile`, only vim commands or lua os-modules are used to keep shell requirements to a minimum. 
 
 ## Installation and setup
 
@@ -40,18 +39,18 @@ keymap("n", "<leader>cx", genghis.chmodx)
 keymap("n", "<leader>rf", genghis.renameFile)
 keymap("n", "<leader>nf", genghis.createNewFile)
 keymap("n", "<leader>yf", genghis.duplicateFile)
-keymap("n", "<leader>df", function () genghis.trashFile{trashLocation = "your/path"} end) -- ; default '~/.Trash'. Requires macOS or Linux for `mv`.
+keymap("n", "<leader>df", function () genghis.trashFile{trashLocation = "your/path"} end) -- default: '$HOME/.Trash'.
 keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
 ## Available commands
 - `.copyFilepath`: Copy the absolute file path. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
-- `.copyFilename`: Copy file name. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
+- `.copyFilename`: Copy the file name. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
 - `.chmodx`: Run `chmod +x` on the current file.
 - `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, keeps the current file extension.
-- `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. Requires macOS or Linux, since dependent on `mv`. 
+- `.trashFile`: Move the current file to `$HOME/.Trash`. Can optionally be passed a table to change the trash location: `.trashFile{trashLocation = "your/path/"}`. 
 - `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. (Note that the selection is moved linewise.)
 
 ## Why that name

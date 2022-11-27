@@ -123,17 +123,25 @@ function M.chmodx()
 	fn.setfperm(filename, perm)
 end
 
----Trash the current File. Requires `mv`.
+---Trash the current File.
 ---@param opts? table
 function M.trashFile(opts)
-	if not (opts) then opts = {trashLocation = "$HOME/.Trash/"} end
+	cmd [[update!]]
+	if not (opts) then opts = {trashLocation = os.getenv("HOME") .. "/.Trash/"} end
+	if not(opts.trashLocation:find("/$")) then
+		opts.trashLocation = opts.trashLocation.. "/"
+	end
 
 	local currentFile = expand("%:p")
 	local filename = expand("%:t")
-	cmd [[update!]]
-	os.execute('mv -f "' .. currentFile .. '" "' .. opts.trashLocation .. '"')
-	cmd [[bdelete]]
-	vim.notify(" '" .. filename .. "' deleted. ")
+	local success, errormsg = os.rename(currentFile, opts.trashLocation .. filename)
+
+	if success then
+		cmd [[bdelete]]
+		vim.notify(" '" .. filename .. "' deleted. ")
+	else
+		vim.notify("Could not delete file: " .. errormsg, error)
+	end
 end
 
 return M
