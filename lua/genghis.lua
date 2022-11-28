@@ -1,6 +1,6 @@
 local M = {}
 
-local error = vim.log.levels.ERROR
+local logError = vim.log.levels.ERROR
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
@@ -47,9 +47,9 @@ local function fileOp(op)
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName then
-				vim.notify(" Invalid filename. ", error)
+				vim.notify(" Invalid filename. ", logError)
 			elseif sameName then
-				vim.notify(" Cannot use the same filename. ", error)
+				vim.notify(" Cannot use the same filename. ", logError)
 			end
 			return
 		end
@@ -70,7 +70,7 @@ local function fileOp(op)
 				cmd("bdelete #")
 				vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'. ")
 			else
-				vim.notify(" Could not rename file: " .. errormsg, error)
+				vim.notify(" Could not rename file: " .. errormsg, logError)
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd {cmd = "edit", args = {filepath}}
@@ -148,7 +148,7 @@ function M.trashFile(opts)
 		cmd [[bdelete]]
 		vim.notify(" '" .. filename .. "' deleted. ")
 	else
-		vim.notify(" Could not delete file: " .. errormsg, error)
+		vim.notify(" Could not delete file: " .. errormsg, logError)
 	end
 end
 
