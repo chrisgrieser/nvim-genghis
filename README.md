@@ -16,7 +16,7 @@ Convenience file operations for neovim, written in lua.
 
 ## How is this different from `vim.eunuch`?
 - Written 100% in lua. 
-- Uses only vim-commands or lua os-modules, so it works on every platform without any dependencies.
+- Uses only vim-commands or lua os-modules, so it has no dependencies and works on every platform.
 - Makes use of up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
 - Some small improvements like automatically keeping the extensions when no extension is given, or moving to the trash instead of removing files.
 
