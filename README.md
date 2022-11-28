@@ -15,8 +15,9 @@ Convenience file operations for neovim, written in lua.
 <!--toc:end-->
 
 ## How is this different from `vim.eunuch`?
-- Written 100% in lua. Uses only vim-commands or lua os-modules and no shell commands to it works on every platform.
-- Uses up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
+- Written 100% in lua. 
+- Uses only vim-commands or lua os-modules, so it works on every platform without any dependencies.
+- Makes use of up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
 - Some small improvements like automatically keeping the extensions when no extension is given, or moving to the trash instead of removing files.
 
 ## Installation and setup
@@ -52,7 +53,7 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, uses the current file extension.
 - `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
-- `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. Note that the selection is moved linewise.
+- `.moveSelectionToNewFile`: Prompts for a new file name and moves the current selection to that new file. Note that this is a Visual Line Mode command; the selection is moved linewise.
 
 ## Why that name
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Genghis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
