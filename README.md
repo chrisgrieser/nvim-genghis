@@ -45,13 +45,13 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
 ## Available commands
-- `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"`, copies to the `+` register, otherwise to `"`.
-- `.copyFilename`: Copy the file name. When `clipboard='unnamed[plus]`, copies to the `+` register, otherwise to `"`.
+- `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.copyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 - `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
 - `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, uses the current file extension.
-- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
+- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
 - `.moveSelectionToNewFile`: Visual Line Mode Command. Prompts for a new file name and moves the current selection to that new file. Note that the selection is moved linewise.
 
 ## Why that name
@@ -68,11 +68,6 @@ __Profiles__
 - [Twitter](https://twitter.com/pseudo_meta)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
-
-
-__Donate__
-
-<a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ---
 
