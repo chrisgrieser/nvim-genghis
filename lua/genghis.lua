@@ -36,7 +36,7 @@ local function fileOp(op)
 
 	vim.ui.input({prompt = promptStr}, function(newName)
 		local invalidName = false
-    local sameName
+		local sameName
 		if newName then
 			invalidName = newName:find("^%s*$") or newName:find("[/\\:]")
 			sameName = newName == oldName
