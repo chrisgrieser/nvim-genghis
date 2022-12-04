@@ -84,16 +84,24 @@ local function fileOp(op)
 end
 
 ---Rename Current File
-function M.renameFile() fileOp("rename") end
+function M.renameFile()
+	fileOp("rename")
+end
 
 ---Duplicate Current File
-function M.duplicateFile() fileOp("duplicate") end
+function M.duplicateFile()
+	fileOp("duplicate")
+end
 
 ---Create New File
-function M.createNewFile() fileOp("new") end
+function M.createNewFile()
+	fileOp("new")
+end
 
 ---Move Selection to New File
-function M.moveSelectionToNewFile() fileOp("newFromSel") end
+function M.moveSelectionToNewFile()
+	fileOp("newFromSel")
+end
 
 --------------------------------------------------------------------------------
 
@@ -113,10 +121,14 @@ local function copyOp(operation)
 end
 
 ---Copy absolute path of current file
-function M.copyFilepath() copyOp("filepath") end
+function M.copyFilepath()
+	copyOp("filepath")
+end
 
 ---Copy name of current file
-function M.copyFilename() copyOp("filename") end
+function M.copyFilename()
+	copyOp("filename")
+end
 
 --------------------------------------------------------------------------------
 
