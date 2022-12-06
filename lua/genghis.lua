@@ -67,7 +67,7 @@ local function fileOp(op)
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
 				cmd {cmd = "edit", args = {filepath}}
-				cmd("bdelete #")
+				cmd("bwipeout #")
 				vim.notify(' Renamed "' .. oldName .. '" to "' .. newName .. '". ')
 			else
 				vim.notify(" Could not rename file: " .. errormsg, logError)
@@ -157,7 +157,7 @@ function M.trashFile(opts)
 	local success, errormsg = os.rename(currentFile, trash .. filename)
 
 	if success then
-		cmd [[bdelete]]
+		cmd [[bwipeout]]
 		vim.notify(' "' .. filename .. '" deleted. ')
 	else
 		vim.notify(" Could not delete file: " .. errormsg, logError)
