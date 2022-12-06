@@ -62,13 +62,13 @@ local function fileOp(op)
 		if op == "duplicate" then
 			cmd {cmd = "saveas", args = {filepath}}
 			cmd {cmd = "edit", args = {filepath}}
-			vim.notify(" Duplicated '" .. oldName .. "' as '" .. newName .. "'. ")
+			vim.notify(' Duplicated "' .. oldName .. '" as "' .. newName .. '". ')
 		elseif op == "rename" then
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
 				cmd {cmd = "edit", args = {filepath}}
 				cmd("bdelete #")
-				vim.notify(" Renamed '" .. oldName .. "' to '" .. newName .. "'. ")
+				vim.notify(' Renamed "' .. oldName .. '" to "' .. newName .. '". ')
 			else
 				vim.notify(" Could not rename file: " .. errormsg, logError)
 			end
@@ -158,7 +158,7 @@ function M.trashFile(opts)
 
 	if success then
 		cmd [[bdelete]]
-		vim.notify(" '" .. filename .. "' deleted. ")
+		vim.notify(' "' .. filename .. '" deleted. ')
 	else
 		vim.notify(" Could not delete file: " .. errormsg, logError)
 	end
