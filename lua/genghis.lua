@@ -1,6 +1,7 @@
 local M = {}
 
 local logError = vim.log.levels.ERROR
+local logWarn = vim.log.levels.WARN
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
@@ -18,6 +19,7 @@ end
 local function fileOp(op)
 	local dir = expand("%:p:h")
 	local oldName = expand("%:t")
+	local oldNameNoExt = oldName:gsub("%.%w+$", "")
 	local oldExt = expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
 	local prevReg
@@ -28,13 +30,19 @@ local function fileOp(op)
 		cmd [['<,'>delete z]]
 	end
 
-	local promptStr
-	if op == "duplicate" then promptStr = "Duplicate File as: "
-	elseif op == "rename" then promptStr = "Rename File to: "
-	elseif op == "new" or op == "newFromSel" then promptStr = "Name for New File: "
+	local promptStr, prefill
+	if op == "duplicate" then
+		promptStr = "Duplicate File as: "
+		prefill = oldNameNoExt.. "-1"
+	elseif op == "rename" then
+		promptStr = "Rename File to: "
+		prefill = oldNameNoExt
+	elseif op == "new" or op == "newFromSel" then
+		promptStr = "Name for New File: "
+		prefill = ""
 	end
 
-	vim.ui.input({prompt = promptStr}, function(newName)
+	vim.ui.input({prompt = promptStr, default = prefill}, function(newName)
 		local invalidName = false
 		local sameName
 		if newName then
@@ -49,7 +57,7 @@ local function fileOp(op)
 			if invalidName then
 				vim.notify(" Invalid filename. ", logError)
 			elseif sameName then
-				vim.notify(" Cannot use the same filename. ", logError)
+				vim.notify(" Cannot use the same filename. ", logWarn)
 			end
 			return
 		end
