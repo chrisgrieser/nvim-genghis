@@ -1,7 +1,6 @@
 local M = {}
 
 local logError = vim.log.levels.ERROR
-local logWarn = vim.log.levels.WARN
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
@@ -42,7 +41,7 @@ local function fileOp(op)
 		prefill = ""
 	end
 
-	vim.ui.input({prompt = promptStr, default = prefill}, function(newName)
+	vim.ui.input({prompt = promptStr, default = prefill, complete= "filetype"}, function(newName)
 		local invalidName = false
 		local sameName
 		if newName then
@@ -51,13 +50,13 @@ local function fileOp(op)
 		end
 		if not (newName) or invalidName or sameName then -- cancel
 			if op == "newFromSel" then
-				cmd [[undo]] -- undo deletion
+				cmd.undo() -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName then
 				vim.notify(" Invalid filename. ", logError)
 			elseif sameName then
-				vim.notify(" Cannot use the same filename. ", logWarn)
+				vim.notify(" Cannot use the same filename. ", logError)
 			end
 			return
 		end
@@ -66,7 +65,7 @@ local function fileOp(op)
 		if not (extProvided) then newName = newName .. oldExt end
 		local filepath = dir .. "/" .. newName
 
-		cmd [[update]] -- save current file; needed for users with `vim.opt.hidden=false`
+		cmd.update() -- save current file; needed for users with `vim.opt.hidden=false`
 		if op == "duplicate" then
 			cmd {cmd = "saveas", args = {filepath}}
 			cmd {cmd = "edit", args = {filepath}}
