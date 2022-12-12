@@ -145,6 +145,7 @@ function M.chmodx()
 	local perm = fn.getfperm(filename)
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
 	fn.setfperm(filename, perm)
+	vim.notify("Execution Permission granted.")
 end
 
 ---Trash the current File.
