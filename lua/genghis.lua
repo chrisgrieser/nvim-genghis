@@ -54,9 +54,9 @@ local function fileOp(op)
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName then
-				vim.notify(" Invalid filename. ", logError)
+				vim.notify("Invalid filename.", logError)
 			elseif sameName then
-				vim.notify(" Cannot use the same filename. ", logError)
+				vim.notify("Cannot use the same filename.", logError)
 			end
 			return
 		end
@@ -69,15 +69,15 @@ local function fileOp(op)
 		if op == "duplicate" then
 			cmd {cmd = "saveas", args = {filepath}}
 			cmd {cmd = "edit", args = {filepath}}
-			vim.notify(' Duplicated "' .. oldName .. '" as "' .. newName .. '". ')
+			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
 		elseif op == "rename" then
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
 				cmd {cmd = "edit", args = {filepath}}
 				cmd("bwipeout #")
-				vim.notify(' Renamed "' .. oldName .. '" to "' .. newName .. '". ')
+				vim.notify('Renamed "' .. oldName .. '" to "' .. newName .. '".')
 			else
-				vim.notify(" Could not rename file: " .. errormsg, logError)
+				vim.notify("Could not rename file: " .. errormsg, logError)
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd {cmd = "edit", args = {filepath}}
@@ -124,7 +124,7 @@ local function copyOp(operation)
 	if operation == "filename" then toCopy = expand("%:t") end
 
 	fn.setreg(reg, toCopy)
-	vim.notify(" COPIED\n " .. toCopy)
+	vim.notify("COPIED\n" .. toCopy)
 end
 
 ---Copy absolute path of current file
@@ -165,9 +165,9 @@ function M.trashFile(opts)
 
 	if success then
 		cmd [[bwipeout]]
-		vim.notify(' "' .. filename .. '" deleted. ')
+		vim.notify('"' .. filename .. '" deleted.')
 	else
-		vim.notify(" Could not delete file: " .. errormsg, logError)
+		vim.notify("Could not delete file: " .. errormsg, logError)
 	end
 end
 
