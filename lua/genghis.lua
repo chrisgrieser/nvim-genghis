@@ -67,25 +67,25 @@ local function fileOp(op)
 
 		cmd.update() -- save current file; needed for users with `vim.opt.hidden=false`
 		if op == "duplicate" then
-			cmd {cmd = "saveas", args = {filepath}}
-			cmd {cmd = "edit", args = {filepath}}
+			cmd.saveas(filepath)
+			cmd.edit(filepath)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
 		elseif op == "rename" then
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
-				cmd {cmd = "edit", args = {filepath}}
-				cmd("bwipeout #")
+				cmd.edit(filepath)
+				cmd.bwipeout("#")
 				vim.notify('Renamed "' .. oldName .. '" to "' .. newName .. '".')
 			else
 				vim.notify("Could not rename file: " .. errormsg, logError)
 			end
 		elseif op == "new" or op == "newFromSel" then
-			cmd {cmd = "edit", args = {filepath}}
+			cmd.edit(filepath)
 			if op == "newFromSel" then
-				cmd("put z")
+				cmd("put z") -- cmd.put("z") does not work here :/
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			cmd {cmd = "write", args = {filepath}}
+			cmd.write(filepath)
 		end
 	end)
 end
@@ -150,7 +150,7 @@ end
 ---Trash the current File.
 ---@param opts? table
 function M.trashFile(opts)
-	cmd [[update!]]
+	cmd.update{bang = true}
 	local trash = os.getenv("HOME") .. "/.Trash/"
 	if opts and opts.trashLocation then
 		trash = opts.trashLocation
@@ -164,7 +164,7 @@ function M.trashFile(opts)
 	local success, errormsg = os.rename(currentFile, trash .. filename)
 
 	if success then
-		cmd [[bwipeout]]
+		cmd.bwipeout()
 		vim.notify('"' .. filename .. '" deleted.')
 	else
 		vim.notify("Could not delete file: " .. errormsg, logError)
