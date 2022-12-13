@@ -3,19 +3,21 @@ Convenience file operations for neovim, written in lua.
 
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
-- [Installation and setup](#installation-and-setup)
+- [Installation and Setup](#installation-and-setup)
 - [Available commands](#available-commands)
+- [Autocompletion of filenames](#autocompletion-of-filenames)
 - [Why that name](#why-that-name)
 - [About me](#about-me)
 <!--toc:end-->
 
 ## How is this different from `vim.eunuch`?
-- Written 100% in lua. 
-- Uses only vim-commands or lua os-modules, so it has no dependencies and works on every platform.
+- Various improvements like automatically keeping the extensions when no extension is given, or moving files to the trash instead of removing them.
+- Uses only vim-commands or lua os-modules, so it has no dependencies and works cross-platform.
 - Makes use of up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
-- Some small improvements like automatically keeping the extensions when no extension is given, or moving to the trash instead of removing files.
+- If used with dressing and cmp, [you can also get autocompletion of filenames](#autocompletion-of-filenames).
+- Written 100% in lua. 
 
-## Installation and setup
+## Installation and Setup
 
 ```lua
 -- Recommended (Packer)
@@ -49,6 +51,26 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.duplicateFile`: Duplicate the current file. If no extension is provided, uses the current file extension.
 - `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
 - `.moveSelectionToNewFile`: Prompts for a new file name and moves the current selection to that new file. Note that this is a Visual Line Mode command; the selection is moved linewise.
+
+## Autocompletion of filenames
+You can get autocompletion for filenames by using `dressing.nvim`, `nvim-cmp`, and vim's omnifunc:
+
+```lua
+	-- packer
+	use { "chrisgrieser/nvim-genghis", requires = {
+			"stevearc/dressing.nvim",
+			"hrsh7th/nvim-cmp",
+			"hrsh7th/cmp-omni",
+		},
+	}
+```
+
+```lua
+-- required setup for cmp, somewhere after your main cmp-config
+require("cmp").setup.filetype("DressingInput", {
+	sources = cmp.config.sources { {name = "omni"} },
+})
+```
 
 ## Why that name
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch) - as opposed to childless eunuchs, it is said that Genghis Khan [has fathered thousands of children](https://allthatsinteresting.com/genghis-khan-children).
