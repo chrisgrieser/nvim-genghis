@@ -41,7 +41,7 @@ local function fileOp(op)
 		prefill = ""
 	end
 
-	vim.ui.input({prompt = promptStr, default = prefill, complete = "file" }, function(newName)
+	vim.ui.input({prompt = promptStr, default = prefill, completion = "file" }, function(newName)
 		local invalidName = false
 		local sameName
 		if newName then
