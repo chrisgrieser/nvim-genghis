@@ -21,34 +21,42 @@ local function fileOp(op)
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
 	local oldExt = expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
-	local prevReg
 
+	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
 		leaveVisualMode()
-		cmd [['<,'>delete z]]
+		cmd([['<,'>delete z]])
 	end
 
 	local promptStr, prefill
 	if op == "duplicate" then
 		promptStr = "Duplicate File as: "
-		prefill = oldNameNoExt.. "-1"
+		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
 		promptStr = "Rename File to: "
 		prefill = oldNameNoExt
+	elseif op == "move-rename" then
+		promptStr = "Move & Rename File to: "
+		prefill = dir
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
 		prefill = ""
 	end
 
-	vim.ui.input({prompt = promptStr, default = prefill, completion = "file" }, function(newName)
+	-- selene: allow(high_cyclomatic_complexity)
+	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
+		-- validation
 		local invalidName = false
 		local sameName
 		if newName then
-			invalidName = newName:find("^%s*$") or newName:find("[/\\:]")
+			invalidName = newName:find("^%s*$")
+				or newName:find("[\\:]")
+				or newName:find("/$")
+				or (newName:find("^/") and not op == "move-rename")
 			sameName = newName == oldName
 		end
-		if not (newName) or invalidName or sameName then -- cancel
+		if not newName or invalidName or sameName then -- cancel
 			if op == "newFromSel" then
 				cmd.undo() -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
@@ -61,54 +69,55 @@ local function fileOp(op)
 			return
 		end
 
-		local extProvided = newName:find(".%.") -- non-leading dot to not include dotfiles without extension
-		if not (extProvided) then newName = newName .. oldExt end
-		local filepath = dir .. "/" .. newName
+		-- create folders if necessary
+		local hasPath = newName:find("/")
+		if hasPath then
+			local newFolder = newName:gsub("/.-$", "")
+			fn.mkdir(newFolder, "p")
+		end
 
-		cmd.update() -- save current file; needed for users with `vim.opt.hidden=false`
+		local extProvided = newName:find(".%.") -- non-leading dot to not include dotfiles without extension
+		if not extProvided then newName = newName .. oldExt end
+
+		cmd.update() -- save current file; needed for users with `hidden=false`
 		if op == "duplicate" then
-			cmd.saveas(filepath)
-			cmd.edit(filepath)
+			cmd.saveas(newName)
+			cmd.edit(newName)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
-		elseif op == "rename" then
+		elseif op == "rename" or "move-rename" then
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
-				cmd.edit(filepath)
+				cmd.edit(newName)
 				cmd.bwipeout("#")
 				vim.notify('Renamed "' .. oldName .. '" to "' .. newName .. '".')
 			else
 				vim.notify("Could not rename file: " .. errormsg, logError)
 			end
 		elseif op == "new" or op == "newFromSel" then
-			cmd.edit(filepath)
+			cmd.edit(newName)
 			if op == "newFromSel" then
 				cmd("put z") -- cmd.put("z") does not work here :/
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			cmd.write(filepath)
+			cmd.write(newName)
 		end
 	end)
 end
 
 ---Rename Current File
-function M.renameFile()
-	fileOp("rename")
-end
+function M.renameFile() fileOp("rename") end
+
+---Move and Rename Current File
+function M.moveAndRenameFile() fileOp("move-rename") end
 
 ---Duplicate Current File
-function M.duplicateFile()
-	fileOp("duplicate")
-end
+function M.duplicateFile() fileOp("duplicate") end
 
 ---Create New File
-function M.createNewFile()
-	fileOp("new")
-end
+function M.createNewFile() fileOp("new") end
 
 ---Move Selection to New File
-function M.moveSelectionToNewFile()
-	fileOp("newFromSel")
-end
+function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
 --------------------------------------------------------------------------------
 
@@ -116,7 +125,7 @@ end
 ---@param operation string filename|filepath
 local function copyOp(operation)
 	local reg = '"'
-	local clipboardOpt = vim.opt.clipboard:get();
+	local clipboardOpt = vim.opt.clipboard:get()
 	local useSystemClipb = #clipboardOpt > 0 and clipboardOpt[1]:find("unnamed")
 	if useSystemClipb then reg = "+" end
 
@@ -128,14 +137,10 @@ local function copyOp(operation)
 end
 
 ---Copy absolute path of current file
-function M.copyFilepath()
-	copyOp("filepath")
-end
+function M.copyFilepath() copyOp("filepath") end
 
 ---Copy name of current file
-function M.copyFilename()
-	copyOp("filename")
-end
+function M.copyFilename() copyOp("filename") end
 
 --------------------------------------------------------------------------------
 
@@ -151,13 +156,11 @@ end
 ---Trash the current File.
 ---@param opts? table
 function M.trashFile(opts)
-	cmd.update{bang = true}
+	cmd.update { bang = true }
 	local trash = os.getenv("HOME") .. "/.Trash/"
 	if opts and opts.trashLocation then
 		trash = opts.trashLocation
-		if not (trash:find("/$")) then
-			trash = trash .. "/"
-		end
+		if not (trash:find("/$")) then trash = trash .. "/" end
 	end
 
 	local currentFile = expand("%:p")
