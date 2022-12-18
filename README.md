@@ -1,5 +1,5 @@
 # nvim-genghis
-Convenience file operations for neovim, 
+Convenience file operations for neovim, written in lua. 
 
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
@@ -36,6 +36,7 @@ keymap("n", "<leader>yp", genghis.copyFilepath)
 keymap("n", "<leader>yn", genghis.copyFilename)
 keymap("n", "<leader>cx", genghis.chmodx)
 keymap("n", "<leader>rf", genghis.renameFile)
+keymap("n", "<leader>rm", genghis.moveAndRenameFile)
 keymap("n", "<leader>nf", genghis.createNewFile)
 keymap("n", "<leader>yf", genghis.duplicateFile)
 keymap("n", "<leader>df", function () genghis.trashFile{trashLocation = "your/path"} end) -- default: '$HOME/.Trash'.
