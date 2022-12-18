@@ -53,7 +53,8 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 > __Note__  
 > Applying to all commands above: 
 > - If no extension has been provided, will use the extension of the original file.
-> - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. (All commands support [autocompletion of existing directories](#autocompletion-of-directories).)
+> - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. Except for `.moveAndRenameFile`, all operations take only place in the current working directory, so `.moveAndRenameFile` is the only command that can move to a parent directory.
+> - All commands support [autocompletion of existing directories](#autocompletion-of-directories).
 
 - `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
 - `.copyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
