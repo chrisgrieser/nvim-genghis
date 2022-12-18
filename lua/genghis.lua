@@ -38,7 +38,7 @@ local function fileOp(op)
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
 		promptStr = "Move & Rename File to: "
-		prefill = dir
+		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
 		prefill = ""
@@ -76,30 +76,31 @@ local function fileOp(op)
 			fn.mkdir(newFolder, "p")
 		end
 
-		local extProvided = newName:find(".%.") -- non-leading dot to not include dotfiles without extension
+		local extProvided = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
 		if not extProvided then newName = newName .. oldExt end
+		local newFilePath = (op == "move-rename") and newName or dir .. "/" .. newName
 
 		cmd.update() -- save current file; needed for users with `hidden=false`
 		if op == "duplicate" then
-			cmd.saveas(newName)
-			cmd.edit(newName)
+			cmd.saveas(newFilePath)
+			cmd.edit(newFilePath)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
-		elseif op == "rename" or "move-rename" then
+		elseif op == "rename" or op == "move-rename" then
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
-				cmd.edit(newName)
+				cmd.edit(newFilePath)
 				cmd.bwipeout("#")
 				vim.notify('Renamed "' .. oldName .. '" to "' .. newName .. '".')
 			else
 				vim.notify("Could not rename file: " .. errormsg, logError)
 			end
 		elseif op == "new" or op == "newFromSel" then
-			cmd.edit(newName)
+			cmd.edit(newFilePath)
 			if op == "newFromSel" then
 				cmd("put z") -- cmd.put("z") does not work here :/
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			cmd.write(newName)
+			cmd.write(newFilePath)
 		end
 	end)
 end

@@ -1,11 +1,11 @@
 # nvim-genghis
-Convenience file operations for neovim, written in lua. 
+Convenience file operations for neovim, 
 
 <!--toc:start-->
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
 - [Installation and Setup](#installation-and-setup)
 - [Available commands](#available-commands)
-- [Autocompletion of filenames](#autocompletion-of-filenames)
+- [Autocompletion of filenames](#autocompletion-of-directories)
 - [Why that name](#why-that-name)
 - [About me](#about-me)
 <!--toc:end-->
@@ -13,8 +13,8 @@ Convenience file operations for neovim, written in lua.
 ## How is this different from `vim.eunuch`?
 - Various improvements like automatically keeping the extensions when no extension is given, or moving files to the trash instead of removing them.
 - Uses only vim-commands or lua os-modules, so it has no dependencies and works cross-platform.
-- Makes use of up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and nicer confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
-- If used with dressing and cmp, [you can also get autocompletion of filenames](#autocompletion-of-filenames).
+- Makes use of up-to-date nvim features like `vim.ui.input` or `vim.notify`. This means you can get nicer input fields with normal mode support via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and confirmation notices with plugins like [nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed and setup.
+- If used with dressing and cmp, [you can also get autocompletion of directories](#autocompletion-of-directories).
 - Written 100% in lua. 
 
 ## Installation and Setup
@@ -43,17 +43,24 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
 ## Available commands
-- `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
-- `.copyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
-- `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
-- `.renameFile`: Rename the current file. If no extension is provided, keeps the current file extension.
-- `.createNewFile`: Create a new file. If no extension is provided, uses the extension of the current file.
-- `.duplicateFile`: Duplicate the current file. If no extension is provided, uses the current file extension.
-- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
-- `.moveSelectionToNewFile`: Prompts for a new file name and moves the current selection to that new file. Note that this is a Visual Line Mode command; the selection is moved linewise.
+- `.createNewFile`: Create a new file.
+- `.duplicateFile`: Duplicate the current file.
+- `.moveSelectionToNewFile`: Prompts for a new file name and moves the current selection to that new file. (Note that this is a Visual Line Mode command; the selection is moved linewise.)
+- `.renameFile`: Rename the current file.
+- `.moveAndRenameFile`: Move and Rename the current file. Works like the UNIX `mv` command. Best used with [autocompletion of directories](#autocompletion-of-directories).
 
-## Autocompletion of filenames
-You can get autocompletion for filenames by using `dressing.nvim`, `nvim-cmp`, and vim's omnifunc:
+> __Note__  
+> Applying to all commands above: 
+> - If no extension has been provided, will use the extension of the original file.
+> - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. (All commands support [autocompletion of existing directories](#autocompletion-of-directories).)
+
+- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
+- `.copyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
+
+## Autocompletion of directories
+You can get autocompletion for directories by using `dressing.nvim`, `nvim-cmp`, and vim's omnifunc:
 
 ```lua
 	-- packer
