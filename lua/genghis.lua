@@ -70,6 +70,7 @@ local function fileOp(op)
 		end
 
 		-- create folders if necessary
+		-- TODO upon release of neovim 0.9, use `:write ++p` https://twitter.com/Neovim/status/1589469857388834816?s=20&t=KNpSU7IESQAAWQwG04OjTQ
 		local hasPath = newName:find("/")
 		if hasPath then
 			local newFolder = newName:gsub("/.-$", "")
