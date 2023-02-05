@@ -44,11 +44,11 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
 ## Available commands
-- `.createNewFile`: Create a new file.
-- `.duplicateFile`: Duplicate the current file.
-- `.moveSelectionToNewFile`: Prompts for a new file name and moves the current selection to that new file. (Note that this is a Visual Line Mode command; the selection is moved linewise.)
-- `.renameFile`: Rename the current file.
-- `.moveAndRenameFile`: Move and Rename the current file. Works like the UNIX `mv` command. Best used with [autocompletion of directories](#autocompletion-of-directories).
+- `.createNewFile` or `:New`: Create a new file.
+- `.duplicateFile` or `:Duplicate`: Duplicate the current file.
+- `.moveSelectionToNewFile` or `:NewFromSelection`: Prompts for a new file name and moves the current selection to that new file. (Note that this is a Visual Line Mode command; the selection is moved linewise.)
+- `.renameFile` or `:Rename`: Rename the current file.
+- `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Works like the UNIX `mv` command. Best used with [autocompletion of directories](#autocompletion-of-directories).
 
 > __Note__  
 > Applying to all commands above: 
@@ -56,10 +56,10 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 > - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. Except for `.moveAndRenameFile`, all operations take only place in the current working directory, so `.moveAndRenameFile` is the only command that can move to a parent directory.
 > - All commands support [autocompletion of existing directories](#autocompletion-of-directories).
 
-- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Default locations are: `$HOME/.Trash/` on MacOS and `$XDG_DATA_HOME/Trash` on Linux. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
-- `.copyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
-- `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
-- `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
+- `.trashFile{trashLocation = "your/path/"}` or `:Trash`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
+- `.copyFilename` or `:CopyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
 ## Autocompletion of directories
 You can get autocompletion for directories by using `dressing.nvim`, `nvim-cmp`, and vim's omnifunc:
