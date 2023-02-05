@@ -92,6 +92,24 @@ AVAILABLE COMMANDS                                *genghis-available-commands*
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
 
+HOW TO DISABLE COMMAND-LINE COMMANDS ~
+
+Put this in your configuration file:
+
+>
+    -- lua
+    vim.g.genghis_disable_commands = true
+<
+
+
+or
+
+>
+    -- viml
+    let g:genghis_disable_commands = v:true
+<
+
+
 AUTOCOMPLETION OF DIRECTORIES          *genghis-autocompletion-of-directories*
 
 You can get autocompletion for directories by using `dressing.nvim`,
