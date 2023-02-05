@@ -39,11 +39,11 @@ HOW IS THIS DIFFERENT FROM `VIM.EUNUCH`?*genghis-how-is-this-different-from-`vim
 INSTALLATION AND SETUP                        *genghis-installation-and-setup*
 
 >
-    -- Recommended (Packer)
+    -- Packer
     use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
     
-    -- if you do not care about nice input fields
-    use "chrisgrieser/nvim-genghis"
+    -- Lazy
+    {"chrisgrieser/nvim-genghis", dependencies = "stevearc/dressing.nvim"},
 <
 
 
@@ -98,13 +98,20 @@ You can get autocompletion for directories by using `dressing.nvim`,
 `nvim-cmp`, and vim’s omnifunc:
 
 >
-        -- packer
-        use { "chrisgrieser/nvim-genghis", requires = {
-                "stevearc/dressing.nvim",
-                "hrsh7th/nvim-cmp",
-                "hrsh7th/cmp-omni",
-            },
-        }
+    -- packer
+    use { "chrisgrieser/nvim-genghis", requires = {
+            "stevearc/dressing.nvim",
+            "hrsh7th/nvim-cmp",
+            "hrsh7th/cmp-omni",
+        },
+    }
+    -- lazy
+    { "chrisgrieser/nvim-genghis", dependencies = {
+            "stevearc/dressing.nvim",
+            "hrsh7th/nvim-cmp",
+            "hrsh7th/cmp-omni",
+        },
+    },
 <
 
 
