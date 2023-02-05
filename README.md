@@ -20,11 +20,11 @@ Convenience file operations for neovim, written in lua.
 ## Installation and Setup
 
 ```lua
--- Recommended (Packer)
+-- Packer
 use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
 
--- if you do not care about nice input fields
-use "chrisgrieser/nvim-genghis"
+-- Lazy
+{"chrisgrieser/nvim-genghis", dependencies = "stevearc/dressing.nvim"},
 ```
 
 `nvim-genghis` (and `dressign.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
@@ -65,13 +65,20 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 You can get autocompletion for directories by using `dressing.nvim`, `nvim-cmp`, and vim's omnifunc:
 
 ```lua
-	-- packer
-	use { "chrisgrieser/nvim-genghis", requires = {
-			"stevearc/dressing.nvim",
-			"hrsh7th/nvim-cmp",
-			"hrsh7th/cmp-omni",
-		},
-	}
+-- packer
+use { "chrisgrieser/nvim-genghis", requires = {
+		"stevearc/dressing.nvim",
+		"hrsh7th/nvim-cmp",
+		"hrsh7th/cmp-omni",
+	},
+}
+-- lazy
+{ "chrisgrieser/nvim-genghis", dependencies = {
+		"stevearc/dressing.nvim",
+		"hrsh7th/nvim-cmp",
+		"hrsh7th/cmp-omni",
+	},
+},
 ```
 
 ```lua
