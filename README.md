@@ -56,7 +56,7 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 > - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. Except for `.moveAndRenameFile`, all operations take only place in the current working directory, so `.moveAndRenameFile` is the only command that can move to a parent directory.
 > - All commands support [autocompletion of existing directories](#autocompletion-of-directories).
 
-- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
+- `.trashFile{trashLocation = "your/path/"}`: Move the current file the trash location. Default locations are: `$HOME/.Trash/` on MacOS and `$XDG_DATA_HOME/Trash` on Linux. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
 - `.copyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.copyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
