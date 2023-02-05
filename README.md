@@ -61,6 +61,18 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
+### How to disable command-line commands
+Put this in your configuration file:
+```lua
+-- lua
+vim.g.genghis_disable_commands = true
+```
+or
+```vim
+-- viml
+let g:genghis_disable_commands = v:true
+```
+
 ## Autocompletion of directories
 You can get autocompletion for directories by using `dressing.nvim`, `nvim-cmp`, and vim's omnifunc:
 
