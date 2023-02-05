@@ -159,7 +159,19 @@ end
 ---@param opts? table
 function M.trashFile(opts)
 	cmd.update { bang = true }
-	local trash = os.getenv("HOME") .. "/.Trash/"
+	local trash
+
+	if vim.fn.has('linux') == 1 then
+		local xdg_data = os.getenv("XDG_DATA_HOME")
+		if xdg_data then
+			trash = xdg_data .. "/Trash"
+		else
+			trash = os.getenv("HOME") .. "/.local/share/Trash"
+		end
+	else
+		trash = os.getenv("HOME") .. "/.Trash"
+	end
+
 	if opts and opts.trashLocation then
 		trash = opts.trashLocation
 		if not (trash:find("/$")) then trash = trash .. "/" end
