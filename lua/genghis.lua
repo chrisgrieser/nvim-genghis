@@ -13,6 +13,12 @@ end
 
 --------------------------------------------------------------------------------
 
+local function fileExists(filepath)
+	local file = io.open(filepath, "r")
+	if file then io.close(file) end
+	return file ~= nil
+end
+
 ---Performing common file operation tasks
 ---@param op string rename|duplicate|new|newFromSel
 local function fileOp(op)
@@ -88,6 +94,10 @@ local function fileOp(op)
 			cmd.edit(newFilePath)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
 		elseif op == "rename" or op == "move-rename" then
+			if fileExists(newFilePath) then
+				vim.notify("File with that name already exists. Aborting.", logError)
+				return
+			end
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
 				cmd.edit(newFilePath)
