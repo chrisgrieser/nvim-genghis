@@ -45,6 +45,7 @@ local function fileOp(op)
 	end
 
 	-- selene: allow(high_cyclomatic_complexity)
+	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
 		-- validation
 		local invalidName = false
@@ -160,21 +161,27 @@ end
 function M.trashFile(opts)
 	cmd.update { bang = true }
 	local trash
+	local home = os.getenv("HOME")
 
-	if vim.fn.has('linux') == 1 then
+	-- Default trash locations
+	if fn.has("linux") or fn.has("unix") then
 		local xdg_data = os.getenv("XDG_DATA_HOME")
-		if xdg_data then
-			trash = xdg_data .. "/Trash/"
-		else
-			trash = os.getenv("HOME") .. "/.local/share/Trash/"
-		end
+		trash = xdg_data and xdg_data .. "/trash" or home .. "/.local/share/Trash"
+	elseif fn.has("macunix") then
+		-- INFO macOS moves files to the icloud trash, if they are deleted from
+		-- icloud folder, otherwise they go the user trash folder
+		local iCloudPath = home .. "/Library/Mobile Documents/com~apple~CloudDocs"
+		local isInICloud = fn.expand("%:p:h"):sub(1, #iCloudPath) == iCloudPath
+		trash = isInICloud and iCloudPath .. "/Trash/" or home .. "/.Trash/"
 	else
-		trash = os.getenv("HOME") .. "/.Trash/"
+		-- TODO: support windows
+		trash = home .. "/.Trash/"
 	end
 
+	-- overwrite trash location, if specified by user
 	if opts and opts.trashLocation then
 		trash = opts.trashLocation
-		if not (trash:find("/$")) then trash = trash .. "/" end
+		if not (trash:find("/$")) then trash = trash .. "/" end -- append "/"
 	end
 
 	local currentFile = expand("%:p")

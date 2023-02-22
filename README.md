@@ -51,23 +51,24 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Works like the UNIX `mv` command. Best used with [autocompletion of directories](#autocompletion-of-directories).
 
 > __Note__  
-> Applying to all commands above: 
+> The following applies to all commands above: 
 > - If no extension has been provided, will use the extension of the original file.
 > - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. Except for `.moveAndRenameFile`, all operations take only place in the current working directory, so `.moveAndRenameFile` is the only command that can move to a parent directory.
 > - All commands support [autocompletion of existing directories](#autocompletion-of-directories).
 
-- `.trashFile{trashLocation = "your/path/"}` or `:Trash`: Move the current file the trash location. Defaults to location is `$HOME/.Trash/`. ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
+- `.trashFile{trashLocation = "/your/path/"}` or `:Trash`: Move the current file to the trash location. [Defaults to the operating-system-specific trash directory.](https://github.com/chrisgrieser/nvim-genghis/blob/main/lua/genghis.lua#L164) ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable.
 - `.copyFilename` or `:CopyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
 ### How to disable command-line commands
 Put this in your configuration file:
+
 ```lua
 -- lua
 vim.g.genghis_disable_commands = true
 ```
-or
+
 ```vim
 -- viml
 let g:genghis_disable_commands = v:true
