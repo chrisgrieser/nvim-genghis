@@ -88,16 +88,17 @@ local function fileOp(op)
 		if not extProvided then newName = newName .. oldExt end
 		local newFilePath = (op == "move-rename") and newName or dir .. "/" .. newName
 
+		if fileExists(newFilePath) then
+			vim.notify('File with name "' .. newName .. '" already exists.', logError)
+			return
+		end
+
 		cmd.update() -- save current file; needed for users with `hidden=false`
 		if op == "duplicate" then
 			cmd.saveas(newFilePath)
 			cmd.edit(newFilePath)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
 		elseif op == "rename" or op == "move-rename" then
-			if fileExists(newFilePath) then
-				vim.notify('Could not rename file: File with name "'..newName..'" already exists.', logError)
-				return
-			end
 			local success, errormsg = os.rename(oldName, newName)
 			if success then
 				cmd.edit(newFilePath)
