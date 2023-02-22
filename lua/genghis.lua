@@ -95,7 +95,7 @@ local function fileOp(op)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
 		elseif op == "rename" or op == "move-rename" then
 			if fileExists(newFilePath) then
-				vim.notify("File with that name already exists. Aborting.", logError)
+				vim.notify('Could not rename file: File with name "'..newName..'" already exists.', logError)
 				return
 			end
 			local success, errormsg = os.rename(oldName, newName)
