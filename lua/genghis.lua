@@ -164,15 +164,15 @@ function M.trashFile(opts)
 	local home = os.getenv("HOME")
 
 	-- Default trash locations
-	if fn.has("linux") or fn.has("unix") then
+	if fn.has("linux") == 1 then
 		local xdg_data = os.getenv("XDG_DATA_HOME")
-		trash = xdg_data and xdg_data .. "/trash" or home .. "/.local/share/Trash"
-	elseif fn.has("macunix") then
+		trash = xdg_data and xdg_data .. "/trash/" or home .. "/.local/share/Trash/"
+	elseif fn.has("macunix") == 1 then
 		-- INFO macOS moves files to the icloud trash, if they are deleted from
 		-- icloud folder, otherwise they go the user trash folder
 		local iCloudPath = home .. "/Library/Mobile Documents/com~apple~CloudDocs"
 		local isInICloud = fn.expand("%:p:h"):sub(1, #iCloudPath) == iCloudPath
-		trash = isInICloud and iCloudPath .. "/Trash/" or home .. "/.Trash/"
+		trash = isInICloud and iCloudPath .. "/.Trash/" or home .. "/.Trash/"
 	else
 		-- TODO: support windows
 		trash = home .. "/.Trash/"
