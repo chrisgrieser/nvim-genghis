@@ -1,4 +1,4 @@
-*genghis.txt*           For NVIM v0.8.0          Last change: 2023 February 22
+*genghis.txt*            For NVIM v0.8.0            Last change: 2023 March 06
 
 ==============================================================================
 Table of Contents                                  *genghis-table-of-contents*
@@ -45,7 +45,7 @@ INSTALLATION AND SETUP           *genghis-nvim-genghis-installation-and-setup*
     {"chrisgrieser/nvim-genghis", dependencies = "stevearc/dressing.nvim"},
 <
 
-`nvim-genghis` (and `dressign.nvim`) require no `.setup()` function. Just
+`nvim-genghis` (and `dressing.nvim`) require no `.setup()` function. Just
 create keybindings for the commands you want to use:
 
 >lua
