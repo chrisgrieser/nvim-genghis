@@ -27,7 +27,7 @@ use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
 {"chrisgrieser/nvim-genghis", dependencies = "stevearc/dressing.nvim"},
 ```
 
-`nvim-genghis` (and `dressign.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
+`nvim-genghis` (and `dressing.nvim`) require no `.setup()` function. Just create keybindings for the commands you want to use:
 
 ```lua
 local keymap = vim.keymap.set
