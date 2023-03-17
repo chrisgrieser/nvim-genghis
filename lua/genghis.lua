@@ -24,6 +24,7 @@ end
 local function fileOp(op)
 	local dir = expand("%:p:h")
 	local oldName = expand("%:t")
+	local oldFilePath = expand("%:p")
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
 	local oldExt = expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
@@ -99,7 +100,7 @@ local function fileOp(op)
 			cmd.edit(newFilePath)
 			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
 		elseif op == "rename" or op == "move-rename" then
-			local success, errormsg = os.rename(oldName, newName)
+			local success, errormsg = os.rename(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
 				cmd.bwipeout("#")
