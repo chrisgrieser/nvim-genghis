@@ -66,7 +66,7 @@ The following applies to all commands above:
 - `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
-### Disable Ex-commands
+### Disable Ex-Commands
 Put this in your configuration file:
 
 ```lua
