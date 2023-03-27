@@ -54,22 +54,22 @@ local function fileOp(op)
 	-- selene: allow(high_cyclomatic_complexity)
 	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
-		-- validation
-		local invalidName = false
-		local sameName
-		if newName then
-			invalidName = newName:find("^%s*$")
-				or newName:find("[\\:]")
-				or newName:find("/$")
-				or (newName:find("^/") and not op == "move-rename")
-			sameName = newName == oldName
-		end
-		if not newName or invalidName or sameName then -- cancel
+		-- VALIDATION OF FILENAME
+		if not newName then return end -- input has been cancelled
+
+		local invalidName = newName:find("^%s+$")
+			or newName:find("[\\:]")
+			or newName:find("/$")
+			or (newName:find("^/") and not op == "move-rename")
+		local sameName = newName == oldName
+		local emptyInput = newName == ""
+
+		if invalidName or sameName or emptyInput then
 			if op == "newFromSel" then
 				cmd.undo() -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
 			end
-			if invalidName then
+			if invalidName or emptyInput then
 				vim.notify("Invalid filename.", logError)
 			elseif sameName then
 				vim.notify("Cannot use the same filename.", logError)
@@ -77,12 +77,11 @@ local function fileOp(op)
 			return
 		end
 
-		-- create folders if necessary
-		-- TODO upon release of neovim 0.9, use `:write ++p` https://twitter.com/Neovim/status/1589469857388834816?s=20&t=KNpSU7IESQAAWQwG04OjTQ
+		-- DETERMINE PATH AND EXTENSION
 		local hasPath = newName:find("/")
 		if hasPath then
 			local newFolder = newName:gsub("/.-$", "")
-			fn.mkdir(newFolder, "p")
+			fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
 		local extProvided = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
@@ -94,6 +93,7 @@ local function fileOp(op)
 			return
 		end
 
+		-- EXECUTE FILE OPERATION
 		cmd.update() -- save current file; needed for users with `hidden=false`
 		if op == "duplicate" then
 			cmd.saveas(newFilePath)
