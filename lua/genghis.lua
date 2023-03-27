@@ -64,7 +64,7 @@ local function fileOp(op)
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
 
-		if invalidName or sameName or emptyInput then
+		if invalidName or sameName or (emptyInput and op ~= "new") then
 			if op == "newFromSel" then
 				cmd.undo() -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
@@ -76,6 +76,9 @@ local function fileOp(op)
 			end
 			return
 		end
+
+		-- exception: new file creaton allows for empty input
+		if emptyInput and op == "new" then newName = "Untitled" end
 
 		-- DETERMINE PATH AND EXTENSION
 		local hasPath = newName:find("/")
