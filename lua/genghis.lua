@@ -5,6 +5,16 @@ local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
 
+local function bwipeout(bufnr)
+  local bufnr_int = bufnr and vim.fn.bufnr(bufnr) or vim.fn.bufnr('%')
+
+  if pcall(require, 'bufdelete') then
+    require'bufdelete'.bufwipeout(bufnr_int)
+  else
+    vim.cmd.bwipeout(bufnr_int)
+  end
+end
+
 local function leaveVisualMode()
 	-- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
 	local escKey = vim.api.nvim_replace_termcodes("<Esc>", false, true, true)
@@ -106,7 +116,7 @@ local function fileOp(op)
 			local success, errormsg = os.rename(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
-				cmd.bwipeout("#")
+				bwipeout("#")
 				vim.notify('Renamed "' .. oldName .. '" to "' .. newName .. '".')
 			else
 				vim.notify("Could not rename file: " .. errormsg, logError)
@@ -205,7 +215,7 @@ function M.trashFile(opts)
 	local success, errormsg = os.rename(currentFile, trash .. filename)
 
 	if success then
-		cmd.bwipeout()
+		bwipeout()
 		vim.notify('"' .. filename .. '" deleted.')
 	else
 		vim.notify("Could not delete file: " .. errormsg, logError)
