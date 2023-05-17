@@ -6,7 +6,7 @@ if not vim.g.genghis_disable_commands then
     local command = vim.api.nvim_create_user_command
     local genghis = require("genghis")
 
-    command("NewFromSelection", function() genghis.moveSelectionToNewFile() end, {})
+    command("NewFromSelection", function() genghis.moveSelectionToNewFile() end, { range = true })
     command("Duplicate", function() genghis.duplicateFile() end, {})
     command("Rename", function() genghis.renameFile() end, {})
     command("Trash", function() genghis.trashFile() end, {})
