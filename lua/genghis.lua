@@ -161,7 +161,7 @@ local function copyOp(operation)
 	if operation == "filename" then toCopy = expand("%:t") end
 
 	fn.setreg(reg, toCopy)
-	vim.notify("genghis: successfully copied \"" .. toCopy .. "\"")
+	vim.notify("Copied: \"" .. toCopy .. "\"")
 end
 
 ---Copy absolute path of current file
