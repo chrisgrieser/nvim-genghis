@@ -6,13 +6,13 @@ local fn = vim.fn
 local cmd = vim.cmd
 
 local function bwipeout(bufnr)
-  local bufnr_int = bufnr and vim.fn.bufnr(bufnr) or vim.fn.bufnr('%')
+	local bufnr_int = bufnr and vim.fn.bufnr(bufnr) or vim.fn.bufnr('%')
 
-  if pcall(require, 'bufdelete') then
-    require'bufdelete'.bufwipeout(bufnr_int)
-  else
-    vim.cmd.bwipeout(bufnr_int)
-  end
+	if pcall(require, 'bufdelete') then
+		require 'bufdelete'.bufwipeout(bufnr_int)
+	else
+		vim.cmd.bwipeout(bufnr_int)
+	end
 end
 
 local function leaveVisualMode()
@@ -68,15 +68,15 @@ local function fileOp(op)
 		if not newName then return end -- input has been cancelled
 
 		local invalidName = newName:find("^%s+$")
-			or newName:find("[\\:]")
-			or newName:find("/$")
-			or (newName:find("^/") and not op == "move-rename")
+			 or newName:find("[\\:]")
+			 or newName:find("/$")
+			 or (newName:find("^/") and not op == "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
 
 		if invalidName or sameName or (emptyInput and op ~= "new") then
 			if op == "newFromSel" then
-				cmd.undo() -- undo deletion
+				cmd.undo()      -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName or emptyInput then
@@ -124,7 +124,7 @@ local function fileOp(op)
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
 			if op == "newFromSel" then
-				cmd("put z") -- cmd.put("z") does not work here :/
+				cmd("put z")    -- cmd.put("z") does not work here :/
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			cmd.write(newFilePath)
