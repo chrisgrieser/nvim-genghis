@@ -192,7 +192,7 @@ function M.trashFile(opts)
 	-- Default trash locations
 	if fn.has("linux") == 1 then
 		local xdg_data = os.getenv("XDG_DATA_HOME")
-		trash = xdg_data and xdg_data .. "/trash/" or home .. "/.local/share/Trash/"
+		trash = xdg_data and xdg_data .. "/Trash/" or home .. "/.local/share/Trash/"
 	elseif fn.has("macunix") == 1 then
 		-- INFO macOS moves files to the icloud trash, if they are deleted from
 		-- icloud folder, otherwise they go the user trash folder
@@ -210,9 +210,16 @@ function M.trashFile(opts)
 		if not (trash:find("/$")) then trash = trash .. "/" end -- append "/"
 	end
 
+	fn.mkdir(trash, "p")
+
 	local currentFile = expand("%:p")
 	local filename = expand("%:t")
-	local success, errormsg = os.rename(currentFile, trash .. filename)
+
+	-- os.rename fails if trash is on different filesystem
+	local success, errormsg = pcall(cmd.write, trash .. filename)
+	if success then
+		success, errormsg = os.remove(currentFile)
+	end
 
 	if success then
 		bwipeout()
