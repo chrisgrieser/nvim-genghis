@@ -210,9 +210,16 @@ function M.trashFile(opts)
 		if not (trash:find("/$")) then trash = trash .. "/" end -- append "/"
 	end
 
+	fn.mkdir(trash, "p")
+
 	local currentFile = expand("%:p")
 	local filename = expand("%:t")
-	local success, errormsg = os.rename(currentFile, trash .. filename)
+
+	-- os.rename fails if trash is on different filesystem
+	local success, errormsg = pcall(cmd.write, trash .. filename)
+	if success then
+		success, errormsg = os.remove(currentFile)
+	end
 
 	if success then
 		bwipeout()
