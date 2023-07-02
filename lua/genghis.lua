@@ -6,13 +6,8 @@ local fn = vim.fn
 local cmd = vim.cmd
 
 local function bwipeout(bufnr)
-	local bufnr_int = bufnr and vim.fn.bufnr(bufnr) or vim.fn.bufnr('%')
-
-	if pcall(require, 'bufdelete') then
-		require 'bufdelete'.bufwipeout(bufnr_int)
-	else
-		vim.cmd.bwipeout(bufnr_int)
-	end
+	bufnr = bufnr and fn.bufnr(bufnr) or 0
+	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
 local function leaveVisualMode()
@@ -215,17 +210,16 @@ function M.trashFile(opts)
 	local currentFile = expand("%:p")
 	local filename = expand("%:t")
 
-	-- os.rename fails if trash is on different filesystem
-	local success, errormsg = pcall(cmd.write, trash .. filename)
-	if success then
-		success, errormsg = os.remove(currentFile)
+	if fileExists(trash .. filename) then
+		filename = filename .. "~"
 	end
 
+	local success, err = pcall(vim.loop.fs_rename, currentFile, trash .. filename)
 	if success then
 		bwipeout()
-		vim.notify('"' .. filename .. '" deleted.')
+		vim.notify(("%q deleted"):format(filename))
 	else
-		vim.notify("Could not delete file: " .. errormsg, logError)
+		vim.notify("Could not delete file: " .. err, logError)
 	end
 end
 
