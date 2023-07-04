@@ -19,9 +19,7 @@ end
 --------------------------------------------------------------------------------
 
 local function fileExists(filepath)
-	local file = io.open(filepath, "r")
-	if file then io.close(file) end
-	return file ~= nil
+	return vim.loop.fs_stat(filepath) ~= nil
 end
 
 ---Performing common file operation tasks
@@ -59,6 +57,8 @@ local function fileOp(op)
 	-- selene: allow(high_cyclomatic_complexity)
 	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
+		-- Clear message area from ui.input prompt
+		cmd("echomsg ''")
 		-- VALIDATION OF FILENAME
 		if not newName then return end -- input has been cancelled
 
@@ -97,24 +97,22 @@ local function fileOp(op)
 		local newFilePath = (op == "move-rename") and newName or dir .. "/" .. newName
 
 		if fileExists(newFilePath) then
-			vim.notify('File with name "' .. newName .. '" already exists.', logError)
+			vim.notify(("File with name %q already exists."):format(newFilePath), logError)
 			return
 		end
 
 		-- EXECUTE FILE OPERATION
 		cmd.update() -- save current file; needed for users with `hidden=false`
 		if op == "duplicate" then
-			cmd.saveas(newFilePath)
-			cmd.edit(newFilePath)
-			vim.notify('Duplicated "' .. oldName .. '" as "' .. newName .. '".')
+			if vim.loop.fs_copyfile(oldFilePath, newFilePath) then
+				cmd.edit(newFilePath)
+				vim.notify(("Duplicated %q as %q."):format(oldName, newName))
+			end
 		elseif op == "rename" or op == "move-rename" then
-			local success, errormsg = os.rename(oldFilePath, newFilePath)
-			if success then
+			if vim.loop.fs_rename(oldFilePath, newFilePath) then
 				cmd.edit(newFilePath)
 				bwipeout("#")
-				vim.notify('Renamed "' .. oldName .. '" to "' .. newName .. '".')
-			else
-				vim.notify("Could not rename file: " .. errormsg, logError)
+				vim.notify(("Renamed %q as %q."):format(oldName, newName))
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
@@ -183,6 +181,8 @@ function M.trashFile(opts)
 	cmd.update { bang = true }
 	local trash
 	local home = os.getenv("HOME")
+	local oldName = expand("%:t")
+	local oldFilePath = expand("%:p")
 
 	-- Default trash locations
 	if fn.has("linux") == 1 then
@@ -207,19 +207,13 @@ function M.trashFile(opts)
 
 	fn.mkdir(trash, "p")
 
-	local currentFile = expand("%:p")
-	local filename = expand("%:t")
-
-	if fileExists(trash .. filename) then
-		filename = filename .. "~"
+	if fileExists(trash .. oldName) then
+		oldName = oldName .. "~"
 	end
 
-	local success, err = pcall(vim.loop.fs_rename, currentFile, trash .. filename)
-	if success then
+	if vim.loop.fs_rename(oldFilePath, trash .. oldName) then
 		bwipeout()
-		vim.notify(("%q deleted"):format(filename))
-	else
-		vim.notify("Could not delete file: " .. err, logError)
+		vim.notify(("%q deleted"):format(oldName))
 	end
 end
 
