@@ -1,5 +1,5 @@
 # nvim-genghis ⚔️
-<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis" /></a>
+<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield" /></a>
 
 Convenience file operations for neovim, written in lua. 
 
