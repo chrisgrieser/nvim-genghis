@@ -1,6 +1,5 @@
 local M = {}
 
-local logError = vim.log.levels.ERROR
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
@@ -14,6 +13,15 @@ local function leaveVisualMode()
 	-- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
 	local escKey = vim.api.nvim_replace_termcodes("<Esc>", false, true, true)
 	vim.api.nvim_feedkeys(escKey, "nx", false)
+end
+
+
+---send notification
+---@param msg string
+---@param level? "info"|"trace"|"debug"|"warn"|"error"
+local function notify(msg, level)
+	if not level then level = "info" end
+	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-genghis" })
 end
 
 --------------------------------------------------------------------------------
@@ -75,9 +83,9 @@ local function fileOp(op)
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName or emptyInput then
-				vim.notify("Invalid filename.", logError)
+				notify("Invalid filename.", "error")
 			elseif sameName then
-				vim.notify("Cannot use the same filename.", logError)
+				notify("Cannot use the same filename.", "error")
 			end
 			return
 		end
@@ -97,7 +105,7 @@ local function fileOp(op)
 		local newFilePath = (op == "move-rename") and newName or dir .. "/" .. newName
 
 		if fileExists(newFilePath) then
-			vim.notify(("File with name %q already exists."):format(newFilePath), logError)
+			notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
 		end
 
@@ -106,13 +114,13 @@ local function fileOp(op)
 		if op == "duplicate" then
 			if vim.loop.fs_copyfile(oldFilePath, newFilePath) then
 				cmd.edit(newFilePath)
-				vim.notify(("Duplicated %q as %q."):format(oldName, newName))
+				notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
 			if vim.loop.fs_rename(oldFilePath, newFilePath) then
 				cmd.edit(newFilePath)
 				bwipeout("#")
-				vim.notify(("Renamed %q as %q."):format(oldName, newName))
+				notify(("Renamed %q as %q."):format(oldName, newName))
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
@@ -154,7 +162,7 @@ local function copyOp(operation)
 	if operation == "filename" then toCopy = expand("%:t") end
 
 	fn.setreg(reg, toCopy)
-	vim.notify("Copied: \"" .. toCopy .. "\"")
+	vim.notify(toCopy, vim.log.levels.INFO, { title = "Copied" })
 end
 
 ---Copy absolute path of current file
@@ -171,7 +179,7 @@ function M.chmodx()
 	local perm = fn.getfperm(filename)
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
 	fn.setfperm(filename, perm)
-	vim.notify("Execution Permission granted.")
+	notify("Execution Permission granted.")
 	cmd.edit()
 end
 
@@ -213,7 +221,7 @@ function M.trashFile(opts)
 
 	if vim.loop.fs_rename(oldFilePath, trash .. oldName) then
 		bwipeout()
-		vim.notify(("%q deleted"):format(oldName))
+		notify(("%q deleted"):format(oldName))
 	end
 end
 
