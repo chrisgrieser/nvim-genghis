@@ -155,7 +155,7 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 local function copyOp(operation)
 	local reg = '"'
 	local clipboardOpt = vim.opt.clipboard:get()
-	local useSystemClipb = #clipboardOpt > 0 and clipboardOpt[1]:find("unnamed")
+	local useSystemClipb = vim.g.genghis_use_systemclipboard or (#clipboardOpt > 0 and clipboardOpt[1]:find("unnamed"))
 	if useSystemClipb then reg = "+" end
 
 	local toCopy = expand("%:p")
