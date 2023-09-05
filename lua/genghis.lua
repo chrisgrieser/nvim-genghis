@@ -152,24 +152,31 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
 ---copying file information
 ---@param operation string filename|filepath
-local function copyOp(operation)
+local function copyOp(expandOperation)
 	local reg = '"'
 	local clipboardOpt = vim.opt.clipboard:get()
 	local useSystemClipb = #clipboardOpt > 0 and clipboardOpt[1]:find("unnamed")
 	if useSystemClipb then reg = "+" end
 
-	local toCopy = expand("%:p")
-	if operation == "filename" then toCopy = expand("%:t") end
-
+	local toCopy = expand(expandOperation)
 	fn.setreg(reg, toCopy)
 	vim.notify(toCopy, vim.log.levels.INFO, { title = "Copied" })
 end
 
 ---Copy absolute path of current file
-function M.copyFilepath() copyOp("filepath") end
+function M.copyFilepath() copyOp("%:p") end
 
 ---Copy name of current file
-function M.copyFilename() copyOp("filename") end
+function M.copyFilename() copyOp("%:t") end
+
+---Copy relative path of current file
+function M.copyRelativePath() copyOp("%:~:.") end
+
+---Copy absolute directory path of current file
+function M.copyDirectoryPath() copyOp("%:p:h") end
+
+---Copy relative directory path of current file
+function M.copyRelativeDirectoryPath() copyOp("%:~:.:h") end
 
 --------------------------------------------------------------------------------
 
