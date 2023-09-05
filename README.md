@@ -71,6 +71,17 @@ The following applies to all commands above:
 - `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`: Copy the relative directory path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
+To always use system clipboard put this in your configuration file:
+```lua
+-- lua
+vim.g.genghis_use_systemclipboard = true
+```
+
+```vim
+-- viml
+let g:genghis_use_systemclipboard = v:true
+```
+
 ### Disable Ex-Commands
 Put this in your configuration file:
 
