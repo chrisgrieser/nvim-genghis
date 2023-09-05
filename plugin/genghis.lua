@@ -12,6 +12,9 @@ if not vim.g.genghis_disable_commands then
 	command("Move", function() genghis.moveAndRenameFile() end, {})
 	command("CopyFilename", function() genghis.copyFilename() end, {})
 	command("CopyFilepath", function() genghis.copyFilepath() end, {})
+	command("CopyRelativePath", function() genghis.copyRelativePath() end, {})
+	command("CopyDirectoryPath", function() genghis.copyDirectoryPath() end, {})
+	command("CopyRelativeDirectoryPath", function() genghis.copyRelativeDirectoryPath() end, {})
 	command("Chmodx", function() genghis.chmodx() end, {})
 	command("New", function() genghis.createNewFile() end, {})
 end

@@ -66,6 +66,9 @@ The following applies to all commands above:
 - `.trashFile{trashLocation = "/your/path/"}` or `:Trash`: Move the current file to the trash location. [Defaults to the operating-system-specific trash directory.](https://github.com/chrisgrieser/nvim-genghis/blob/main/lua/genghis.lua#L164) ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable. If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available, `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout intact instead of `vim.cmd.bwipeout`.
 - `.copyFilename` or `:CopyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.copyRelativePath` or `:CopyRelativePath`: Copy the relative file path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.copyDirectoryPath` or `:CopyDirectoryPath`: Copy the absolute directory path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
+- `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`: Copy the relative directory path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod +x`.
 
 ### Disable Ex-Commands
