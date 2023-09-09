@@ -9,12 +9,11 @@ local function bwipeout(bufnr)
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
+-- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
 local function leaveVisualMode()
-	-- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
 	local escKey = vim.api.nvim_replace_termcodes("<Esc>", false, true, true)
 	vim.api.nvim_feedkeys(escKey, "nx", false)
 end
-
 
 ---send notification
 ---@param msg string
@@ -24,16 +23,14 @@ local function notify(msg, level)
 	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-genghis" })
 end
 
---------------------------------------------------------------------------------
+local function fileExists(filepath) return vim.loop.fs_stat(filepath) ~= nil end
 
-local function fileExists(filepath)
-	return vim.loop.fs_stat(filepath) ~= nil
-end
+--------------------------------------------------------------------------------
 
 ---Performing common file operation tasks
 ---@param op string rename|duplicate|new|newFromSel
 local function fileOp(op)
-	local dir = expand("%:p:h")
+	local dir = expand("%:p:h") -- same directory, *not* pwd
 	local oldName = expand("%:t")
 	local oldFilePath = expand("%:p")
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
@@ -65,21 +62,21 @@ local function fileOp(op)
 	-- selene: allow(high_cyclomatic_complexity)
 	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
-		-- Clear message area from ui.input prompt
-		cmd("echomsg ''")
+		cmd("echomsg ''") -- Clear message area from ui.input prompt
+
 		-- VALIDATION OF FILENAME
 		if not newName then return end -- input has been cancelled
 
 		local invalidName = newName:find("^%s+$")
-			 or newName:find("[\\:]")
-			 or newName:find("/$")
-			 or (newName:find("^/") and not op == "move-rename")
+			or newName:find("[\\:]")
+			or newName:find("/$")
+			or (newName:find("^/") and not op == "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
 
 		if invalidName or sameName or (emptyInput and op ~= "new") then
 			if op == "newFromSel" then
-				cmd.undo()      -- undo deletion
+				cmd.undo() -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName or emptyInput then
@@ -96,7 +93,7 @@ local function fileOp(op)
 		-- DETERMINE PATH AND EXTENSION
 		local hasPath = newName:find("/")
 		if hasPath then
-			local newFolder = newName:gsub("/.-$", "")
+			local newFolder = vim.fs.dirname(newName)
 			fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
@@ -110,14 +107,16 @@ local function fileOp(op)
 		end
 
 		-- EXECUTE FILE OPERATION
-		cmd.update() -- save current file; needed for users with `hidden=false`
+		cmd.update() -- save current file; needed for users with `vim.opt.hidden=false`
 		if op == "duplicate" then
-			if vim.loop.fs_copyfile(oldFilePath, newFilePath) then
+			local success = vim.loop.fs_copyfile(oldFilePath, newFilePath)
+			if success then
 				cmd.edit(newFilePath)
 				notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
-			if vim.loop.fs_rename(oldFilePath, newFilePath) then
+			local success = vim.loop.fs_rename(oldFilePath, newFilePath)
+			if success then
 				cmd.edit(newFilePath)
 				bwipeout("#")
 				notify(("Renamed %q as %q."):format(oldName, newName))
@@ -125,7 +124,7 @@ local function fileOp(op)
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
 			if op == "newFromSel" then
-				cmd("put z")    -- cmd.put("z") does not work here :/
+				cmd("put z") -- cmd.put("z") does not work
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			cmd.write(newFilePath)
@@ -151,11 +150,12 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 --------------------------------------------------------------------------------
 
 ---copying file information
----@param operation string filename|filepath
+---@param expandOperation string
 local function copyOp(expandOperation)
 	local reg = '"'
 	local clipboardOpt = vim.opt.clipboard:get()
-	local useSystemClipb = vim.g.genghis_use_systemclipboard or (#clipboardOpt > 0 and clipboardOpt[1]:find("unnamed"))
+	local useSystemClipb = vim.g.genghis_use_systemclipboard
+		or (#clipboardOpt > 0 and clipboardOpt[1]:find("unnamed"))
 	if useSystemClipb then reg = "+" end
 
 	local toCopy = expand(expandOperation)
@@ -210,7 +210,7 @@ function M.trashFile(opts)
 		local isInICloud = fn.expand("%:p:h"):sub(1, #iCloudPath) == iCloudPath
 		trash = isInICloud and iCloudPath .. "/.Trash/" or home .. "/.Trash/"
 	else
-		-- TODO: support windows
+		-- TODO better support for windows
 		trash = home .. "/.Trash/"
 	end
 
@@ -222,14 +222,14 @@ function M.trashFile(opts)
 
 	fn.mkdir(trash, "p")
 
-	if fileExists(trash .. oldName) then
-		oldName = oldName .. "~"
-	end
+	if fileExists(trash .. oldName) then oldName = oldName .. "~" end
 
 	if vim.loop.fs_rename(oldFilePath, trash .. oldName) then
 		bwipeout()
 		notify(("%q deleted"):format(oldName))
 	end
 end
+
+--------------------------------------------------------------------------------
 
 return M
