@@ -33,7 +33,7 @@ end
 ---Performing common file operation tasks
 ---@param op string rename|duplicate|new|newFromSel
 local function fileOp(op)
-	local dir = expand("%:p:h")
+	local dir = fn.getcwd()
 	local oldName = expand("%:t")
 	local oldFilePath = expand("%:p")
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
