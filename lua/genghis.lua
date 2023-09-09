@@ -96,7 +96,7 @@ local function fileOp(op)
 		-- DETERMINE PATH AND EXTENSION
 		local hasPath = newName:find("/")
 		if hasPath then
-			local newFolder = newName:gsub("/.-$", "")
+ 			local newFolder = vim.fs.dirname(newName)
 			fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
