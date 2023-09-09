@@ -33,7 +33,7 @@ end
 ---Performing common file operation tasks
 ---@param op string rename|duplicate|new|newFromSel
 local function fileOp(op)
-	local dir = fn.getcwd()
+	local dir = expand("%:p:h")
 	local oldName = expand("%:t")
 	local oldFilePath = expand("%:p")
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
@@ -96,7 +96,7 @@ local function fileOp(op)
 		-- DETERMINE PATH AND EXTENSION
 		local hasPath = newName:find("/")
 		if hasPath then
- 			local newFolder = vim.fs.dirname(newName)
+			local newFolder = newName:gsub("/.-$", "")
 			fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
