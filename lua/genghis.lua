@@ -62,7 +62,7 @@ local function fileOp(op)
 	-- selene: allow(high_cyclomatic_complexity)
 	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
-		cmd("echomsg ''") -- Clear message area from ui.input prompt
+		cmd.redraw() -- Clear message area from ui.input prompt
 
 		-- VALIDATION OF FILENAME
 		if not newName then return end -- input has been cancelled
