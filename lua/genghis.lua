@@ -25,6 +25,26 @@ end
 
 local function fileExists(filepath) return vim.loop.fs_stat(filepath) ~= nil end
 
+---move file
+---use instead of fs_rename to support moving across partitions
+---@param oldFilePath string
+---@param newFilePath string
+local function moveFile(oldFilePath, newFilePath)
+	local copied, copiedError = vim.loop.fs_copyfile(oldFilePath, newFilePath)
+	if copied then
+		local deleted, deletedError = vim.loop.fs_unlink(oldFilePath)
+		if deleted then
+			return true
+		else
+			notify(("Failed to delete %q: %q"):format(oldFilePath, deletedError), "error")
+			return false
+		end
+	else
+		notify(("Failed to move %q to %q: %q"):format(oldFilePath, newFilePath, copiedError), "error")
+		return false
+	end
+end
+
 --------------------------------------------------------------------------------
 
 ---Performing common file operation tasks
@@ -115,7 +135,7 @@ local function fileOp(op)
 				notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
-			local success = vim.loop.fs_rename(oldFilePath, newFilePath)
+			local success = moveFile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
 				bwipeout("#")
@@ -224,7 +244,7 @@ function M.trashFile(opts)
 
 	if fileExists(trash .. oldName) then oldName = oldName .. "~" end
 
-	if vim.loop.fs_rename(oldFilePath, trash .. oldName) then
+	if moveFile(oldFilePath, trash .. oldName) then
 		bwipeout()
 		notify(("%q deleted"):format(oldName))
 	end
