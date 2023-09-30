@@ -135,6 +135,10 @@ local function fileOp(op)
 				notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
+			local lsp_ops_ok, lsp_ops = pcall(require,'lsp-file-operations.will-rename')
+			if lsp_ops_ok then
+				lsp_ops.callback({ old_name = oldFilePath, new_name = newFilePath})
+			end
 			local success = moveFile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
