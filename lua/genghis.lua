@@ -4,6 +4,8 @@ local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
 
+local LSP_METHOD_WILL_RENAME_FILES = "workspace/willRenameFiles"
+
 local function bwipeout(bufnr)
 	bufnr = bufnr and fn.bufnr(bufnr) or 0
 	vim.api.nvim_buf_delete(bufnr, { force = true })
@@ -11,11 +13,12 @@ end
 
 --- Requests a 'workspace/willRenameFiles' on any running LSP client, that supports it
 --- stolen from https://github.com/LazyVim/LazyVim/blob/fecc5faca25c209ed62e3658dd63731e26c0c643/lua/lazyvim/util/init.lua#L304
-local function on_rename(from, to)
+local function onRename(from, to)
 	local clients = vim.lsp.get_active_clients()
 	for _, client in ipairs(clients) do
-		if client:supports_method("workspace/willRenameFiles") then
-			local resp = client.request_sync("workspace/willRenameFiles", {
+		-- avoid calling `any_lsp_supports` as to not loop clients twice
+		if client:supports_method(LSP_METHOD_WILL_RENAME_FILES) then
+			local resp = client.request_sync(LSP_METHOD_WILL_RENAME_FILES, {
 				files = {
 					{
 						oldUri = vim.uri_from_fname(from),
@@ -28,6 +31,11 @@ local function on_rename(from, to)
 			end
 		end
 	end
+end
+
+local function anyLspSupports(method)
+	local clients = vim.lsp.get_active_clients()
+	return vim.iter(clients):any(function(client) return client:supports_method(method) end)
 end
 
 -- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
@@ -85,15 +93,18 @@ local function fileOp(op)
 		cmd([['<,'>delete z]])
 	end
 
+	local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
+
 	local promptStr, prefill
 	if op == "duplicate" then
 		promptStr = "Duplicate File as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = "Rename File to: "
+		promptStr = lspWillRename and "Rename File to (will notify LSPs): " or "Rename File to: "
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = "Move & Rename File to: "
+		promptStr = lspWillRename and "Move & Rename File to (will notify LSPs): "
+			or "Move & Rename File to: "
 		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
@@ -156,7 +167,7 @@ local function fileOp(op)
 				notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
-			on_rename(oldFilePath, newFilePath)
+			onRename(oldFilePath, newFilePath)
 			local success = moveFile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
