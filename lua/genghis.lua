@@ -9,6 +9,27 @@ local function bwipeout(bufnr)
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
+--- Requests a 'workspace/willRenameFiles' on any running LSP client, that supports it
+--- stolen from https://github.com/LazyVim/LazyVim/blob/fecc5faca25c209ed62e3658dd63731e26c0c643/lua/lazyvim/util/init.lua#L304
+local function on_rename(from, to)
+	local clients = vim.lsp.get_active_clients()
+	for _, client in ipairs(clients) do
+		if client:supports_method("workspace/willRenameFiles") then
+			local resp = client.request_sync("workspace/willRenameFiles", {
+				files = {
+					{
+						oldUri = vim.uri_from_fname(from),
+						newUri = vim.uri_from_fname(to),
+					},
+				},
+			}, 1000)
+			if resp and resp.result ~= nil then
+				vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
+			end
+		end
+	end
+end
+
 -- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
 local function leaveVisualMode()
 	local escKey = vim.api.nvim_replace_termcodes("<Esc>", false, true, true)
@@ -135,10 +156,7 @@ local function fileOp(op)
 				notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
-			local lsp_ops_ok, lsp_ops = pcall(require,'lsp-file-operations.will-rename')
-			if lsp_ops_ok then
-				lsp_ops.callback({ old_name = oldFilePath, new_name = newFilePath})
-			end
+			on_rename(oldFilePath, newFilePath)
 			local success = moveFile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
