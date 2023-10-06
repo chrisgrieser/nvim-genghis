@@ -62,6 +62,8 @@ The following applies to all commands above:
 - If the new file name includes a `/`, the new file is placed in the respective subdirectory, creating any non-existing folders. Except for `.moveAndRenameFile`, all operations take only place in the current working directory, so `.moveAndRenameFile` is the only command that can move to a parent directory.
 - All commands support [autocompletion of existing directories](#autocompletion-of-directories).
 
+`renameFile` and `moveAndRenameFile` will notify any running LSP client about the renaming. LSP servers supporting the `workspace/willRenameFiles` method can use this information to update various code parts, for example `use` or `import` statements.
+
 ### File Utility Commands
 - `.trashFile{trashLocation = "/your/path/"}` or `:Trash`: Move the current file to the trash location. [Defaults to the operating-system-specific trash directory.](https://github.com/chrisgrieser/nvim-genghis/blob/main/lua/genghis.lua#L164) ⚠️ Any existing file in the trash location with the same name is overwritten, making that file irretrievable. If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available, `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout intact instead of `vim.cmd.bwipeout`.
 - `.copyFilename` or `:CopyFilename`: Copy the file name. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise to `"`.
