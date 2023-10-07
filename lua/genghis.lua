@@ -103,18 +103,18 @@ local function fileOp(op)
 		cmd([['<,'>delete z]])
 	end
 
-	local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
-
 	local promptStr, prefill
 	if op == "duplicate" then
 		promptStr = "Duplicate File as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = lspWillRename and "Rename File to (will notify LSPs): " or "Rename File to: "
+		local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
+		promptStr = lspWillRename and "Rename File & notify LSP:" or "Rename File to:"
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = lspWillRename and "Move & Rename File to (will notify LSPs): "
-			or "Move & Rename File to: "
+		local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
+		promptStr = lspWillRename and "Move-Rename File & notify LSP:"
+			or "Move & Rename File to:"
 		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
