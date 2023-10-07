@@ -4,8 +4,6 @@ local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
 
-local LSP_METHOD_WILL_RENAME_FILES = "workspace/willRenameFiles"
-
 --------------------------------------------------------------------------------
 
 ---@param bufnr? number|"#"|"$"
@@ -20,11 +18,10 @@ end
 ---@param fromName string
 ---@param toName string
 local function onRename(fromName, toName)
-	local clients = vim.lsp.get_active_clients()
+	local clients = vim.lsp.get_active_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
-		-- avoid calling `any_lsp_supports` as to not loop clients twice
-		if client:supports_method(LSP_METHOD_WILL_RENAME_FILES) then
-			local resp = client.request_sync(LSP_METHOD_WILL_RENAME_FILES, {
+		if client:supports_method("workspace/willRenameFiles") then
+			local resp = client.request_sync("workspace/willRenameFiles", {
 				files = {
 					{ oldUri = vim.uri_from_fname(fromName), newUri = vim.uri_from_fname(toName) },
 				},
@@ -36,18 +33,21 @@ local function onRename(fromName, toName)
 	end
 end
 
----@param method string
+---@nodiscard
 ---@return boolean
-local function anyLspSupports(method)
+local function lspSupportsRenaming()
+	-- INFO `client:supports_method()` seems to always return true, whatever is 
+	-- supplied as argument. This does not affect `onRename`, but here we need to
+	-- check for the server_capabilities to properly identify whether our LSP
+	-- supports renaming or not.
+	-- TODO investigate if `client:supports_method()` works in nvim 0.10 or later
 	local clients = vim.lsp.get_active_clients { bufnr = 0 }
-	local supports = false
 	for _, client in ipairs(clients) do
-		if client:supports_method(method) then
-			supports = true
-			break
-		end
+		local workspaceCap = client.server_capabilities.workspace
+		local supports = workspaceCap and workspaceCap.fileOperations and workspaceCap.fileOperations.willRename
+		if supports then return true end
 	end
-	return supports
+	return false
 end
 
 -- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
@@ -112,12 +112,10 @@ local function fileOp(op)
 		promptStr = "Duplicate File as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
-		promptStr = lspWillRename and "Rename File & notify LSP:" or "Rename File to:"
+		promptStr = lspSupportsRenaming() and "Rename File & notify LSP:" or "Rename File to:"
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
-		promptStr = lspWillRename and "Move-Rename File & notify LSP:" or "Move & Rename File to:"
+		promptStr = lspSupportsRenaming() and "Move-Rename File & notify LSP:" or "Move & Rename File to:"
 		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
