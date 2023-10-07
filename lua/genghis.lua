@@ -26,10 +26,7 @@ local function onRename(fromName, toName)
 		if client:supports_method(LSP_METHOD_WILL_RENAME_FILES) then
 			local resp = client.request_sync(LSP_METHOD_WILL_RENAME_FILES, {
 				files = {
-					{
-						oldUri = vim.uri_from_fname(fromName),
-						newUri = vim.uri_from_fname(toName),
-					},
+					{ oldUri = vim.uri_from_fname(fromName), newUri = vim.uri_from_fname(toName) },
 				},
 			}, 1000)
 			if resp and resp.result ~= nil then
@@ -42,8 +39,15 @@ end
 ---@param method string
 ---@return boolean
 local function anyLspSupports(method)
-	local clients = vim.lsp.get_active_clients()
-	return vim.iter(clients):any(function(client) return client:supports_method(method) end)
+	local clients = vim.lsp.get_active_clients { bufnr = 0 }
+	local supports = false
+	for _, client in ipairs(clients) do
+		if client:supports_method(method) then
+			supports = true
+			break
+		end
+	end
+	return supports
 end
 
 -- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
@@ -113,8 +117,7 @@ local function fileOp(op)
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
 		local lspWillRename = anyLspSupports(LSP_METHOD_WILL_RENAME_FILES)
-		promptStr = lspWillRename and "Move-Rename File & notify LSP:"
-			or "Move & Rename File to:"
+		promptStr = lspWillRename and "Move-Rename File & notify LSP:" or "Move & Rename File to:"
 		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
