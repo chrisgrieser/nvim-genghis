@@ -6,14 +6,20 @@ local cmd = vim.cmd
 
 local LSP_METHOD_WILL_RENAME_FILES = "workspace/willRenameFiles"
 
+--------------------------------------------------------------------------------
+
+---@param bufnr? number|"#"|"$"
 local function bwipeout(bufnr)
+	---@diagnostic disable-next-line: param-type-mismatch
 	bufnr = bufnr and fn.bufnr(bufnr) or 0
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
 --- Requests a 'workspace/willRenameFiles' on any running LSP client, that supports it
 --- stolen from https://github.com/LazyVim/LazyVim/blob/fecc5faca25c209ed62e3658dd63731e26c0c643/lua/lazyvim/util/init.lua#L304
-local function onRename(from, to)
+---@param fromName string
+---@param toName string
+local function onRename(fromName, toName)
 	local clients = vim.lsp.get_active_clients()
 	for _, client in ipairs(clients) do
 		-- avoid calling `any_lsp_supports` as to not loop clients twice
@@ -21,8 +27,8 @@ local function onRename(from, to)
 			local resp = client.request_sync(LSP_METHOD_WILL_RENAME_FILES, {
 				files = {
 					{
-						oldUri = vim.uri_from_fname(from),
-						newUri = vim.uri_from_fname(to),
+						oldUri = vim.uri_from_fname(fromName),
+						newUri = vim.uri_from_fname(toName),
 					},
 				},
 			}, 1000)
@@ -33,6 +39,8 @@ local function onRename(from, to)
 	end
 end
 
+---@param method string
+---@return boolean
 local function anyLspSupports(method)
 	local clients = vim.lsp.get_active_clients()
 	return vim.iter(clients):any(function(client) return client:supports_method(method) end)
@@ -52,6 +60,8 @@ local function notify(msg, level)
 	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-genghis" })
 end
 
+---@param filepath string
+---@return boolean
 local function fileExists(filepath) return vim.loop.fs_stat(filepath) ~= nil end
 
 ---move file
@@ -117,7 +127,7 @@ local function fileOp(op)
 		cmd.redraw() -- Clear message area from ui.input prompt
 
 		-- VALIDATION OF FILENAME
-		if not newName then return end -- input has been cancelled
+		if not newName then return end -- input has been canceled
 
 		local invalidName = newName:find("^%s+$")
 			or newName:find("[\\:]")
