@@ -1,4 +1,4 @@
-*genghis.txt*           For NVIM v0.8.0           Last change: 2023 October 06
+*genghis.txt*           For NVIM v0.8.0           Last change: 2023 October 07
 
 ==============================================================================
 Table of Contents                                  *genghis-table-of-contents*
