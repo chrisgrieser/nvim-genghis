@@ -4,6 +4,7 @@
 Table of Contents                                  *genghis-table-of-contents*
 
 1. nvim-genghis                                        |genghis-nvim-genghis-|
+  - Features                                  |genghis-nvim-genghis--features|
   - Installation and Setup      |genghis-nvim-genghis--installation-and-setup|
   - Available Commands              |genghis-nvim-genghis--available-commands|
   - Autocompletion of directories|genghis-nvim-genghis--autocompletion-of-directories|
@@ -16,8 +17,9 @@ Table of Contents                                  *genghis-table-of-contents*
 
 
 
-Lightweightplugin providing file operations without a full-blown file tree.
+Lightweightfile operations without a full-blown file management plugin.
 
+- |genghis-features|
 - |genghis-installation-and-setup|
 - |genghis-available-commands|
     - |genghis-file-operation-command|
@@ -27,6 +29,21 @@ Lightweightplugin providing file operations without a full-blown file tree.
 - |genghis-how-is-this-different-from-`vim.eunuch`?|
 - |genghis-why-that-name|
 - |genghis-about-me|
+
+
+FEATURES                                      *genghis-nvim-genghis--features*
+
+- Commands for moving, renaming, creating, deleting, or, duplicating files and
+    more.
+- Commands for copying the path or name of the current file in various formats.
+- Renaming commands notify the LSP, meaning references to the renamed file like
+    `import` statements are updated (if the LSP supports it).
+- Lightweight plugin, no file management UI or file tree.
+- Various quality-of-life improvements like automatically keeping the extensions
+    when no extension is given.
+- Fully written in lua and makes use of up-to-date nvim features `vim.ui.input`.
+    This that for example you can get nicer input fields with normal mode support
+    via plugins like dressing.nvim <https://github.com/stevearc/dressing.nvim>.
 
 
 INSTALLATION AND SETUP          *genghis-nvim-genghis--installation-and-setup*
