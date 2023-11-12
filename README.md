@@ -4,10 +4,11 @@
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
 <img src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
-Lightweight plugin providing file operations without a full-blown file tree.
+Lightweight file operations without a full-blown file management plugin.
 
 <!-- toc -->
 
+- [Features](#features)
 - [Installation and Setup](#installation-and-setup)
 - [Available Commands](#available-commands)
 	* [File Operation Command](#file-operation-command)
@@ -19,6 +20,19 @@ Lightweight plugin providing file operations without a full-blown file tree.
 - [About me](#about-me)
 
 <!-- tocstop -->
+
+## Features
+- Commands for moving, renaming, creating, deleting, or, duplicating files and
+more. 
+- Commands for copying the path or name of the current file in various formats.
+- Renaming commands notify the LSP, meaning references to the renamed file like
+`import` statements are updated (if the LSP supports it).
+- Lightweight plugin, no file management UI or file tree.
+- Various quality-of-life improvements like automatically keeping the extensions
+when no extension is given.
+- Fully written in lua and makes use of up-to-date nvim features `vim.ui.input`.
+This that for example you can get nicer input fields with normal mode support
+via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim).
 
 ## Installation and Setup
 
