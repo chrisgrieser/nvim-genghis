@@ -1,5 +1,5 @@
 -- deactivated by user
-if not vim.g.genghis_disable_commands then return end
+if vim.g.genghis_disable_commands then return end
 
 local command = vim.api.nvim_create_user_command
 local genghis = require("genghis")
