@@ -112,10 +112,10 @@ local function fileOp(op)
 		promptStr = "Duplicate File as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = lspSupportsRenaming() and "Rename File & notify LSP:" or "Rename File to:"
+		promptStr = lspSupportsRenaming() and "Rename File & Update Imports:" or "Rename File to:"
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = lspSupportsRenaming() and "Move-Rename File & notify LSP:" or "Move & Rename File to:"
+		promptStr = lspSupportsRenaming() and "Move-Rename File & Update Imports:" or "Move & Rename File to:"
 		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "

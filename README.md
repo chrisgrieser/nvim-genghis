@@ -2,7 +2,7 @@
 # nvim-genghis ⚔️
 <!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
-<img src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
+<img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
 Lightweight file operations without a full-blown file management plugin.
 
@@ -23,10 +23,10 @@ Lightweight file operations without a full-blown file management plugin.
 
 ## Features
 - Commands for moving, renaming, creating, deleting, or, duplicating files and
-more. 
+more.
 - Commands for copying the path or name of the current file in various formats.
-- Renaming commands notify the LSP, meaning references to the renamed file like
-`import` statements are updated (if the LSP supports it).
+- Renaming commands update `import` statements to the renamed file (if the LSP
+  supports it).
 - Lightweight plugin, no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
 when no extension is given.
