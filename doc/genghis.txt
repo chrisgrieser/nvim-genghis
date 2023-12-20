@@ -1,4 +1,4 @@
-*genghis.txt*           For NVIM v0.8.0          Last change: 2023 November 12
+*genghis.txt*           For NVIM v0.8.0          Last change: 2023 December 20
 
 ==============================================================================
 Table of Contents                                  *genghis-table-of-contents*
@@ -36,8 +36,8 @@ FEATURES                                      *genghis-nvim-genghis--features*
 - Commands for moving, renaming, creating, deleting, or, duplicating files and
     more.
 - Commands for copying the path or name of the current file in various formats.
-- Renaming commands notify the LSP, meaning references to the renamed file like
-    `import` statements are updated (if the LSP supports it).
+- Renaming commands update `import` statements to the renamed file (if the LSP
+    supports it).
 - Lightweight plugin, no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
     when no extension is given.
