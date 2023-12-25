@@ -183,7 +183,7 @@ local function fileOp(op)
 			if success then
 				cmd.edit(newFilePath)
 				bwipeout("#")
-				notify(("Renamed %q as %q."):format(oldName, newName))
+				notify(("Renamed %q to %q."):format(oldName, newName))
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
