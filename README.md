@@ -70,9 +70,9 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 and moves the current selection to that new file. (Note that this is a Visual
 Line Mode command; the selection is moved linewise.)
 - `.renameFile` or `:Rename`: Rename the current file.
-- `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Works like
-the UNIX `mv` command. Best used with [autocompletion of
-directories](#autocompletion-of-directories).
+- `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Keeps the
+old name if the new path ends with `/`. Works like the UNIX `mv` command. Best
+used with [autocompletion of directories](#autocompletion-of-directories).
 
 The following applies to all commands above:
 - If no extension has been provided, uses the extension of the original file.

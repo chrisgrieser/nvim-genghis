@@ -130,9 +130,12 @@ local function fileOp(op)
 		-- VALIDATION OF FILENAME
 		if not newName then return end -- input has been canceled
 
+		if newName:find("/$") then
+			newName = newName .. oldName -- use the new directory with the old name
+		end
+
 		local invalidName = newName:find("^%s+$")
 			or newName:find("[\\:]")
-			or newName:find("/$")
 			or (newName:find("^/") and not op == "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
