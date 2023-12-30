@@ -1,6 +1,5 @@
 local M = {}
 
-local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
 
@@ -16,7 +15,7 @@ local function fileOp(op)
 	local oldName = vim.fs.basename(oldFilePath)
 	local dir = vim.fs.dirname(oldFilePath) -- same directory, *not* pwd
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
-	local oldExt = expand("%:e")
+	local oldExt = fn.expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
 
 	local prevReg
@@ -42,20 +41,18 @@ local function fileOp(op)
 		prefill = ""
 	end
 
-	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({
 		prompt = promptStr,
 		default = prefill,
-		completion = "dir",
+		completion = "dir", -- allows for completion via cmp-omni
 	}, function(newName)
 		cmd.redraw() -- Clear message area from ui.input prompt
 
 		-- VALIDATION OF FILENAME
 		if not newName then return end -- input has been canceled
 
-		if newName:find("/$") then
-			newName = newName .. oldName -- use the new directory with the old name
-		end
+		-- if only directory is entered, move file to that location
+		if op == "move-rename" and newName:find("/$") then newName = newName .. oldName end
 
 		local invalidName = newName:find("^%s+$")
 			or newName:find("[\\:]")
@@ -96,7 +93,7 @@ local function fileOp(op)
 		end
 
 		-- EXECUTE FILE OPERATION
-		cmd.update() -- save current file; needed for users with `vim.opt.hidden=false`
+		cmd.update()
 		if op == "duplicate" then
 			local success = vim.loop.fs_copyfile(oldFilePath, newFilePath)
 			if success then
@@ -104,7 +101,7 @@ local function fileOp(op)
 				u.notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
-			mv.onRename(oldFilePath, newFilePath)
+			mv.sendWillRenameToLsp(oldFilePath, newFilePath)
 			local success = mv.moveFile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
@@ -139,11 +136,12 @@ local function copyOp(expandOperation)
 		or (#clipboardOpt > 0 and clipboardOpt[1]:find("unnamed"))
 	if useSystemClipb then reg = "+" end
 
-	local toCopy = expand(expandOperation)
+	local toCopy = fn.expand(expandOperation)
 	fn.setreg(reg, toCopy)
 	vim.notify(toCopy, vim.log.levels.INFO, { title = "Copied" })
 end
 
+-- DOCS for the available modifiers: https://neovim.io/doc/user/builtin.html#expand()
 function M.copyFilepath() copyOp("%:p") end
 function M.copyFilename() copyOp("%:t") end
 function M.copyRelativePath() copyOp("%:~:.") end
@@ -165,12 +163,12 @@ end
 ---@param opts? {trashLocation: string}
 function M.trashFile(opts)
 	cmd.update { bang = true }
-	local trash
 	local home = os.getenv("HOME")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
 
 	-- Default trash locations
+	local trash
 	if fn.has("linux") == 1 then
 		local xdg_data = os.getenv("XDG_DATA_HOME")
 		trash = xdg_data and xdg_data .. "/Trash/" or home .. "/.local/share/Trash/"
@@ -178,7 +176,7 @@ function M.trashFile(opts)
 		-- INFO macOS moves files to the icloud trash, if they are deleted from
 		-- icloud folder, otherwise they go the user trash folder
 		local iCloudPath = home .. "/Library/Mobile Documents/com~apple~CloudDocs"
-		local isInICloud = fn.expand("%:p:h"):sub(1, #iCloudPath) == iCloudPath
+		local isInICloud = oldFilePath:sub(1, #iCloudPath) == iCloudPath
 		trash = isInICloud and iCloudPath .. "/.Trash/" or home .. "/.Trash/"
 	else
 		-- TODO better support for windows

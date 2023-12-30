@@ -7,7 +7,7 @@ local u = require("genghis.utils")
 ---stolen from https://github.com/LazyVim/LazyVim/blob/fecc5faca25c209ed62e3658dd63731e26c0c643/lua/lazyvim/util/init.lua#L304
 ---@param fromName string
 ---@param toName string
-function M.onRename(fromName, toName)
+function M.sendWillRenameToLsp(fromName, toName)
 	local clients = vim.lsp.get_active_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
 		if client:supports_method("workspace/willRenameFiles") then
