@@ -3,88 +3,9 @@ local M = {}
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
---------------------------------------------------------------------------------
 
----@param bufnr? number|"#"|"$"
-local function bwipeout(bufnr)
-	bufnr = bufnr and fn.bufnr(bufnr) or 0 ---@diagnostic disable-line: param-type-mismatch
-	vim.api.nvim_buf_delete(bufnr, { force = true })
-end
-
---- Requests a 'workspace/willRenameFiles' on any running LSP client, that supports it
---- stolen from https://github.com/LazyVim/LazyVim/blob/fecc5faca25c209ed62e3658dd63731e26c0c643/lua/lazyvim/util/init.lua#L304
----@param fromName string
----@param toName string
-local function onRename(fromName, toName)
-	local clients = vim.lsp.get_active_clients { bufnr = 0 }
-	for _, client in ipairs(clients) do
-		if client:supports_method("workspace/willRenameFiles") then
-			local resp = client.request_sync("workspace/willRenameFiles", {
-				files = {
-					{ oldUri = vim.uri_from_fname(fromName), newUri = vim.uri_from_fname(toName) },
-				},
-			}, 1000)
-			if resp and resp.result ~= nil then
-				vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
-			end
-		end
-	end
-end
-
----@nodiscard
----@return boolean
-local function lspSupportsRenaming()
-	-- INFO `client:supports_method()` seems to always return true, whatever is 
-	-- supplied as argument. This does not affect `onRename`, but here we need to
-	-- check for the server_capabilities to properly identify whether our LSP
-	-- supports renaming or not.
-	-- TODO investigate if `client:supports_method()` works in nvim 0.10 or later
-	local clients = vim.lsp.get_active_clients { bufnr = 0 }
-	for _, client in ipairs(clients) do
-		local workspaceCap = client.server_capabilities.workspace
-		local supports = workspaceCap and workspaceCap.fileOperations and workspaceCap.fileOperations.willRename
-		if supports then return true end
-	end
-	return false
-end
-
--- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
-local function leaveVisualMode()
-	local escKey = vim.api.nvim_replace_termcodes("<Esc>", false, true, true)
-	vim.api.nvim_feedkeys(escKey, "nx", false)
-end
-
----send notification
----@param msg string
----@param level? "info"|"trace"|"debug"|"warn"|"error"
-local function notify(msg, level)
-	if not level then level = "info" end
-	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-genghis" })
-end
-
----@param filepath string
----@return boolean
-local function fileExists(filepath) return vim.loop.fs_stat(filepath) ~= nil end
-
----move file
----use instead of fs_rename to support moving across partitions
----@param oldFilePath string
----@param newFilePath string
-local function moveFile(oldFilePath, newFilePath)
-	local copied, copiedError = vim.loop.fs_copyfile(oldFilePath, newFilePath)
-	if copied then
-		local deleted, deletedError = vim.loop.fs_unlink(oldFilePath)
-		if deleted then
-			return true
-		else
-			notify(("Failed to delete %q: %q"):format(oldFilePath, deletedError), "error")
-			return false
-		end
-	else
-		notify(("Failed to move %q to %q: %q"):format(oldFilePath, newFilePath, copiedError), "error")
-		return false
-	end
-end
+local mv = require("genghis.file-movement")
+local u = require("genghis.utils")
 
 --------------------------------------------------------------------------------
 
@@ -101,7 +22,7 @@ local function fileOp(op)
 	local prevReg
 	if op == "newFromSel" then
 		prevReg = fn.getreg("z")
-		leaveVisualMode()
+		u.leaveVisualMode()
 		cmd([['<,'>delete z]])
 	end
 
@@ -110,10 +31,11 @@ local function fileOp(op)
 		promptStr = "Duplicate File as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = lspSupportsRenaming() and "Rename File & Update Imports:" or "Rename File to:"
+		promptStr = mv.lspSupportsRenaming() and "Rename File & Update Imports:" or "Rename File to:"
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = lspSupportsRenaming() and "Move-Rename File & Update Imports:" or "Move & Rename File to:"
+		promptStr = mv.lspSupportsRenaming() and "Move-Rename File & Update Imports:"
+			or "Move & Rename File to:"
 		prefill = dir .. "/"
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
@@ -121,7 +43,11 @@ local function fileOp(op)
 	end
 
 	-- INFO completion = "dir" allows for completion via cmp-omni
-	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
+	vim.ui.input({
+		prompt = promptStr,
+		default = prefill,
+		completion = "dir",
+	}, function(newName)
 		cmd.redraw() -- Clear message area from ui.input prompt
 
 		-- VALIDATION OF FILENAME
@@ -143,9 +69,9 @@ local function fileOp(op)
 				fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName or emptyInput then
-				notify("Invalid filename.", "error")
+				u.notify("Invalid filename.", "error")
 			elseif sameName then
-				notify("Cannot use the same filename.", "error")
+				u.notify("Cannot use the same filename.", "error")
 			end
 			return
 		end
@@ -164,8 +90,8 @@ local function fileOp(op)
 		if not extProvided then newName = newName .. oldExt end
 		local newFilePath = (op == "move-rename") and newName or dir .. "/" .. newName
 
-		if fileExists(newFilePath) then
-			notify(("File with name %q already exists."):format(newFilePath), "error")
+		if u.fileExists(newFilePath) then
+			u.notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
 		end
 
@@ -175,15 +101,15 @@ local function fileOp(op)
 			local success = vim.loop.fs_copyfile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
-				notify(("Duplicated %q as %q."):format(oldName, newName))
+				u.notify(("Duplicated %q as %q."):format(oldName, newName))
 			end
 		elseif op == "rename" or op == "move-rename" then
-			onRename(oldFilePath, newFilePath)
-			local success = moveFile(oldFilePath, newFilePath)
+			mv.onRename(oldFilePath, newFilePath)
+			local success = mv.moveFile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
-				bwipeout("#")
-				notify(("Renamed %q to %q."):format(oldName, newName))
+				u.bwipeout("#")
+				u.notify(("Renamed %q to %q."):format(oldName, newName))
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
@@ -232,11 +158,11 @@ function M.chmodx()
 	local perm = fn.getfperm(filename)
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
 	fn.setfperm(filename, perm)
-	notify("Execution Permission granted.")
+	u.notify("Execution Permission granted.")
 	cmd.edit()
 end
 
----@param opts? table
+---@param opts? {trashLocation: string}
 function M.trashFile(opts)
 	cmd.update { bang = true }
 	local trash
@@ -262,15 +188,15 @@ function M.trashFile(opts)
 	-- overwrite trash location, if specified by user
 	if opts and opts.trashLocation then
 		trash = opts.trashLocation
-		if not (trash:find("/$")) then trash = trash .. "/" end 
+		if not (trash:find("/$")) then trash = trash .. "/" end
 	end
 
 	fn.mkdir(trash, "p")
-	if fileExists(trash .. oldName) then oldName = oldName .. "~" end
+	if u.fileExists(trash .. oldName) then oldName = oldName .. "~" end
 
-	if moveFile(oldFilePath, trash .. oldName) then
-		bwipeout()
-		notify(("%q deleted"):format(oldName))
+	if mv.moveFile(oldFilePath, trash .. oldName) then
+		u.bwipeout()
+		u.notify(("%q deleted"):format(oldName))
 	end
 end
 
