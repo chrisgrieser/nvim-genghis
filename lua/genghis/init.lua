@@ -12,9 +12,9 @@ local u = require("genghis.utils")
 ---Performing common file operation tasks
 ---@param op "rename"|"duplicate"|"new"|"newFromSel"|"move-rename"
 local function fileOp(op)
-	local dir = expand("%:p:h") -- same directory, *not* pwd
-	local oldName = expand("%:t")
-	local oldFilePath = expand("%:p")
+	local oldFilePath = vim.api.nvim_buf_get_name(0)
+	local oldName = vim.fs.basename(oldFilePath)
+	local dir = vim.fs.dirname(oldFilePath) -- same directory, *not* pwd
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
 	local oldExt = expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
@@ -154,7 +154,7 @@ function M.copyRelativeDirectoryPath() copyOp("%:~:.:h") end
 
 ---Makes current file executable
 function M.chmodx()
-	local filename = expand("%")
+	local filename = vim.api.nvim_buf_get_name(0)
 	local perm = fn.getfperm(filename)
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
 	fn.setfperm(filename, perm)
@@ -167,8 +167,8 @@ function M.trashFile(opts)
 	cmd.update { bang = true }
 	local trash
 	local home = os.getenv("HOME")
-	local oldName = expand("%:t")
-	local oldFilePath = expand("%:p")
+	local oldFilePath = vim.api.nvim_buf_get_name(0)
+	local oldName = vim.fs.basename(oldFilePath)
 
 	-- Default trash locations
 	if fn.has("linux") == 1 then
