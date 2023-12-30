@@ -75,10 +75,13 @@ old name if the new path ends with `/`. Works like the UNIX `mv` command. Best
 used with [autocompletion of directories](#autocompletion-of-directories).
 - `.trashFile`: Trash the current file.
 	- Use `trashCmd` to specify an external trash command. It defaults to
-`gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
+`gio trash` from [GIO](https://docs.gtk.org/gio/) on *Linux*, `trash` from
+[trash-cli](https://github.com/sindresorhus/trash-cli) on *Mac* and *Windows*.
 	- Otherwise specify `trashLocation` to move the file to that directory. It
 defaults to `$HOME/.Trash`. This does NOT trash the file the usual way. The
 trashed file is NOT restorable to its original path.
+	- When `trashCmd` and `trashLocation` are both specified, `trashLocation` is
+ignored.
 	- For backwards compatibility, the default behavior on *Mac* moves files to
 `$HOME/.Trash`.
 

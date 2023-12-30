@@ -168,7 +168,7 @@ function M.trashFile(opts)
 	local oldName = vim.fs.basename(oldFilePath)
 
 	local trashCmd
-	if opts ~= nil and opts.trashCmd ~= nil then
+	if opts and opts.trashCmd then
 		trashCmd = opts.trashCmd
 	else
 		if fn.has("linux") == 1 then
@@ -194,7 +194,7 @@ function M.trashFile(opts)
 					u.bwipeout()
 					u.notify(("%q deleted"):format(oldName))
 				else
-					u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "warn")
+					u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "error")
 				end
 			end,
 		})
