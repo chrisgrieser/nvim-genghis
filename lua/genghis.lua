@@ -3,13 +3,11 @@ local M = {}
 local expand = vim.fn.expand
 local fn = vim.fn
 local cmd = vim.cmd
-
 --------------------------------------------------------------------------------
 
 ---@param bufnr? number|"#"|"$"
 local function bwipeout(bufnr)
-	---@diagnostic disable-next-line: param-type-mismatch
-	bufnr = bufnr and fn.bufnr(bufnr) or 0
+	bufnr = bufnr and fn.bufnr(bufnr) or 0 ---@diagnostic disable-line: param-type-mismatch
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
@@ -91,7 +89,7 @@ end
 --------------------------------------------------------------------------------
 
 ---Performing common file operation tasks
----@param op string rename|duplicate|new|newFromSel
+---@param op "rename"|"duplicate"|"new"|"newFromSel"|"move-rename"
 local function fileOp(op)
 	local dir = expand("%:p:h") -- same directory, *not* pwd
 	local oldName = expand("%:t")
@@ -122,7 +120,6 @@ local function fileOp(op)
 		prefill = ""
 	end
 
-	-- selene: allow(high_cyclomatic_complexity)
 	-- INFO completion = "dir" allows for completion via cmp-omni
 	vim.ui.input({ prompt = promptStr, default = prefill, completion = "dir" }, function(newName)
 		cmd.redraw() -- Clear message area from ui.input prompt
@@ -199,19 +196,10 @@ local function fileOp(op)
 	end)
 end
 
----Rename Current File
 function M.renameFile() fileOp("rename") end
-
----Move and Rename Current File
 function M.moveAndRenameFile() fileOp("move-rename") end
-
----Duplicate Current File
 function M.duplicateFile() fileOp("duplicate") end
-
----Create New File
 function M.createNewFile() fileOp("new") end
-
----Move Selection to New File
 function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
 --------------------------------------------------------------------------------
@@ -230,19 +218,10 @@ local function copyOp(expandOperation)
 	vim.notify(toCopy, vim.log.levels.INFO, { title = "Copied" })
 end
 
----Copy absolute path of current file
 function M.copyFilepath() copyOp("%:p") end
-
----Copy name of current file
 function M.copyFilename() copyOp("%:t") end
-
----Copy relative path of current file
 function M.copyRelativePath() copyOp("%:~:.") end
-
----Copy absolute directory path of current file
 function M.copyDirectoryPath() copyOp("%:p:h") end
-
----Copy relative directory path of current file
 function M.copyRelativeDirectoryPath() copyOp("%:~:.:h") end
 
 --------------------------------------------------------------------------------
@@ -257,7 +236,6 @@ function M.chmodx()
 	cmd.edit()
 end
 
----Trash the current File.
 ---@param opts? table
 function M.trashFile(opts)
 	cmd.update { bang = true }
@@ -284,11 +262,10 @@ function M.trashFile(opts)
 	-- overwrite trash location, if specified by user
 	if opts and opts.trashLocation then
 		trash = opts.trashLocation
-		if not (trash:find("/$")) then trash = trash .. "/" end -- append "/"
+		if not (trash:find("/$")) then trash = trash .. "/" end 
 	end
 
 	fn.mkdir(trash, "p")
-
 	if fileExists(trash .. oldName) then oldName = oldName .. "~" end
 
 	if moveFile(oldFilePath, trash .. oldName) then
@@ -298,5 +275,4 @@ function M.trashFile(opts)
 end
 
 --------------------------------------------------------------------------------
-
 return M
