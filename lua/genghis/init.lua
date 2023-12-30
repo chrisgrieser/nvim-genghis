@@ -160,19 +160,50 @@ function M.chmodx()
 	cmd.edit()
 end
 
----@param opts? {trashLocation: string}
+---@param opts? {trashCmd: string, trashLocation: string}
 function M.trashFile(opts)
 	cmd.update { bang = true }
 	local home = os.getenv("HOME")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
 
+	local trashCmd
+	if opts ~= nil and opts.trashCmd ~= nil then
+		trashCmd = opts.trashCmd
+	else
+		if fn.has("linux") == 1 then
+			trashCmd = "gio trash"
+		elseif fn.has("windows") == 1 then
+			trashCmd = "trash"
+		end
+	end
+
+	if trashCmd ~= nil then
+		-- Use a trash command
+		local trashArgs = vim.split(trashCmd, " ")
+		table.insert(trashArgs, oldFilePath)
+
+		local errMsg = ""
+		vim.fn.jobstart(trashArgs, {
+			detach = true,
+			on_stderr = function (_, data)
+				errMsg = errMsg .. (data and table.concat(data, " "))
+			end,
+			on_exit = function(_, rc)
+				if rc == 0 then
+					u.bwipeout()
+					u.notify(("%q deleted"):format(oldName))
+				else
+					u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "warn")
+				end
+			end,
+		})
+		return
+	end
+
 	-- Default trash locations
 	local trash
-	if fn.has("linux") == 1 then
-		local xdg_data = os.getenv("XDG_DATA_HOME")
-		trash = xdg_data and xdg_data .. "/Trash/" or home .. "/.local/share/Trash/"
-	elseif fn.has("macunix") == 1 then
+	if fn.has("macunix") == 1 then
 		-- INFO macOS moves files to the icloud trash, if they are deleted from
 		-- icloud folder, otherwise they go the user trash folder
 		local iCloudPath = home .. "/Library/Mobile Documents/com~apple~CloudDocs"
