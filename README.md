@@ -57,7 +57,7 @@ keymap("n", "<leader>rf", genghis.renameFile)
 keymap("n", "<leader>mf", genghis.moveAndRenameFile)
 keymap("n", "<leader>nf", genghis.createNewFile)
 keymap("n", "<leader>yf", genghis.duplicateFile)
-keymap("n", "<leader>df", function() genghis.trashFile { trashLocation = "your/path" } end) -- default: "$HOME/.Trash".
+keymap("n", "<leader>df", genghis.trashFile)
 keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 ```
 
@@ -73,6 +73,14 @@ Line Mode command; the selection is moved linewise.)
 - `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Keeps the
 old name if the new path ends with `/`. Works like the UNIX `mv` command. Best
 used with [autocompletion of directories](#autocompletion-of-directories).
+- `.trashFile`: Trash the current file.
+	- Use `trashCmd` to specify an external trash command. It defaults to
+`gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
+	- Otherwise specify `trashLocation` to move the file to that directory. It
+defaults to `$HOME/.Trash`. This does NOT trash the file the usual way. The
+trashed file is NOT restorable to its original path.
+	- For backwards compatibility, the default behavior on *Mac* moves files to
+`$HOME/.Trash`.
 
 The following applies to all commands above:
 - If no extension has been provided, uses the extension of the original file.
