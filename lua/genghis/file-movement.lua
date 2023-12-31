@@ -40,10 +40,14 @@ function M.lspSupportsRenaming()
 	return false
 end
 
----use instead of fs_rename to support moving across partitions
 ---@param oldFilePath string
 ---@param newFilePath string
 function M.moveFile(oldFilePath, newFilePath)
+	local renamed, _renamedError = vim.loop.fs_rename(oldFilePath, newFilePath)
+	if renamed then
+		return true
+	end
+	---try `fs_copyfile` to support moving across partitions
 	local copied, copiedError = vim.loop.fs_copyfile(oldFilePath, newFilePath)
 	if copied then
 		local deleted, deletedError = vim.loop.fs_unlink(oldFilePath)
