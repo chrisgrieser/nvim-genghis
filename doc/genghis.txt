@@ -90,10 +90,13 @@ FILE OPERATION COMMAND ~
     used with |genghis-autocompletion-of-directories|.
 - `.trashFile`Trash the current file.
     - Use `trashCmd` to specify an external trash command. It defaults to
-        `gio trash` on _Linux_, `trash` on _Mac_ and _Windows_.
+        `gio trash` from GIO <https://docs.gtk.org/gio/> on _Linux_, `trash` from
+        trash-cli <https://github.com/sindresorhus/trash-cli> on _Mac_ and _Windows_.
     - Otherwise specify `trashLocation` to move the file to that directory. It
         defaults to `$HOME/.Trash`. This does NOT trash the file the usual way. The
         trashed file is NOT restorable to its original path.
+    - When `trashCmd` and `trashLocation` are both specified, `trashLocation` is
+        ignored.
     - For backwards compatibility, the default behavior on _Mac_ moves files to
         `$HOME/.Trash`.
 
