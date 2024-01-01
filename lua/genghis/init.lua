@@ -160,73 +160,42 @@ function M.chmodx()
 	cmd.edit()
 end
 
----@param opts? {trashCmd: string, trashLocation: string}
+---@param opts? { trashCmd: string}
 function M.trashFile(opts)
-	cmd.update { bang = true }
-	local home = os.getenv("HOME")
+	if opts == nil then opts = {} end
+	local defaultTrashCmds = {
+		macos = "trash", -- not installed by default
+		windows = "trash", -- not installed by default
+		linux = "gio trash",
+	}
+
+	cmd("silent! update")
+
+	local system
+	if fn.has("macos") == 1 then system = "macos" end
+	if fn.has("linux") == 1 then system = "linux" end
+	if fn.has("windows") == 1 then system = "windows" end
+	local trashCmd = opts.trashCmd or defaultTrashCmds[system]
+	
+	-- Use a trash command
+	local trashArgs = vim.split(trashCmd, " ")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
-	local oldName = vim.fs.basename(oldFilePath)
+	table.insert(trashArgs, oldFilePath)
 
-	local trashCmd
-	if opts ~= nil and opts.trashCmd ~= nil then
-		trashCmd = opts.trashCmd
-	else
-		if fn.has("linux") == 1 then
-			trashCmd = "gio trash"
-		elseif fn.has("windows") == 1 then
-			trashCmd = "trash"
-		end
-	end
-
-	if trashCmd ~= nil then
-		-- Use a trash command
-		local trashArgs = vim.split(trashCmd, " ")
-		table.insert(trashArgs, oldFilePath)
-
-		local errMsg = ""
-		vim.fn.jobstart(trashArgs, {
-			detach = true,
-			on_stderr = function (_, data)
-				errMsg = errMsg .. (data and table.concat(data, " "))
-			end,
-			on_exit = function(_, rc)
-				if rc == 0 then
-					u.bwipeout()
-					u.notify(("%q deleted"):format(oldName))
-				else
-					u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "warn")
-				end
-			end,
-		})
-		return
-	end
-
-	-- Default trash locations
-	local trash
-	if fn.has("macunix") == 1 then
-		-- INFO macOS moves files to the icloud trash, if they are deleted from
-		-- icloud folder, otherwise they go the user trash folder
-		local iCloudPath = home .. "/Library/Mobile Documents/com~apple~CloudDocs"
-		local isInICloud = oldFilePath:sub(1, #iCloudPath) == iCloudPath
-		trash = isInICloud and iCloudPath .. "/.Trash/" or home .. "/.Trash/"
-	else
-		-- TODO better support for windows
-		trash = home .. "/.Trash/"
-	end
-
-	-- overwrite trash location, if specified by user
-	if opts and opts.trashLocation then
-		trash = opts.trashLocation
-		if not (trash:find("/$")) then trash = trash .. "/" end
-	end
-
-	fn.mkdir(trash, "p")
-	if u.fileExists(trash .. oldName) then oldName = oldName .. "~" end
-
-	if mv.moveFile(oldFilePath, trash .. oldName) then
-		u.bwipeout()
-		u.notify(("%q deleted"):format(oldName))
-	end
+	local errMsg = ""
+	vim.fn.jobstart(trashArgs, {
+		detach = true,
+		on_stderr = function(_, data) errMsg = errMsg .. (data and table.concat(data, " ")) end,
+		on_exit = function(_, rc)
+			local oldName = vim.fs.basename(oldFilePath)
+			if rc == 0 then
+				u.bwipeout()
+				u.notify(("%q deleted"):format(oldName))
+			else
+				u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "warn")
+			end
+		end,
+	})
 end
 
 --------------------------------------------------------------------------------

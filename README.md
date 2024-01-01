@@ -4,7 +4,7 @@
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
-Lightweight file operations without a full-blown file management plugin.
+Lightweight and quick file operations without being a full-blown file manager.
 
 <!-- toc -->
 
@@ -71,16 +71,17 @@ and moves the current selection to that new file. (Note that this is a Visual
 Line Mode command; the selection is moved linewise.)
 - `.renameFile` or `:Rename`: Rename the current file.
 - `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Keeps the
-old name if the new path ends with `/`. Works like the UNIX `mv` command. Best
+old name if the new path ends with `/`. Works like the UNIX `mv` command. Can be
 used with [autocompletion of directories](#autocompletion-of-directories).
-- `.trashFile`: Trash the current file.
-	- Use `trashCmd` to specify an external trash command. It defaults to
-`gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
-	- Otherwise specify `trashLocation` to move the file to that directory. It
-defaults to `$HOME/.Trash`. This does NOT trash the file the usual way. The
-trashed file is NOT restorable to its original path.
-	- For backwards compatibility, the default behavior on *Mac* moves files to
-`$HOME/.Trash`.
+- `.trashFile{trashCmd = "your_cli"}` or `:Trash`: Move the current file
+to the trash location. 
+	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*. 
+	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
+	  `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
+	  intact instead of `vim.cmd.bwipeout`.
+
+> [!NOTE]
+> The trash CLIs are not available by default, and must be installed. 
 
 The following applies to all commands above:
 - If no extension has been provided, uses the extension of the original file.
@@ -97,14 +98,6 @@ use this information to update various code parts, for example `use` or `import`
 statements.
 
 ### File Utility Commands
-- `.trashFile{trashLocation = "/your/path/"}` or `:Trash`: Move the current file
-to the trash location. [Defaults to the operating-system-specific trash
-directory.](https://github.com/chrisgrieser/nvim-genghis/blob/main/lua/genghis.lua#L164)
-⚠️ Any existing file in the trash location with the same name is overwritten,
-making that file irretrievable. If
-[bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
-`require'bufdelete.nvim'.bufwipeout` would be used to keep window layout intact
-instead of `vim.cmd.bwipeout`.
 - `.copyFilename` or `:CopyFilename`: Copy the file name. When
 `clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise
 to `"`.
