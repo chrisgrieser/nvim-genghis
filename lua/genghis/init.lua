@@ -172,9 +172,9 @@ function M.trashFile(opts)
 	cmd("silent! update")
 
 	local system
-	if fn.has("macos") == 1 then system = "macos" end
+	if fn.has("mac") == 1 then system = "macos" end
 	if fn.has("linux") == 1 then system = "linux" end
-	if fn.has("windows") == 1 then system = "windows" end
+	if fn.has("win32") == 1 then system = "windows" end
 	local trashCmd = opts.trashCmd or defaultTrashCmds[system]
 	
 	-- Use a trash command
