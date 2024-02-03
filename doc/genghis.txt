@@ -1,4 +1,4 @@
-*genghis.txt*           For NVIM v0.8.0           Last change: 2024 January 02
+*genghis.txt*           For NVIM v0.8.0          Last change: 2024 February 03
 
 ==============================================================================
 Table of Contents                                  *genghis-table-of-contents*
@@ -7,7 +7,7 @@ Table of Contents                                  *genghis-table-of-contents*
   - Features                                  |genghis-nvim-genghis--features|
   - Installation and Setup      |genghis-nvim-genghis--installation-and-setup|
   - Available Commands              |genghis-nvim-genghis--available-commands|
-  - Autocompletion of directories|genghis-nvim-genghis--autocompletion-of-directories|
+  - Cookbook                                  |genghis-nvim-genghis--cookbook|
   - Howis this different from vim.eunuch?|genghis-nvim-genghis--howis-this-different-from-vim.eunuch?|
   - Why that name                        |genghis-nvim-genghis--why-that-name|
   - About me                                  |genghis-nvim-genghis--about-me|
@@ -25,7 +25,9 @@ Lightweightand quick file operations without being a full-blown file manager.
     - |genghis-file-operation-command|
     - |genghis-file-utility-commands|
     - |genghis-disable-ex-commands|
-- |genghis-autocompletion-of-directories|
+- |genghis-cookbook|
+    - |genghis-use-telescope-for-`.movetofolderincwd`|
+    - |genghis-autocompletion-of-directories-for-`.moveandrenamefile`|
 - |genghis-how-is-this-different-from-`vim.eunuch`?|
 - |genghis-why-that-name|
 - |genghis-about-me|
@@ -36,14 +38,12 @@ FEATURES                                      *genghis-nvim-genghis--features*
 - Commands for moving, renaming, creating, deleting, or, duplicating files and
     more.
 - Commands for copying the path or name of the current file in various formats.
-- Renaming commands update `import` statements to the renamed file (if the LSP
-    supports it).
-- Lightweight plugin, no file management UI or file tree.
+- All movement and renaming commands update `import` statements to the renamed
+    file (if the LSP supports `workspace/willRenameFiles`).
+- Lightweight: no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
     when no extension is given.
 - Fully written in lua and makes use of up-to-date nvim features `vim.ui.input`.
-    This that for example you can get nicer input fields with normal mode support
-    via plugins like dressing.nvim <https://github.com/stevearc/dressing.nvim>.
 
 
 INSTALLATION AND SETUP          *genghis-nvim-genghis--installation-and-setup*
@@ -67,6 +67,7 @@ create keybindings for the commands you want to use:
     keymap("n", "<leader>cx", genghis.chmodx)
     keymap("n", "<leader>rf", genghis.renameFile)
     keymap("n", "<leader>mf", genghis.moveAndRenameFile)
+    keymap("n", "<leader>mc", genghis.moveToFolderInCwd)
     keymap("n", "<leader>nf", genghis.createNewFile)
     keymap("n", "<leader>yf", genghis.duplicateFile)
     keymap("n", "<leader>df", genghis.trashFile)
@@ -86,8 +87,9 @@ FILE OPERATION COMMAND ~
     Line Mode command; the selection is moved linewise.)
 - `.renameFile` or `:Rename`Rename the current file.
 - `.moveAndRenameFile` or `:Move`Move and Rename the current file. Keeps the
-    old name if the new path ends with `/`. Works like the UNIX `mv` command. Can be
-    used with |genghis-autocompletion-of-directories|.
+    old name if the new path ends with `/`. Works like the UNIX `mv` command.
+- `.moveToFolderInCwd` or `:MoveToFolderInCwd`Move the current file to an
+    existing folder in the current working directory. |genghis-can-use-telescope-for-the-selection-of-the-destination.|
 - `.trashFile{trashCmd = "your_cli"}` or `:Trash`Move the current file
     to the trash location.
     - Defaults to `gio trash` on _Linux_, `trash` on _Mac_ and _Windows_.
@@ -100,15 +102,7 @@ FILE OPERATION COMMAND ~
 The following applies to all commands above: - If no extension has been
 provided, uses the extension of the original file. - If the new file name
 includes a `/`, the new file is placed in the respective subdirectory, creating
-any non-existing folders. Except for `.moveAndRenameFile`, all operations take
-only place in the current working directory, so `.moveAndRenameFile` is the
-only command that can move to a parent directory. - All commands support
-|genghis-autocompletion-of-existing-directories|.
-
-`renameFile` and `moveAndRenameFile` notify any running LSP client about the
-renaming. LSP servers supporting the `workspace/willRenameFiles` method can use
-this information to update various code parts, for example `use` or `import`
-statements.
+any non-existing folders.
 
 
 FILE UTILITY COMMANDS ~
@@ -158,21 +152,38 @@ Put this in your configuration file:
 <
 
 
-AUTOCOMPLETION OF DIRECTORIES*genghis-nvim-genghis--autocompletion-of-directories*
+COOKBOOK                                      *genghis-nvim-genghis--cookbook*
 
-You can get autocompletion for directories by using `dressing.nvim`,
-`nvim-cmp`, and vim’s `omnifunc`
+
+USE TELESCOPE FOR .MOVETOFOLDERINCWD ~
+
+>lua
+    require("dressing").setup {
+        select = {
+            backend = { "telescope" },
+        },
+    }
+<
+
+
+AUTOCOMPLETION OF DIRECTORIES FOR .MOVEANDRENAMEFILE ~
+
+You can get autocompletion for directories by `nvim-cmp` and vim’s `omnifunc`
 
 >lua
     -- packer
-    use { "chrisgrieser/nvim-genghis", requires = {
+    use { 
+        "chrisgrieser/nvim-genghis", 
+        requires = {
             "stevearc/dressing.nvim",
             "hrsh7th/nvim-cmp",
             "hrsh7th/cmp-omni",
         },
     }
     -- lazy
-    { "chrisgrieser/nvim-genghis", dependencies = {
+    { 
+        "chrisgrieser/nvim-genghis", 
+        dependencies = {
             "stevearc/dressing.nvim",
             "hrsh7th/nvim-cmp",
             "hrsh7th/cmp-omni",
