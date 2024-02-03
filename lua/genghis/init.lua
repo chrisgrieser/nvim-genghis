@@ -47,20 +47,19 @@ local function fileOp(op)
 		completion = "dir", -- allows for completion via cmp-omni
 	}, function(newName)
 		cmd.redraw() -- Clear message area from ui.input prompt
-
-		-- VALIDATION OF FILENAME
 		if not newName then return end -- input has been canceled
 
-		-- if only directory is entered, move file to that location
 		if op == "move-rename" and newName:find("/$") then newName = newName .. oldName end
+		if op == "new" and newName == "" then newName = "Untitled" end
 
+		-- GUARD Validate filename
 		local invalidName = newName:find("^%s+$")
 			or newName:find("[\\:]")
 			or (newName:find("^/") and not op == "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
 
-		if invalidName or sameName or (emptyInput and op ~= "new") then
+		if invalidName or sameName or emptyInput then
 			if op == "newFromSel" then
 				cmd.undo() -- undo deletion
 				fn.setreg("z", prevReg) -- restore register content
@@ -68,13 +67,10 @@ local function fileOp(op)
 			if invalidName or emptyInput then
 				u.notify("Invalid filename.", "error")
 			elseif sameName then
-				u.notify("Cannot use the same filename.", "error")
+				u.notify("Cannot use the same filename.", "warn")
 			end
 			return
 		end
-
-		-- exception: new file creaton allows for empty input
-		if emptyInput and op == "new" then newName = "Untitled" end
 
 		-- DETERMINE PATH AND EXTENSION
 		local hasPath = newName:find("/")
@@ -128,38 +124,30 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 function M.moveToFolderInCwd()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local filename = vim.fs.basename(oldFilePath)
-	local cwd = vim.loop.cwd()
 
 	-- determine destinations in cwd
-	local subfoldersOfCwdAbsPath = vim.fs.find(function(name, path)
-		-- TODO improve ignoring of certain folders
-		return not (
-			(path:find("/%.git/") or path:find("/%.git$") or name == ".git")
+	local subfoldersOfCwd = vim.fs.find(function(name, path)
+		local ignoreDirs = (path:find("/%.git/") or path:find("/%.git$") or name == ".git")
 			or (path:find("%.app/") or path:find("%.app$")) -- macos pseudo-apps
 			or name == "node_modules"
-		)
+			or name == ".venv"
+		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
-	local subfoldersOfCwdRelPath = vim.tbl_map(
-		function(path) return path:sub(#cwd + 2) end,
-		subfoldersOfCwdAbsPath
-	)
 
 	-- prompt user and move
 	local promptStr = "Destination Folder "
 	if mv.lspSupportsRenaming() then promptStr = promptStr .. "& Update Imports" end
-	vim.ui.select(subfoldersOfCwdRelPath, {
+	vim.ui.select(subfoldersOfCwd, {
 		prompt = promptStr,
 		kind = "genghis.moveToFolderInCwd",
+		format_item = function(path) return path:sub(#vim.loop.cwd() + 2) end, -- only relative path
 	}, function(destination)
 		if not destination then return end
-		local newFilePath = cwd .. "/" .. destination .. "/" .. filename
+		local newFilePath = destination .. "/" .. filename
 
-		-- GUARD conflict
+		-- GUARD
 		if u.fileExists(newFilePath) then
-			u.notify(
-				("File with name %q already exists at %q."):format(filename, destination),
-				"error"
-			)
+			u.notify(("File %q already exists at %q."):format(filename, destination), "error")
 			return
 		end
 
@@ -168,7 +156,7 @@ function M.moveToFolderInCwd()
 		if success then
 			cmd.edit(newFilePath)
 			u.bwipeout("#")
-			u.notify(("Moved to %q."):format(destination))
+			u.notify(("Moved %q to %q."):format(filename, destination))
 		end
 	end)
 end
@@ -240,7 +228,7 @@ function M.trashFile(opts)
 				u.bwipeout()
 				u.notify(("%q deleted"):format(oldName))
 			else
-				u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "warn")
+				u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "error")
 			end
 		end,
 	})

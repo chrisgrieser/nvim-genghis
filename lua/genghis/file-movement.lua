@@ -43,7 +43,7 @@ end
 ---@param oldFilePath string
 ---@param newFilePath string
 function M.moveFile(oldFilePath, newFilePath)
-	local renamed, _renamedError = vim.loop.fs_rename(oldFilePath, newFilePath)
+	local renamed, _ = vim.loop.fs_rename(oldFilePath, newFilePath)
 	if renamed then
 		return true
 	end
