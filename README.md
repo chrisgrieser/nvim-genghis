@@ -27,14 +27,12 @@ Lightweight and quick file operations without being a full-blown file manager.
 - Commands for moving, renaming, creating, deleting, or, duplicating files and
 more.
 - Commands for copying the path or name of the current file in various formats.
-- Renaming commands update `import` statements to the renamed file (if the LSP
-  supports it).
-- Lightweight plugin, no file management UI or file tree.
+- All movement and renaming commands update `import` statements to the renamed
+  file (if the LSP supports `workspace/willRenameFiles`).
+- Lightweight: no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
 when no extension is given.
 - Fully written in lua and makes use of up-to-date nvim features `vim.ui.input`.
-This that for example you can get nicer input fields with normal mode support
-via plugins like [dressing.nvim](https://github.com/stevearc/dressing.nvim).
 
 ## Installation and Setup
 
@@ -70,37 +68,28 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.createNewFile` or `:New`: Create a new file.
 - `.duplicateFile` or `:Duplicate`: Duplicate the current file.
 - `.moveSelectionToNewFile` or `:NewFromSelection`: Prompts for a new file name
-and moves the current selection to that new file. (Note that this is a Visual
-Line Mode command; the selection is moved linewise.)
+  and moves the current selection to that new file. (Note that this is a Visual
+  Line Mode command; the selection is moved linewise.)
 - `.renameFile` or `:Rename`: Rename the current file.
 - `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Keeps the
-old name if the new path ends with `/`. Works like the UNIX `mv` command. Can be
+  old name if the new path ends with `/`. Works like the UNIX `mv` command.
 - `.moveToFolderInCwd` or `:MoveToFolderInCwd`: Move the current file to an
   existing folder in the current working directory. [Can use telescope for the
   selection of the destination.](#use-telescope-for-movetofolderincwd)
 - `.trashFile{trashCmd = "your_cli"}` or `:Trash`: Move the current file
-to the trash location. 
-	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*. 
+to the trash location.
+	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
 	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
 	  `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
 	  intact instead of `vim.cmd.bwipeout`.
 
 > [!NOTE]
-> The trash CLIs are not available by default, and must be installed. 
+> The trash CLIs are not available by default, and must be installed.
 
 The following applies to all commands above:
 - If no extension has been provided, uses the extension of the original file.
 - If the new file name includes a `/`, the new file is placed in the respective
-subdirectory, creating any non-existing folders. Except for
-`.moveAndRenameFile`, all operations take only place in the current working
-directory, so `.moveAndRenameFile` is the only command that can move to a parent
-directory.
-- All commands support [autocompletion of existing directories](#autocompletion-of-directories).
-
-`renameFile` and `moveAndRenameFile` notify any running LSP client about
-the renaming. LSP servers supporting the `workspace/willRenameFiles` method can
-use this information to update various code parts, for example `use` or `import`
-statements.
+subdirectory, creating any non-existing folders.
 
 ### File Utility Commands
 - `.copyFilename` or `:CopyFilename`: Copy the file name. When
@@ -146,8 +135,8 @@ vim.g.genghis_disable_commands = true
 let g:genghis_disable_commands = v:true
 ```
 
-## Autocompletion of directories
-You can get autocompletion for directories by using `dressing.nvim`, `nvim-cmp`,
+## Cookbook
+
 ### Use Telescope for `.moveToFolderInCwd`
 
 ```lua
@@ -158,17 +147,23 @@ require("dressing").setup {
 }
 ```
 
+### Autocompletion of directories for `.moveAndRenameFile`
+You can get autocompletion for directories by `nvim-cmp` and vim's `omnifunc`:
 
 ```lua
 -- packer
-use { "chrisgrieser/nvim-genghis", requires = {
+use { 
+	"chrisgrieser/nvim-genghis", 
+	requires = {
 		"stevearc/dressing.nvim",
 		"hrsh7th/nvim-cmp",
 		"hrsh7th/cmp-omni",
 	},
 }
 -- lazy
-{ "chrisgrieser/nvim-genghis", dependencies = {
+{ 
+	"chrisgrieser/nvim-genghis", 
+	dependencies = {
 		"stevearc/dressing.nvim",
 		"hrsh7th/nvim-cmp",
 		"hrsh7th/cmp-omni",
