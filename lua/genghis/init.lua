@@ -125,6 +125,54 @@ function M.duplicateFile() fileOp("duplicate") end
 function M.createNewFile() fileOp("new") end
 function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
+function M.moveToFolderInCwd()
+	local oldFilePath = vim.api.nvim_buf_get_name(0)
+	local filename = vim.fs.basename(oldFilePath)
+	local cwd = vim.loop.cwd()
+
+	-- determine destinations in cwd
+	local subfoldersOfCwdAbsPath = vim.fs.find(function(name, path)
+		-- TODO improve ignoring of certain folders
+		return not (
+			(path:find("/%.git/") or path:find("/%.git$") or name == ".git")
+			or (path:find("%.app/") or path:find("%.app$")) -- macos pseudo-apps
+			or name == "node_modules"
+		)
+	end, { type = "directory", limit = math.huge })
+	local subfoldersOfCwdRelPath = vim.tbl_map(
+		function(path) return path:sub(#cwd + 2) end,
+		subfoldersOfCwdAbsPath
+	)
+
+	-- prompt user and move
+	local promptStr = "Destination Folder "
+	if mv.lspSupportsRenaming() then promptStr = promptStr .. "& Update Imports" end
+	vim.ui.select(subfoldersOfCwdRelPath, {
+		prompt = promptStr,
+		kind = "genghis.moveToFolderInCwd",
+	}, function(destination)
+		if not destination then return end
+		local newFilePath = cwd .. "/" .. destination .. "/" .. filename
+
+		-- GUARD conflict
+		if u.fileExists(newFilePath) then
+			u.notify(
+				("File with name %q already exists at %q."):format(filename, destination),
+				"error"
+			)
+			return
+		end
+
+		mv.sendWillRenameToLsp(oldFilePath, newFilePath)
+		local success = mv.moveFile(oldFilePath, newFilePath)
+		if success then
+			cmd.edit(newFilePath)
+			u.bwipeout("#")
+			u.notify(("Moved to %q."):format(destination))
+		end
+	end)
+end
+
 --------------------------------------------------------------------------------
 
 ---copying file information
@@ -176,7 +224,7 @@ function M.trashFile(opts)
 	if fn.has("linux") == 1 then system = "linux" end
 	if fn.has("win32") == 1 then system = "windows" end
 	local trashCmd = opts.trashCmd or defaultTrashCmds[system]
-	
+
 	-- Use a trash command
 	local trashArgs = vim.split(trashCmd, " ")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)

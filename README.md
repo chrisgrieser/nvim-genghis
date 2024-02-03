@@ -14,7 +14,9 @@ Lightweight and quick file operations without being a full-blown file manager.
 	* [File Operation Command](#file-operation-command)
 	* [File Utility Commands](#file-utility-commands)
 	* [Disable Ex-Commands](#disable-ex-commands)
-- [Autocompletion of directories](#autocompletion-of-directories)
+- [Cookbook](#cookbook)
+	* [Use Telescope for `.moveToFolderInCwd`](#use-telescope-for-movetofolderincwd)
+	* [Autocompletion of directories for `.moveAndRenameFile`](#autocompletion-of-directories-for-moveandrenamefile)
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
 - [Why that name](#why-that-name)
 - [About me](#about-me)
@@ -55,6 +57,7 @@ keymap("n", "<leader>yn", genghis.copyFilename)
 keymap("n", "<leader>cx", genghis.chmodx)
 keymap("n", "<leader>rf", genghis.renameFile)
 keymap("n", "<leader>mf", genghis.moveAndRenameFile)
+keymap("n", "<leader>mc", genghis.moveToFolderInCwd)
 keymap("n", "<leader>nf", genghis.createNewFile)
 keymap("n", "<leader>yf", genghis.duplicateFile)
 keymap("n", "<leader>df", genghis.trashFile)
@@ -72,7 +75,9 @@ Line Mode command; the selection is moved linewise.)
 - `.renameFile` or `:Rename`: Rename the current file.
 - `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Keeps the
 old name if the new path ends with `/`. Works like the UNIX `mv` command. Can be
-used with [autocompletion of directories](#autocompletion-of-directories).
+- `.moveToFolderInCwd` or `:MoveToFolderInCwd`: Move the current file to an
+  existing folder in the current working directory. [Can use telescope for the
+  selection of the destination.](#use-telescope-for-movetofolderincwd)
 - `.trashFile{trashCmd = "your_cli"}` or `:Trash`: Move the current file
 to the trash location. 
 	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*. 
@@ -143,7 +148,16 @@ let g:genghis_disable_commands = v:true
 
 ## Autocompletion of directories
 You can get autocompletion for directories by using `dressing.nvim`, `nvim-cmp`,
-and vim's `omnifunc`:
+### Use Telescope for `.moveToFolderInCwd`
+
+```lua
+require("dressing").setup {
+	select = {
+		backend = { "telescope" },
+	},
+}
+```
+
 
 ```lua
 -- packer
