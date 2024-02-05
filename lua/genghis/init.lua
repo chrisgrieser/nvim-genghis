@@ -128,10 +128,11 @@ function M.moveToFolderInCwd()
 
 	-- determine destinations in cwd
 	local subfoldersOfCwd = vim.fs.find(function(name, path)
-		local ignoreDirs = (path:find("/%.git/") or path:find("/%.git$") or name == ".git")
-			or (path:find("%.app/") or path:find("%.app$")) -- macos pseudo-apps
-			or (name == "node_modules" or path:find("node_modules/"))
-			or (name == ".venv" or path:find("%.venv/"))
+		local fullPath = path .. "/" .. name .. "/"
+		local ignoreDirs = fullPath:find("/%.git/")
+			or fullPath:find("%.app/") -- macos pseudo-apps
+			or fullPath:find("/node_modules/")
+			or fullPath:find("/%.venv/")
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
 
