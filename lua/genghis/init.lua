@@ -124,19 +124,20 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 function M.moveToFolderInCwd()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local filename = vim.fs.basename(oldFilePath)
+	local supportsImportUpdates = mv.lspSupportsRenaming()
 
 	-- determine destinations in cwd
 	local subfoldersOfCwd = vim.fs.find(function(name, path)
 		local ignoreDirs = (path:find("/%.git/") or path:find("/%.git$") or name == ".git")
 			or (path:find("%.app/") or path:find("%.app$")) -- macos pseudo-apps
-			or name == "node_modules"
-			or name == ".venv"
+			or (name == "node_modules" or path:find("node_modules/"))
+			or (name == ".venv" or path:find("%.venv/"))
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
 
 	-- prompt user and move
-	local promptStr = "Destination Folder "
-	if mv.lspSupportsRenaming() then promptStr = promptStr .. "& Update Imports" end
+	local promptStr = "Choose Destination Folder"
+	if supportsImportUpdates then promptStr = promptStr .. " (with updated imports)" end
 	vim.ui.select(subfoldersOfCwd, {
 		prompt = promptStr,
 		kind = "genghis.moveToFolderInCwd",
@@ -156,7 +157,9 @@ function M.moveToFolderInCwd()
 		if success then
 			cmd.edit(newFilePath)
 			u.bwipeout("#")
-			u.notify(("Moved %q to %q."):format(filename, destination))
+			local msg = ("Moved %q to %q."):format(filename, destination)
+			if supportsImportUpdates then msg = msg .. " and updated imports." end
+			u.notify(msg)
 		end
 	end)
 end
