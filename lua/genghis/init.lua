@@ -123,6 +123,7 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
 function M.moveToFolderInCwd()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
+	local currentFolderOfFile = vim.fs.dirname(oldFilePath) .. "/"
 	local filename = vim.fs.basename(oldFilePath)
 	local supportsImportUpdates = mv.lspSupportsRenaming()
 
@@ -130,9 +131,10 @@ function M.moveToFolderInCwd()
 	local subfoldersOfCwd = vim.fs.find(function(name, path)
 		local fullPath = path .. "/" .. name .. "/"
 		local ignoreDirs = fullPath:find("/%.git/")
-			or fullPath:find("%.app/") -- macos pseudo-apps
+			or fullPath:find("%.app/") -- macos pseudo-folders
 			or fullPath:find("/node_modules/")
 			or fullPath:find("/%.venv/")
+			or fullPath == currentFolderOfFile
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
 
