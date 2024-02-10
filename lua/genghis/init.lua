@@ -138,6 +138,13 @@ function M.moveToFolderInCwd()
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
 
+	-- sort by modification time
+	table.sort(subfoldersOfCwd, function(a, b)
+		local aMtime = vim.loop.fs_stat(a).mtime.sec
+		local bMtime = vim.loop.fs_stat(b).mtime.sec
+		return aMtime > bMtime
+	end)
+
 	-- prompt user and move
 	local promptStr = "Choose Destination Folder"
 	if supportsImportUpdates then promptStr = promptStr .. " (with updated imports)" end
