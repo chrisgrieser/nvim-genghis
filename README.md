@@ -92,25 +92,21 @@ The following applies to all commands above:
 subdirectory, creating any non-existing folders.
 
 ### File Utility Commands
-- `.copyFilename` or `:CopyFilename`: Copy the file name. When
-`clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise
-to `"`.
-- `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. When
-`clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise
-to `"`.
-- `.copyRelativePath` or `:CopyRelativePath`: Copy the relative file path. When
-`clipboard="unnamed[plus]"` has been set, copies to the `+` register, otherwise
-to `"`.
+- `.copyFilename` or `:CopyFilename`: Copy the file name.
+- `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. 
+- `.copyFilepathWithTilde` or `:CopyFilepathWithTilde`: Copy the absolute file
+  path, replacing the home directory with `~`.
+- `.copyRelativePath` or `:CopyRelativePath`: Copy the relative file path. 
 - `.copyDirectoryPath` or `:CopyDirectoryPath`: Copy the absolute directory
-path. When `clipboard="unnamed[plus]"` has been set, copies to the `+` register,
-otherwise to `"`.
+path. 
 - `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`: Copy the
-relative directory path. When `clipboard="unnamed[plus]"` has been set, copies
-to the `+` register, otherwise to `"`.
+relative directory path. 
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
 +x`.
 
-To always use system clipboard put this in your configuration file:
+When `clipboard="unnamed[plus]"` has been set, copies to the `+` register,
+otherwise to `"`. To always use system clipboard, put this in your configuration
+file:
 
 ```lua
 -- lua
