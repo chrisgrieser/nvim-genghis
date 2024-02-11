@@ -122,37 +122,39 @@ function M.createNewFile() fileOp("new") end
 function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
 function M.moveToFolderInCwd()
-	local oldFilePath = vim.api.nvim_buf_get_name(0)
-	local currentFolderOfFile = vim.fs.dirname(oldFilePath) .. "/"
-	local filename = vim.fs.basename(oldFilePath)
+	local curFilePath = vim.api.nvim_buf_get_name(0)
+	local parentOfCurFile = vim.fs.dirname(curFilePath) .. "/"
+	local filename = vim.fs.basename(curFilePath)
 	local supportsImportUpdates = mv.lspSupportsRenaming()
+	local cwd = vim.loop.cwd() .. "/"
 
 	-- determine destinations in cwd
-	local subfoldersOfCwd = vim.fs.find(function(name, path)
+	local foldersInCwd = vim.fs.find(function(name, path)
 		local fullPath = path .. "/" .. name .. "/"
 		local ignoreDirs = fullPath:find("/%.git/")
 			or fullPath:find("%.app/") -- macos pseudo-folders
 			or fullPath:find("/node_modules/")
 			or fullPath:find("/%.venv/")
-			or fullPath == currentFolderOfFile
+			or fullPath == parentOfCurFile
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
-	table.insert(subfoldersOfCwd, vim.loop.cwd() .. "/") 
 
 	-- sort by modification time
-	table.sort(subfoldersOfCwd, function(a, b)
+	table.sort(foldersInCwd, function(a, b)
 		local aMtime = vim.loop.fs_stat(a).mtime.sec
 		local bMtime = vim.loop.fs_stat(b).mtime.sec
 		return aMtime > bMtime
 	end)
+	-- insert cwd at bottom, since modification of is likely due to subfolders
+	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
 	-- prompt user and move
 	local promptStr = "Choose Destination Folder"
 	if supportsImportUpdates then promptStr = promptStr .. " (with updated imports)" end
-	vim.ui.select(subfoldersOfCwd, {
+	vim.ui.select(foldersInCwd, {
 		prompt = promptStr,
 		kind = "genghis.moveToFolderInCwd",
-		format_item = function(path) return path:sub(#vim.loop.cwd() + 1) end, -- only relative path
+		format_item = function(path) return path:sub(#cwd) end, -- only relative path
 	}, function(destination)
 		if not destination then return end
 		local newFilePath = destination .. "/" .. filename
@@ -163,8 +165,8 @@ function M.moveToFolderInCwd()
 			return
 		end
 
-		mv.sendWillRenameToLsp(oldFilePath, newFilePath)
-		local success = mv.moveFile(oldFilePath, newFilePath)
+		mv.sendWillRenameToLsp(curFilePath, newFilePath)
+		local success = mv.moveFile(curFilePath, newFilePath)
 		if success then
 			cmd.edit(newFilePath)
 			u.bwipeout("#")
