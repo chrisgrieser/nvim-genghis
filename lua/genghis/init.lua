@@ -137,6 +137,7 @@ function M.moveToFolderInCwd()
 			or fullPath == currentFolderOfFile
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
+	table.insert(subfoldersOfCwd, vim.loop.cwd() .. "/") 
 
 	-- sort by modification time
 	table.sort(subfoldersOfCwd, function(a, b)
@@ -151,7 +152,7 @@ function M.moveToFolderInCwd()
 	vim.ui.select(subfoldersOfCwd, {
 		prompt = promptStr,
 		kind = "genghis.moveToFolderInCwd",
-		format_item = function(path) return path:sub(#vim.loop.cwd() + 2) end, -- only relative path
+		format_item = function(path) return path:sub(#vim.loop.cwd() + 1) end, -- only relative path
 	}, function(destination)
 		if not destination then return end
 		local newFilePath = destination .. "/" .. filename
