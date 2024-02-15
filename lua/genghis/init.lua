@@ -172,7 +172,7 @@ function M.moveToFolderInCwd()
 			u.bwipeout("#")
 			local msg = ("Moved %q to %q"):format(filename, destination)
 			local append = supportsImportUpdates and " and updated imports." or "."
-			u.notify(msg + append)
+			u.notify(msg .. append)
 		end
 	end)
 end
