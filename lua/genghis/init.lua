@@ -6,6 +6,8 @@ local cmd = vim.cmd
 local mv = require("genghis.file-movement")
 local u = require("genghis.utils")
 
+local osPathSep = package.config:sub(1, 1)
+
 --------------------------------------------------------------------------------
 
 ---Performing common file operation tasks
@@ -35,7 +37,7 @@ local function fileOp(op)
 	elseif op == "move-rename" then
 		promptStr = mv.lspSupportsRenaming() and "Move-Rename File & Update Imports:"
 			or "Move & Rename File to:"
-		prefill = dir .. "/"
+		prefill = dir .. osPathSep
 	elseif op == "new" or op == "newFromSel" then
 		promptStr = "Name for New File: "
 		prefill = ""
@@ -73,7 +75,7 @@ local function fileOp(op)
 		end
 
 		-- DETERMINE PATH AND EXTENSION
-		local hasPath = newName:find("/")
+		local hasPath = newName:find(osPathSep)
 		if hasPath then
 			local newFolder = vim.fs.dirname(newName)
 			fn.mkdir(newFolder, "p") -- create folders if necessary
@@ -81,7 +83,7 @@ local function fileOp(op)
 
 		local extProvided = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
 		if not extProvided then newName = newName .. oldExt end
-		local newFilePath = (op == "move-rename") and newName or dir .. "/" .. newName
+		local newFilePath = (op == "move-rename") and newName or dir .. osPathSep .. newName
 
 		if u.fileExists(newFilePath) then
 			u.notify(("File with name %q already exists."):format(newFilePath), "error")
@@ -123,14 +125,14 @@ function M.moveSelectionToNewFile() fileOp("newFromSel") end
 
 function M.moveToFolderInCwd()
 	local curFilePath = vim.api.nvim_buf_get_name(0)
-	local parentOfCurFile = vim.fs.dirname(curFilePath) .. "/"
+	local parentOfCurFile = vim.fs.dirname(curFilePath) .. osPathSep
 	local filename = vim.fs.basename(curFilePath)
 	local supportsImportUpdates = mv.lspSupportsRenaming()
-	local cwd = vim.loop.cwd() .. "/"
+	local cwd = vim.loop.cwd() .. osPathSep
 
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
-		local fullPath = path .. "/" .. name .. "/"
+		local fullPath = path .. osPathSep .. name .. osPathSep
 		local ignoreDirs = fullPath:find("/%.git/")
 			or fullPath:find("%.app/") -- macos pseudo-folders
 			or fullPath:find("/node_modules/")
@@ -157,7 +159,7 @@ function M.moveToFolderInCwd()
 		format_item = function(path) return path:sub(#cwd) end, -- only relative path
 	}, function(destination)
 		if not destination then return end
-		local newFilePath = destination .. "/" .. filename
+		local newFilePath = destination .. osPathSep .. filename
 
 		-- GUARD
 		if u.fileExists(newFilePath) then
