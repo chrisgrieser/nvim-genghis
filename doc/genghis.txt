@@ -1,4 +1,4 @@
-*genghis.txt*           For NVIM v0.8.0          Last change: 2024 February 16
+*genghis.txt*           For NVIM v0.8.0          Last change: 2024 February 19
 
 ==============================================================================
 Table of Contents                                  *genghis-table-of-contents*
@@ -22,8 +22,9 @@ Lightweightand quick file operations without being a full-blown file manager.
 - |genghis-features|
 - |genghis-installation-and-setup|
 - |genghis-available-commands|
-    - |genghis-file-operation-command|
-    - |genghis-file-utility-commands|
+    - |genghis-file-operation-commands|
+    - |genghis-utility-commands|
+    - |genghis-path-copying-commands|
     - |genghis-disable-ex-commands|
 - |genghis-cookbook|
     - |genghis-use-telescope-for-`.movetofolderincwd`|
@@ -43,7 +44,8 @@ FEATURES                                      *genghis-nvim-genghis--features*
 - Lightweight: no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
     when no extension is given.
-- Fully written in lua and makes use of up-to-date nvim features `vim.ui.input`.
+- Fully written in lua and makes use of up-to-date nvim features like
+    `vim.ui.input`.
 
 
 INSTALLATION AND SETUP          *genghis-nvim-genghis--installation-and-setup*
@@ -78,7 +80,7 @@ create keybindings for the commands you want to use:
 AVAILABLE COMMANDS                  *genghis-nvim-genghis--available-commands*
 
 
-FILE OPERATION COMMAND ~
+FILE OPERATION COMMANDS ~
 
 - `.createNewFile` or `:New`Create a new file.
 - `.duplicateFile` or `:Duplicate`Duplicate the current file.
@@ -90,6 +92,18 @@ FILE OPERATION COMMAND ~
     old name if the new path ends with `/`. Works like the UNIX `mv` command.
 - `.moveToFolderInCwd` or `:MoveToFolderInCwd`Move the current file to an
     existing folder in the current working directory. |genghis-can-use-telescope-for-the-selection-of-the-destination.|
+
+The following applies to all commands above: 1. If no extension has been
+provided, uses the extension of the original file. 2. If the new file name
+includes a `/`, the new file is placed in the respective subdirectory, creating
+any non-existing folders. 3. All movement and renaming commands update `import`
+statements to the renamed file (if the LSP supports
+`workspace/willRenameFiles`).
+
+
+UTILITY COMMANDS ~
+
+- `.chmodx` or `:Chmodx`Makes current file executable. Equivalent to `chmod   +x`.
 - `.trashFile{trashCmd = "your_cli"}` or `:Trash`Move the current file
     to the trash location.
     - Defaults to `gio trash` on _Linux_, `trash` on _Mac_ and _Windows_.
@@ -99,13 +113,8 @@ FILE OPERATION COMMAND ~
 
 
   [!NOTE] The trash CLIs are not available by default, and must be installed.
-The following applies to all commands above: - If no extension has been
-provided, uses the extension of the original file. - If the new file name
-includes a `/`, the new file is placed in the respective subdirectory, creating
-any non-existing folders.
 
-
-FILE UTILITY COMMANDS ~
+PATH COPYING COMMANDS ~
 
 - `.copyFilename` or `:CopyFilename`Copy the file name.
 - `.copyFilepath` or `:CopyFilepath`Copy the absolute file path.
@@ -116,35 +125,20 @@ FILE UTILITY COMMANDS ~
     path.
 - `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`Copy the
     relative directory path.
-- `.chmodx` or `:Chmodx`Makes current file executable. Equivalent to `chmod +x`.
 
 When `clipboard="unnamed[plus]"` has been set, copies to the `+` register,
 otherwise to `"`. To always use system clipboard, put this in your
 configuration file:
 
 >lua
-    -- lua
     vim.g.genghis_use_systemclipboard = true
-<
-
->vim
-    -- viml
-    let g:genghis_use_systemclipboard = v:true
 <
 
 
 DISABLE EX-COMMANDS ~
 
-Put this in your configuration file:
-
 >lua
-    -- lua
     vim.g.genghis_disable_commands = true
-<
-
->vim
-    -- viml
-    let g:genghis_disable_commands = v:true
 <
 
 
