@@ -11,8 +11,9 @@ Lightweight and quick file operations without being a full-blown file manager.
 - [Features](#features)
 - [Installation and Setup](#installation-and-setup)
 - [Available Commands](#available-commands)
-	* [File Operation Command](#file-operation-command)
-	* [File Utility Commands](#file-utility-commands)
+	* [File Operation Commands](#file-operation-commands)
+	* [Utility Commands](#utility-commands)
+	* [Path Copying Commands](#path-copying-commands)
 	* [Disable Ex-Commands](#disable-ex-commands)
 - [Cookbook](#cookbook)
 	* [Use Telescope for `.moveToFolderInCwd`](#use-telescope-for-movetofolderincwd)
@@ -25,14 +26,15 @@ Lightweight and quick file operations without being a full-blown file manager.
 
 ## Features
 - Commands for moving, renaming, creating, deleting, or, duplicating files and
-more.
+  more.
 - Commands for copying the path or name of the current file in various formats.
 - All movement and renaming commands update `import` statements to the renamed
   file (if the LSP supports `workspace/willRenameFiles`).
 - Lightweight: no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
-when no extension is given.
-- Fully written in lua and makes use of up-to-date nvim features `vim.ui.input`.
+  when no extension is given.
+- Fully written in lua and makes use of up-to-date nvim features like
+  `vim.ui.input`.
 
 ## Installation and Setup
 
@@ -64,7 +66,7 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 
 ## Available Commands
 
-### File Operation Command
+### File Operation Commands
 - `.createNewFile` or `:New`: Create a new file.
 - `.duplicateFile` or `:Duplicate`: Duplicate the current file.
 - `.moveSelectionToNewFile` or `:NewFromSelection`: Prompts for a new file name
@@ -76,6 +78,17 @@ keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
 - `.moveToFolderInCwd` or `:MoveToFolderInCwd`: Move the current file to an
   existing folder in the current working directory. [Can use telescope for the
   selection of the destination.](#use-telescope-for-movetofolderincwd)
+
+The following applies to all commands above:  
+1. If no extension has been provided, uses the extension of the original file.
+2. If the new file name includes a `/`, the new file is placed in the
+   respective subdirectory, creating any non-existing folders.
+3. All movement and renaming commands update `import` statements to the renamed
+   file (if the LSP supports `workspace/willRenameFiles`).
+
+### Utility Commands
+- `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
+  +x`.
 - `.trashFile{trashCmd = "your_cli"}` or `:Trash`: Move the current file
 to the trash location.
 	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
@@ -86,49 +99,29 @@ to the trash location.
 > [!NOTE]
 > The trash CLIs are not available by default, and must be installed.
 
-The following applies to all commands above:
-- If no extension has been provided, uses the extension of the original file.
-- If the new file name includes a `/`, the new file is placed in the respective
-subdirectory, creating any non-existing folders.
-
-### File Utility Commands
+### Path Copying Commands
 - `.copyFilename` or `:CopyFilename`: Copy the file name.
-- `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path. 
+- `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path.
 - `.copyFilepathWithTilde` or `:CopyFilepathWithTilde`: Copy the absolute file
   path, replacing the home directory with `~`.
-- `.copyRelativePath` or `:CopyRelativePath`: Copy the relative file path. 
+- `.copyRelativePath` or `:CopyRelativePath`: Copy the relative file path.
 - `.copyDirectoryPath` or `:CopyDirectoryPath`: Copy the absolute directory
-path. 
+  path.
 - `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`: Copy the
-relative directory path. 
-- `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
-+x`.
+  relative directory path.
 
 When `clipboard="unnamed[plus]"` has been set, copies to the `+` register,
 otherwise to `"`. To always use system clipboard, put this in your configuration
 file:
 
 ```lua
--- lua
 vim.g.genghis_use_systemclipboard = true
 ```
 
-```vim
--- viml
-let g:genghis_use_systemclipboard = v:true
-```
-
 ### Disable Ex-Commands
-Put this in your configuration file:
 
 ```lua
--- lua
 vim.g.genghis_disable_commands = true
-```
-
-```vim
--- viml
-let g:genghis_disable_commands = v:true
 ```
 
 ## Cookbook
