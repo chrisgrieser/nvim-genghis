@@ -137,6 +137,7 @@ function M.moveToFolderInCwd()
 			or fullPath:find("%.app/") -- macos pseudo-folders
 			or fullPath:find("/node_modules/")
 			or fullPath:find("/%.venv/")
+			or fullPath:find("/%.") -- hidden folders
 			or fullPath == parentOfCurFile
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
