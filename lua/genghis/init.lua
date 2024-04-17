@@ -19,6 +19,7 @@ local function fileOp(op)
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
 	local oldExt = fn.expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
+	local lspSupportsRenaming = mv.lspSupportsRenaming()
 
 	local prevReg
 	if op == "newFromSel" then
@@ -32,10 +33,10 @@ local function fileOp(op)
 		promptStr = "Duplicate File as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = mv.lspSupportsRenaming() and "Rename File & Update Imports:" or "Rename File to:"
+		promptStr = lspSupportsRenaming and "Rename File & Update Imports:" or "Rename File to:"
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = mv.lspSupportsRenaming() and "Move-Rename File & Update Imports:"
+		promptStr = lspSupportsRenaming and "Move-Rename File & Update Imports:"
 			or "Move & Rename File to:"
 		prefill = dir .. osPathSep
 	elseif op == "new" or op == "newFromSel" then
@@ -105,6 +106,7 @@ local function fileOp(op)
 				cmd.edit(newFilePath)
 				u.bwipeout("#")
 				u.notify(("Renamed %q to %q."):format(oldName, newName))
+				if lspSupportsRenaming then vim.cmd.wall() end
 			end
 		elseif op == "new" or op == "newFromSel" then
 			cmd.edit(newFilePath)
@@ -127,7 +129,7 @@ function M.moveToFolderInCwd()
 	local curFilePath = vim.api.nvim_buf_get_name(0)
 	local parentOfCurFile = vim.fs.dirname(curFilePath) .. osPathSep
 	local filename = vim.fs.basename(curFilePath)
-	local supportsImportUpdates = mv.lspSupportsRenaming()
+	local lspSupportsRenaming = mv.lspSupportsRenaming()
 	local cwd = vim.loop.cwd() .. osPathSep
 
 	-- determine destinations in cwd
@@ -153,7 +155,7 @@ function M.moveToFolderInCwd()
 
 	-- prompt user and move
 	local promptStr = "Choose Destination Folder"
-	if supportsImportUpdates then promptStr = promptStr .. " (with updated imports)" end
+	if lspSupportsRenaming then promptStr = promptStr .. " (with updated imports)" end
 	vim.ui.select(foldersInCwd, {
 		prompt = promptStr,
 		kind = "genghis.moveToFolderInCwd",
@@ -174,7 +176,7 @@ function M.moveToFolderInCwd()
 			cmd.edit(newFilePath)
 			u.bwipeout("#")
 			local msg = ("Moved %q to %q"):format(filename, destination)
-			local append = supportsImportUpdates and " and updated imports." or "."
+			local append = lspSupportsRenaming and " and updated imports." or "."
 			u.notify(msg .. append)
 		end
 	end)
