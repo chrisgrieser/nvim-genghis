@@ -178,6 +178,7 @@ function M.moveToFolderInCwd()
 			local msg = ("Moved %q to %q"):format(filename, destination)
 			local append = lspSupportsRenaming and " and updated imports." or "."
 			u.notify(msg .. append)
+			if lspSupportsRenaming then vim.cmd.wall() end
 		end
 	end)
 end
