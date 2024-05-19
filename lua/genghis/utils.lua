@@ -3,7 +3,7 @@ local M = {}
 
 ---@param bufnr? number|"#"|"$"
 function M.bwipeout(bufnr)
-	bufnr = bufnr and vim.fn.bufnr(bufnr) or 0 ---@diagnostic disable-line: param-type-mismatch
+	bufnr = bufnr and vim.fn.bufnr(bufnr) or 0 
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
@@ -20,6 +20,7 @@ function M.notify(msg, level)
 	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-genghis" })
 end
 
+---@nodiscard
 ---@param filepath string
 ---@return boolean
 function M.fileExists(filepath) return vim.loop.fs_stat(filepath) ~= nil end
