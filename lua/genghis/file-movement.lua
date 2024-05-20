@@ -36,12 +36,12 @@ end
 ---@param oldFilePath string
 ---@param newFilePath string
 function M.moveFile(oldFilePath, newFilePath)
-	local renamed, _ = vim.loop.fs_rename(oldFilePath, newFilePath)
+	local renamed, _ = vim.uv.fs_rename(oldFilePath, newFilePath)
 	if renamed then return true end
 	---try `fs_copyfile` to support moving across partitions
-	local copied, copiedError = vim.loop.fs_copyfile(oldFilePath, newFilePath)
+	local copied, copiedError = vim.uv.fs_copyfile(oldFilePath, newFilePath)
 	if copied then
-		local deleted, deletedError = vim.loop.fs_unlink(oldFilePath)
+		local deleted, deletedError = vim.uv.fs_unlink(oldFilePath)
 		if deleted then
 			return true
 		else

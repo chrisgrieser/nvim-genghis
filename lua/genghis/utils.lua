@@ -23,7 +23,7 @@ end
 ---@nodiscard
 ---@param filepath string
 ---@return boolean
-function M.fileExists(filepath) return vim.loop.fs_stat(filepath) ~= nil end
+function M.fileExists(filepath) return vim.uv.fs_stat(filepath) ~= nil end
 
 --------------------------------------------------------------------------------
 return M

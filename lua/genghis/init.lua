@@ -99,7 +99,7 @@ local function fileOp(op)
 		-- EXECUTE FILE OPERATION
 		cmd.update()
 		if op == "duplicate" then
-			local success = vim.loop.fs_copyfile(oldFilePath, newFilePath)
+			local success = vim.uv.fs_copyfile(oldFilePath, newFilePath)
 			if success then
 				cmd.edit(newFilePath)
 				u.notify(("Duplicated %q as %q."):format(oldName, newName))
@@ -135,7 +135,7 @@ function M.moveToFolderInCwd()
 	local parentOfCurFile = vim.fs.dirname(curFilePath) .. osPathSep
 	local filename = vim.fs.basename(curFilePath)
 	local lspSupportsRenaming = mv.lspSupportsRenaming()
-	local cwd = vim.loop.cwd() .. osPathSep
+	local cwd = vim.uv.cwd() .. osPathSep
 
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
@@ -152,8 +152,8 @@ function M.moveToFolderInCwd()
 
 	-- sort by modification time
 	table.sort(foldersInCwd, function(a, b)
-		local aMtime = vim.loop.fs_stat(a).mtime.sec
-		local bMtime = vim.loop.fs_stat(b).mtime.sec
+		local aMtime = vim.uv.fs_stat(a).mtime.sec
+		local bMtime = vim.uv.fs_stat(b).mtime.sec
 		return aMtime > bMtime
 	end)
 	-- insert cwd at bottom, since modification of is likely due to subfolders
@@ -237,7 +237,6 @@ function M.trashFile(opts)
 	local trashCmd = userCmd or defaultCmd
 	assert(defaultCmd, "Unknown operating system & no custom trashCmd provided.")
 
-	-- Use a trash command
 	local trashArgs = vim.split(trashCmd, " ")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	table.insert(trashArgs, oldFilePath)
