@@ -1,13 +1,18 @@
-local M = {}
+local version = vim.version()
+if version.major == 0 and version.minor < 10 then
+	vim.notify("nvim-genghis requires at least nvim 0.10.", vim.log.levels.WARN)
+	return
+end
 
-local fn = vim.fn
-local cmd = vim.cmd
+--------------------------------------------------------------------------------
+local M = {}
 
 local mv = require("genghis.file-movement")
 local u = require("genghis.utils")
 
+local fn = vim.fn
+local cmd = vim.cmd
 local osPathSep = package.config:sub(1, 1)
-
 --------------------------------------------------------------------------------
 
 ---Performing common file operation tasks
