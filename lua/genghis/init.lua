@@ -242,16 +242,15 @@ function M.trashFile(opts)
 	table.insert(trashArgs, oldFilePath)
 
 	cmd("silent! update")
-	vim.system(trashArgs, { detach = true }, function(out)
-		local oldName = vim.fs.basename(oldFilePath)
-		if out.code == 0 then
-			u.bwipeout()
-			u.notify(("%q deleted"):format(oldName))
-		else
-			local outmsg = out.stdout .. out.stderr
-			u.notify(("Trashing %q failed: " .. outmsg):format(oldName), "error")
-		end
-	end)
+	local oldName = vim.fs.basename(oldFilePath)
+	local result = vim.system(trashArgs):wait()
+	if result.code == 0 then
+		u.bwipeout()
+		u.notify(("%q deleted"):format(oldName))
+	else
+		local outmsg = (result.stdout or "") .. (result.stderr or "")
+		u.notify(("Trashing %q failed: " .. outmsg):format(oldName), "error")
+	end
 end
 
 --------------------------------------------------------------------------------
