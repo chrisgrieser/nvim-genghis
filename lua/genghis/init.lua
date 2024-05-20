@@ -222,42 +222,32 @@ function M.chmodx()
 	cmd.edit()
 end
 
----@param opts? { trashCmd: string}
+---@param opts? { trashCmd: string }
 function M.trashFile(opts)
-	if opts == nil then opts = {} end
-	local defaultTrashCmds = {
-		macos = "trash", -- not installed by default
-		windows = "trash", -- not installed by default
-		linux = "gio trash",
-	}
-
-	cmd("silent! update")
-
-	local system
-	if fn.has("mac") == 1 then system = "macos" end
-	if fn.has("linux") == 1 then system = "linux" end
-	if fn.has("win32") == 1 then system = "windows" end
-	local trashCmd = opts.trashCmd or defaultTrashCmds[system]
+	local userCmd = opts and opts.trashCmd
+	local defaultCmd
+	if fn.has("mac") == 1 then defaultCmd = "trash" end
+	if fn.has("linux") == 1 then defaultCmd = "trash" end
+	if fn.has("win32") == 1 then defaultCmd = "gio trash" end
+	local trashCmd = userCmd or defaultCmd
+	assert(defaultCmd, "Unknown operating system & no custom trashCmd provided.")
 
 	-- Use a trash command
 	local trashArgs = vim.split(trashCmd, " ")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	table.insert(trashArgs, oldFilePath)
 
-	local errMsg = ""
-	vim.fn.jobstart(trashArgs, {
-		detach = true,
-		on_stderr = function(_, data) errMsg = errMsg .. (data and table.concat(data, " ")) end,
-		on_exit = function(_, rc)
-			local oldName = vim.fs.basename(oldFilePath)
-			if rc == 0 then
-				u.bwipeout()
-				u.notify(("%q deleted"):format(oldName))
-			else
-				u.notify(("Trashing %q failed: " .. errMsg):format(oldName), "error")
-			end
-		end,
-	})
+	cmd("silent! update")
+	vim.system(trashArgs, { detach = true }, function(out)
+		local oldName = vim.fs.basename(oldFilePath)
+		if out.code == 0 then
+			u.bwipeout()
+			u.notify(("%q deleted"):format(oldName))
+		else
+			local outmsg = out.stdout .. out.stderr
+			u.notify(("Trashing %q failed: " .. outmsg):format(oldName), "error")
+		end
+	end)
 end
 
 --------------------------------------------------------------------------------
