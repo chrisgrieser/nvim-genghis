@@ -4,7 +4,7 @@ local u = require("genghis.utils")
 --------------------------------------------------------------------------------
 
 ---Requests a 'workspace/willRenameFiles' on any running LSP client, that supports it
----SOURCE https://github.com/LazyVim/LazyVim/blob/fecc5faca25c209ed62e3658dd63731e26c0c643/lua/lazyvim/util/init.lua#L304
+---SOURCE https://github.com/LazyVim/LazyVim/blob/ac092289f506052cfdd1879f462be05075fe3081/lua/lazyvim/util/lsp.lua#L99-L119
 ---@param fromName string
 ---@param toName string
 function M.sendWillRenameToLsp(fromName, toName)
@@ -26,9 +26,14 @@ end
 ---@nodiscard
 ---@return boolean
 function M.lspSupportsRenaming()
+	-- INFO `client.supports_method()` seems often falsely returning true. This
+	-- does not affect `onRename`, but here we need to check for the server
+	-- capabilities to properly identify whether our LSP supports renaming or not.
 	local clients = vim.lsp.get_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
-		if client.supports_method("workspace/willRenameFiles") then return true end
+		local workspaceCap = client.server_capabilities.workspace
+		local supports = workspaceCap and workspaceCap.fileOperations and workspaceCap.fileOperations.willRename
+		if supports then return true end
 	end
 	return false
 end
