@@ -230,12 +230,13 @@ end
 ---@param opts? { trashCmd: string }
 function M.trashFile(opts)
 	local userCmd = opts and opts.trashCmd
+	local system = vim.uv.os_uname().sysname:lower()
 	local defaultCmd
-	if fn.has("mac") == 1 then defaultCmd = "trash" end
-	if fn.has("linux") == 1 then defaultCmd = "trash" end
-	if fn.has("win32") == 1 then defaultCmd = "gio trash" end
+	if system == "darwin" then defaultCmd = "trash" end
+	if system:find("windows") then defaultCmd = "trash" end
+	if system:find("linux") then defaultCmd = "gio trash" end
 	local trashCmd = userCmd or defaultCmd
-	assert(defaultCmd, "Unknown operating system & no custom trashCmd provided.")
+	assert(defaultCmd, "Unknown operating system. Please provide a custom trashCmd.")
 
 	local trashArgs = vim.split(trashCmd, " ")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
