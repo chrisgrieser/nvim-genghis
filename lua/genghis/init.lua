@@ -194,14 +194,9 @@ end
 ---copying file information
 ---@param expandOperation string
 local function copyOp(expandOperation)
-	local reg = '"'
-	local clipboardOpt = vim.opt.clipboard:get()
-	local useSystemClipb = vim.g.genghis_use_systemclipboard
-		or (#clipboardOpt > 0 and clipboardOpt[1]:find("unnamed"))
-	if useSystemClipb then reg = "+" end
-
+	local register = "+"
 	local toCopy = fn.expand(expandOperation)
-	fn.setreg(reg, toCopy)
+	fn.setreg(register, toCopy)
 	vim.notify(toCopy, vim.log.levels.INFO, { title = "Copied" })
 end
 

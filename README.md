@@ -105,13 +105,7 @@ to the trash location.
 - `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`: Copy the
   relative directory path.
 
-When `clipboard="unnamed[plus]"` has been set, copies to the `+` register,
-otherwise to `"`. To always use system clipboard, put this in your configuration
-file:
-
-```lua
-vim.g.genghis_use_systemclipboard = true
-```
+All commands use the system clipboard.
 
 ### Disable Ex-Commands
 
