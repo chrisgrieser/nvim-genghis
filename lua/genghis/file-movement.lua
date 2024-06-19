@@ -32,7 +32,9 @@ function M.lspSupportsRenaming()
 	local clients = vim.lsp.get_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
 		local workspaceCap = client.server_capabilities.workspace
-		local supports = workspaceCap and workspaceCap.fileOperations and workspaceCap.fileOperations.willRename
+		local supports = workspaceCap
+			and workspaceCap.fileOperations
+			and workspaceCap.fileOperations.willRename
 		if supports then return true end
 	end
 	return false

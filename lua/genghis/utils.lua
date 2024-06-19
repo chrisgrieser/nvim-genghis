@@ -3,7 +3,7 @@ local M = {}
 
 ---@param bufnr? number|"#"|"$"
 function M.bwipeout(bufnr)
-	bufnr = bufnr and vim.fn.bufnr(bufnr) or 0 
+	bufnr = bufnr and vim.fn.bufnr(bufnr) or 0
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
