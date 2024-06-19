@@ -15,12 +15,9 @@ Lightweight and quick file operations without being a full-blown file manager.
 	* [Utility Commands](#utility-commands)
 	* [Path Copying Commands](#path-copying-commands)
 	* [Disable Ex-Commands](#disable-ex-commands)
-- [Cookbook](#cookbook)
-	* [Use Telescope for `.moveToFolderInCwd`](#use-telescope-for-movetofolderincwd)
-	* [Autocompletion of directories for `.moveAndRenameFile`](#autocompletion-of-directories-for-moveandrenamefile)
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
-- [Why that name](#why-that-name)
-- [About me](#about-me)
+- [Why that Name](#why-that-name)
+- [About the Author](#about-the-author)
 
 <!-- tocstop -->
 
@@ -32,18 +29,17 @@ Lightweight and quick file operations without being a full-blown file manager.
   file (if the LSP supports `workspace/willRenameFiles`).
 - Lightweight: no file management UI or file tree.
 - Various quality-of-life improvements like automatically keeping the extensions
-  when no extension is given.
-- Fully written in lua and makes use of up-to-date nvim features like
-  `vim.ui.input`.
+  when no extension is given, or the ability to use vim motions in the input
+  field.
 
 ## Installation and Setup
 
 ```lua
--- Packer
-use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
-
--- Lazy
+-- lazy.nvim
 {"chrisgrieser/nvim-genghis", dependencies = "stevearc/dressing.nvim"},
+
+-- packer
+use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
 ```
 
 `nvim-genghis` (and `dressing.nvim`) require no `.setup()` function. Just create
@@ -51,17 +47,16 @@ keybindings for the commands you want to use:
 
 ```lua
 local keymap = vim.keymap.set
-local genghis = require("genghis")
-keymap("n", "<leader>yp", genghis.copyFilepath)
-keymap("n", "<leader>yn", genghis.copyFilename)
-keymap("n", "<leader>cx", genghis.chmodx)
-keymap("n", "<leader>rf", genghis.renameFile)
-keymap("n", "<leader>mf", genghis.moveAndRenameFile)
-keymap("n", "<leader>mc", genghis.moveToFolderInCwd)
-keymap("n", "<leader>nf", genghis.createNewFile)
-keymap("n", "<leader>yf", genghis.duplicateFile)
-keymap("n", "<leader>df", genghis.trashFile)
-keymap("x", "<leader>x", genghis.moveSelectionToNewFile)
+keymap("n", "<leader>yp", function() require("genghis").copyFilepath() end)
+keymap("n", "<leader>yn", function() require("genghis").copyFilename() end)
+keymap("n", "<leader>cx", function() require("genghis").chmodx() end)
+keymap("n", "<leader>rf", function() require("genghis").renameFile() end)
+keymap("n", "<leader>mf", function() require("genghis").moveAndRenameFile() end)
+keymap("n", "<leader>mc", function() require("genghis").moveToFolderInCwd() end)
+keymap("n", "<leader>nf", function() require("genghis").createNewFile() end)
+keymap("n", "<leader>yf", function() require("genghis").duplicateFile() end)
+keymap("n", "<leader>df", function() require("genghis").trashFile() end)
+keymap("x", "<leader>x", function() require("genghis").moveSelectionToNewFile() end)
 ```
 
 ## Available Commands
@@ -124,49 +119,6 @@ vim.g.genghis_use_systemclipboard = true
 vim.g.genghis_disable_commands = true
 ```
 
-## Cookbook
-
-### Use Telescope for `.moveToFolderInCwd`
-
-```lua
-require("dressing").setup {
-	select = {
-		backend = { "telescope" },
-	},
-}
-```
-
-### Autocompletion of directories for `.moveAndRenameFile`
-You can get autocompletion for directories by `nvim-cmp` and vim's `omnifunc`:
-
-```lua
--- packer
-use { 
-	"chrisgrieser/nvim-genghis", 
-	requires = {
-		"stevearc/dressing.nvim",
-		"hrsh7th/nvim-cmp",
-		"hrsh7th/cmp-omni",
-	},
-}
--- lazy
-{ 
-	"chrisgrieser/nvim-genghis", 
-	dependencies = {
-		"stevearc/dressing.nvim",
-		"hrsh7th/nvim-cmp",
-		"hrsh7th/cmp-omni",
-	},
-},
-```
-
-```lua
--- required setup for cmp, somewhere after your main cmp-config
-require("cmp").setup.filetype("DressingInput", {
-	sources = cmp.config.sources { { name = "omni" } },
-})
-```
-
 ## How is this different from `vim.eunuch`?
 - Various improvements like automatically keeping the extensions when no
 extension is given, or moving files to the trash instead of removing them.
@@ -181,25 +133,21 @@ and setup.
 - LSP support when renaming.
 - Written 100% in lua.
 
-## Why that name
+## Why that Name
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch). As opposed to
 childless eunuchs, it is said that Genghis Khan [has fathered thousands of
 children](https://allthatsinteresting.com/genghis-khan-children).
 
 <!-- vale Google.FirstPerson = NO -->
-## About me
+## About the Author
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
 economy and how software ecosystems manage the tension between innovation and
 compatibility. If you are interested in this subject, feel free to get in touch.
 
-__Blog__  
 I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
 
-__Profiles__
-- [Discord](https://discordapp.com/users/462774483044794368/)
 - [Academic Website](https://chris-grieser.de/)
-- [GitHub](https://github.com/chrisgrieser/)
 - [Twitter](https://twitter.com/pseudo_meta)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
