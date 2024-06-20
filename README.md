@@ -12,14 +12,12 @@ Lightweight and quick file operations without being a full-blown file manager.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Available Commands](#available-commands)
+- [Available commands](#available-commands)
 	* [File Operations](#file-operations)
-	* [Path Copying](#path-copying)
+	* [Path copying](#path-copying)
 	* [Other operations](#other-operations)
-	* [Disable Ex-Commands](#disable-ex-commands)
-- [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
 - [Why that Name](#why-that-name)
-- [About the Author](#about-the-author)
+- [About the author](#about-the-author)
 
 <!-- tocstop -->
 
@@ -38,10 +36,17 @@ Lightweight and quick file operations without being a full-blown file manager.
 
 ```lua
 -- lazy.nvim
-{"chrisgrieser/nvim-genghis", dependencies = "stevearc/dressing.nvim"},
+{ 
+	"chrisgrieser/nvim-genghis", 
+	dependencies = "stevearc/dressing.nvim"
+	cmd = "Genghis",
+},
 
 -- packer
-use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
+use { 
+	"chrisgrieser/nvim-genghis", 
+	requires = "stevearc/dressing.nvim"
+}
 ```
 
 ## Configuration
@@ -57,59 +62,61 @@ require("genghis").setup {
 
 ## Usage
 
+You can access a command via the lua API:
+
 ```lua
-local keymap = vim.keymap.set
-keymap("n", "<leader>yp", function() require("genghis").copyFilepath() end)
-keymap("n", "<leader>yn", function() require("genghis").copyFilename() end)
-keymap("n", "<leader>cx", function() require("genghis").chmodx() end)
-keymap("n", "<leader>rf", function() require("genghis").renameFile() end)
-keymap("n", "<leader>mf", function() require("genghis").moveAndRenameFile() end)
-keymap("n", "<leader>mc", function() require("genghis").moveToFolderInCwd() end)
-keymap("n", "<leader>nf", function() require("genghis").createNewFile() end)
-keymap("n", "<leader>yf", function() require("genghis").duplicateFile() end)
-keymap("n", "<leader>df", function() require("genghis").trashFile() end)
-keymap("x", "<leader>x", function() require("genghis").moveSelectionToNewFile() end)
+require("genghis").createNewFile()
 ```
 
-## Available Commands
+Or you can use the ex command `:Genghis` with the respective sub-command:
+
+```txt
+:Genghis createNewFile
+```
+
+> [!TIP]
+> Previously, the plugins used ex commands such as `:New` or `:Move`. To avoid
+> conflicts, the ex commands are now only available as sub-commands of
+> `:Genghis`. If you prefer the old, shorter ex commands, you can use
+> abbreviations to re-create them, for example: `vim.cmd.cabbrev("New Genghis
+> createNewFile")`.
+
+## Available commands
 
 ### File Operations
-- `.createNewFile` or `:New`: Create a new file.
-- `.duplicateFile` or `:Duplicate`: Duplicate the current file.
-- `.moveSelectionToNewFile` or `:NewFromSelection`: Prompts for a new file name
+- `.createNewFile`: Create a new file.
+- `.duplicateFile`: Duplicate the current file.
+- `.moveSelectionToNewFile`: Prompts for a new file name
   and moves the current selection to that new file. (Note that this is a Visual
-  Line Mode command; the selection is moved linewise.)
-- `.renameFile` or `:Rename`: Rename the current file.
-- `.moveAndRenameFile` or `:Move`: Move and Rename the current file. Keeps the
-  old name if the new path ends with `/`. Works like the UNIX `mv` command.
-- `.moveToFolderInCwd` or `:MoveToFolderInCwd`: Move the current file to an
-  existing folder in the current working directory. [Can use telescope for the
-  selection of the destination.](#use-telescope-for-movetofolderincwd)
+  Line mode command, the selection is moved linewise.)
+- `.renameFile`: Rename the current file.
+- `.moveAndRenameFile`: Move and Rename the current file. Keeps the
+  old name if the new path ends with `/`. Works like the Unix `mv` command.
+- `.moveToFolderInCwd`: Move the current file to an existing folder in the
+  current working directory.
 
-The following applies to all commands above:  
+The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
 2. If the new file name includes a `/`, the new file is placed in the
    respective subdirectory, creating any non-existing folders.
 3. All movement and renaming commands update `import` statements to the renamed
    file (if the LSP supports `workspace/willRenameFiles`).
 
-### Path Copying
-- `.copyFilename` or `:CopyFilename`: Copy the file name.
-- `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path.
-- `.copyFilepathWithTilde` or `:CopyFilepathWithTilde`: Copy the absolute file
-  path, replacing the home directory with `~`.
-- `.copyRelativePath` or `:CopyRelativePath`: Copy the relative file path.
-- `.copyDirectoryPath` or `:CopyDirectoryPath`: Copy the absolute directory
-  path.
-- `.copyRelativeDirectoryPath` or `:CopyRelativeDirectoryPath`: Copy the
-  relative directory path.
+### Path copying
+- `.copyFilename`: Copy the file name.
+- `.copyFilepath`: Copy the absolute file path.
+- `.copyFilepathWithTilde`: Copy the absolute file path, replacing the home
+  directory with `~`.
+- `.copyRelativePath`: Copy the relative file path.
+- `.copyDirectoryPath`: Copy the absolute directory path.
+- `.copyRelativeDirectoryPath`: Copy the relative directory path.
 
 All commands use the system clipboard.
 
 ### Other operations
-- `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
+- `.chmodx`: Makes current file executable. Equivalent to `chmod
   +x`.
-- `.trashFile` or `:Trash`: Move the current file
+- `.trashFile`: Move the current file
 to the trash location.
 	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
 	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
@@ -119,33 +126,14 @@ to the trash location.
 > [!NOTE]
 > The trash CLIs are usually not available by default, and must be installed.
 
-### Disable Ex-Commands
-
-```lua
-vim.g.genghis_disable_commands = true
-```
-
-## How is this different from `vim.eunuch`?
-- Various improvements like automatically keeping the extensions when no
-extension is given, or moving files to the trash instead of removing them.
-- Uses only vim-commands or lua `os` modules, so it has no dependencies and
-works cross-platform.
-- Makes use of up-to-date nvim features like `vim.ui.input` or `vim.notify`.
-This means you can get nicer input fields with normal mode support via plugins
-like [dressing.nvim](https://github.com/stevearc/dressing.nvim), and
-confirmation notices with plugins like
-[nvim-notify](https://github.com/rcarriga/nvim-notify), if they are installed
-and setup.
-- LSP support when renaming.
-- Written 100% in lua.
-
 ## Why that Name
-A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch). As opposed to
-childless eunuchs, it is said that Genghis Khan [has fathered thousands of
+A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
+plugin with a similar goal. As opposed to childless eunuchs, it is said that
+Genghis Khan [has fathered thousands of
 children](https://allthatsinteresting.com/genghis-khan-children).
 
 <!-- vale Google.FirstPerson = NO -->
-## About the Author
+## About the author
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
 economy and how software ecosystems manage the tension between innovation and
