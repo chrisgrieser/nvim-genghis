@@ -72,7 +72,7 @@ The `setup` call is optional.
             enabled = true,
             blend = 50,
         },
-        -- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+        -- default is ` "trash" ` on Mac/Windows, and `{ "gio", "trash" }` on Linux
         trashCmd = "trash",
     }
 <
