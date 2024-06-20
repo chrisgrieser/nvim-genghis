@@ -1,6 +1,5 @@
 local M = {}
 
-local u = require("genghis.utils")
 --------------------------------------------------------------------------------
 
 ---Requests a 'workspace/willRenameFiles' on any running LSP client, that supports it
@@ -43,8 +42,11 @@ end
 ---@param oldFilePath string
 ---@param newFilePath string
 function M.moveFile(oldFilePath, newFilePath)
+	local u = require("genghis.support.utils")
+
 	local renamed, _ = vim.uv.fs_rename(oldFilePath, newFilePath)
 	if renamed then return true end
+
 	---try `fs_copyfile` to support moving across partitions
 	local copied, copiedError = vim.uv.fs_copyfile(oldFilePath, newFilePath)
 	if copied then
@@ -56,10 +58,8 @@ function M.moveFile(oldFilePath, newFilePath)
 			return false
 		end
 	else
-		u.notify(
-			("Failed to move %q to %q: %q"):format(oldFilePath, newFilePath, copiedError),
-			"error"
-		)
+		local msg = ("Failed to copy %q to %q: %q"):format(oldFilePath, newFilePath, copiedError)
+		u.notify(msg, "error")
 		return false
 	end
 end
