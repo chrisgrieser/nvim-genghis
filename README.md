@@ -58,7 +58,7 @@ require("genghis").setup {
 		enabled = true,
 		blend = 50,
 	},
-	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+	-- default is ` "trash" ` on Mac/Windows, and `{ "gio", "trash" }` on Linux
 	trashCmd = "trash",
 }
 ```
@@ -86,7 +86,7 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 
 ## Available commands
 
-### File Operations
+### File operations
 - `.createNewFile`: Create a new file.
 - `.duplicateFile`: Duplicate the current file.
 - `.moveSelectionToNewFile`: Prompts for a new file name
