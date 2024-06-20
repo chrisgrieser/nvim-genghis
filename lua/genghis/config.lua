@@ -3,6 +3,11 @@ local M = {}
 
 ---@class Genghis.config
 local defaultConfig = {
+	backdrop = {
+		enabled = true,
+		blend = 50,
+	},
+	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
 	trashCmd = nil,
 }
 

@@ -39,7 +39,6 @@ Lightweight and quick file operations without being a full-blown file manager.
 { 
 	"chrisgrieser/nvim-genghis", 
 	dependencies = "stevearc/dressing.nvim"
-	cmd = "Genghis",
 },
 
 -- packer
@@ -55,6 +54,10 @@ The `setup` call is optional.
 ```lua
 -- default config
 require("genghis").setup {
+	backdrop = {
+		enabled = true,
+		blend = 50,
+	},
 	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
 	trashCmd = "trash",
 }

@@ -1,5 +1,6 @@
 local M = {}
 
+local backdrop = require("genghis.support.backdrop")
 local rename = require("genghis.support.lsp-rename")
 local u = require("genghis.support.utils")
 local osPathSep = package.config:sub(1, 1)
@@ -37,6 +38,13 @@ local function fileOp(op)
 		promptStr = "Name for New File: "
 		prefill = ""
 	end
+
+	-- backdrop
+	vim.api.nvim_create_autocmd("FileType", {
+		group = vim.api.nvim_create_augroup("InputGenghisBackdrop", {}),
+		pattern = "DressingInput",
+		callback = function(ctx) backdrop.new(ctx.buf) end,
+	})
 
 	vim.ui.input({
 		prompt = promptStr,
@@ -119,6 +127,8 @@ function M.duplicateFile() fileOp("duplicate") end
 function M.createNewFile() fileOp("new") end
 function M.moveSelectionToNewFile() fileOp("new-from-selection") end
 
+--------------------------------------------------------------------------------
+
 function M.moveToFolderInCwd()
 	local curFilePath = vim.api.nvim_buf_get_name(0)
 	local parentOfCurFile = vim.fs.dirname(curFilePath) .. osPathSep
@@ -148,6 +158,12 @@ function M.moveToFolderInCwd()
 	-- insert cwd at bottom, since modification of is likely due to subfolders
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
+	local autocmd = vim.api.nvim_create_autocmd("FileType", {
+		group = vim.api.nvim_create_augroup("SelectorGenghisBackdrop", {}),
+		pattern = { "DressingSelect", "TelescopePrompt" },
+		callback = function(ctx) backdrop.new(ctx.buf) end,
+	})
+
 	-- prompt user and move
 	local promptStr = "Choose Destination Folder"
 	if lspSupportsRenaming then promptStr = promptStr .. " (with updated imports)" end
@@ -156,6 +172,9 @@ function M.moveToFolderInCwd()
 		kind = "genghis.moveToFolderInCwd",
 		format_item = function(path) return path:sub(#cwd) end, -- only relative path
 	}, function(destination)
+		-- in case neither dressing nor telescope was used as selector-backend
+		vim.api.nvim_del_autocmd(autocmd)
+
 		if not destination then return end
 		local newFilePath = destination .. osPathSep .. filename
 
@@ -177,8 +196,6 @@ function M.moveToFolderInCwd()
 		end
 	end)
 end
-
---------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 return M
