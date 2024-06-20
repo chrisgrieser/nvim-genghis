@@ -41,6 +41,7 @@ local function fileOp(op)
 
 	-- backdrop
 	vim.api.nvim_create_autocmd("FileType", {
+		once = true,
 		group = vim.api.nvim_create_augroup("InputGenghisBackdrop", {}),
 		pattern = "DressingInput",
 		callback = function(ctx) backdrop.new(ctx.buf) end,
@@ -159,6 +160,7 @@ function M.moveToFolderInCwd()
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
 	local autocmd = vim.api.nvim_create_autocmd("FileType", {
+		once = true,
 		group = vim.api.nvim_create_augroup("SelectorGenghisBackdrop", {}),
 		pattern = { "DressingSelect", "TelescopePrompt" },
 		callback = function(ctx) backdrop.new(ctx.buf) end,
