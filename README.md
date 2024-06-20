@@ -9,7 +9,9 @@ Lightweight and quick file operations without being a full-blown file manager.
 <!-- toc -->
 
 - [Features](#features)
-- [Installation and Setup](#installation-and-setup)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
 - [Available Commands](#available-commands)
 	* [File Operation Commands](#file-operation-commands)
 	* [Utility Commands](#utility-commands)
@@ -32,7 +34,7 @@ Lightweight and quick file operations without being a full-blown file manager.
   when no extension is given, or the ability to use vim motions in the input
   field.
 
-## Installation and Setup
+## Installation
 
 ```lua
 -- lazy.nvim
@@ -42,8 +44,18 @@ Lightweight and quick file operations without being a full-blown file manager.
 use {"chrisgrieser/nvim-genghis", requires = "stevearc/dressing.nvim"}
 ```
 
-`nvim-genghis` (and `dressing.nvim`) require no `.setup()` function. Just create
-keybindings for the commands you want to use:
+## Configuration
+The `setup` call is optional.
+
+```lua
+-- default config
+require("genghis").setup {
+	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+	trashCmd = "trash",
+}
+```
+
+## Usage
 
 ```lua
 local keymap = vim.keymap.set
@@ -84,7 +96,7 @@ The following applies to all commands above:
 ### Utility Commands
 - `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
   +x`.
-- `.trashFile{trashCmd = "your_cli"}` or `:Trash`: Move the current file
+- `.trashFile` or `:Trash`: Move the current file
 to the trash location.
 	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
 	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
@@ -92,7 +104,7 @@ to the trash location.
 	  intact instead of `vim.cmd.bwipeout`.
 
 > [!NOTE]
-> The trash CLIs are not available by default, and must be installed.
+> The trash CLIs are usually not available by default, and must be installed.
 
 ### Path Copying Commands
 - `.copyFilename` or `:CopyFilename`: Copy the file name.

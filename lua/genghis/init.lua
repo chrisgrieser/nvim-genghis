@@ -11,6 +11,11 @@ local M = {}
 setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
+			if key == "setup" then
+				require("genghis.config").setup(...)
+				return
+			end
+
 			local module = vim.startswith(key, "copy") and "copy" or "file"
 			require("genghis.operations." .. module)[key](...)
 		end

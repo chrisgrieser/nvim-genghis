@@ -190,16 +190,24 @@ function M.chmodx()
 	vim.cmd.edit()
 end
 
----@param opts? { trashCmd: string }
 function M.trashFile(opts)
-	local userCmd = opts and opts.trashCmd
-	local system = vim.uv.os_uname().sysname:lower()
-	local defaultCmd
-	if system == "darwin" then defaultCmd = "trash" end
-	if system:find("windows") then defaultCmd = "trash" end
-	if system:find("linux") then defaultCmd = "gio trash" end
-	local trashCmd = userCmd or defaultCmd
-	assert(defaultCmd, "Unknown operating system. Please provide a custom trashCmd.")
+	---DEPRECATION
+	if opts then
+		u.notify("The `trashCmd` option has been moved to the setup call.", "warn")
+		return 
+	end
+
+	-- user-provided trashCmd or os-specific default
+	local trashCmd = require("genghis.config").config.trashCmd
+	if not trashCmd then
+		local system = vim.uv.os_uname().sysname:lower()
+		local defaultCmd
+		if system == "darwin" then defaultCmd = "trash" end
+		if system:find("windows") then defaultCmd = "trash" end
+		if system:find("linux") then defaultCmd = "gio trash" end
+		assert(defaultCmd, "Unknown operating system. Please provide a custom `trashCmd`.")
+		trashCmd = defaultCmd
+	end
 
 	local trashArgs = vim.split(trashCmd, " ")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
@@ -210,7 +218,7 @@ function M.trashFile(opts)
 	local result = vim.system(trashArgs):wait()
 	if result.code == 0 then
 		u.bwipeout()
-		u.notify(("%q deleted"):format(oldName))
+		u.notify(("%q deleted."):format(oldName))
 	else
 		local outmsg = (result.stdout or "") .. (result.stderr or "")
 		u.notify(("Trashing %q failed: " .. outmsg):format(oldName), "error")
