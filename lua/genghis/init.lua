@@ -7,7 +7,7 @@ end
 
 local M = {}
 
--- redirect to `operations.copy` or `operations.file`
+-- redirect to to the correct module
 setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
@@ -17,6 +17,7 @@ setmetatable(M, {
 			end
 
 			local module = vim.startswith(key, "copy") and "copy" or "file"
+			if key == "chmodx" or key == "trashFile" then module = "other" end
 			require("genghis.operations." .. module)[key](...)
 		end
 	end,

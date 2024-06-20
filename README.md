@@ -13,9 +13,9 @@ Lightweight and quick file operations without being a full-blown file manager.
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Available Commands](#available-commands)
-	* [File Operation Commands](#file-operation-commands)
-	* [Utility Commands](#utility-commands)
-	* [Path Copying Commands](#path-copying-commands)
+	* [File Operations](#file-operations)
+	* [Path Copying](#path-copying)
+	* [Other operations](#other-operations)
 	* [Disable Ex-Commands](#disable-ex-commands)
 - [How is this different from `vim.eunuch`?](#how-is-this-different-from-vimeunuch)
 - [Why that Name](#why-that-name)
@@ -73,7 +73,7 @@ keymap("x", "<leader>x", function() require("genghis").moveSelectionToNewFile() 
 
 ## Available Commands
 
-### File Operation Commands
+### File Operations
 - `.createNewFile` or `:New`: Create a new file.
 - `.duplicateFile` or `:Duplicate`: Duplicate the current file.
 - `.moveSelectionToNewFile` or `:NewFromSelection`: Prompts for a new file name
@@ -93,20 +93,7 @@ The following applies to all commands above:
 3. All movement and renaming commands update `import` statements to the renamed
    file (if the LSP supports `workspace/willRenameFiles`).
 
-### Utility Commands
-- `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
-  +x`.
-- `.trashFile` or `:Trash`: Move the current file
-to the trash location.
-	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
-	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
-	  `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
-	  intact instead of `vim.cmd.bwipeout`.
-
-> [!NOTE]
-> The trash CLIs are usually not available by default, and must be installed.
-
-### Path Copying Commands
+### Path Copying
 - `.copyFilename` or `:CopyFilename`: Copy the file name.
 - `.copyFilepath` or `:CopyFilepath`: Copy the absolute file path.
 - `.copyFilepathWithTilde` or `:CopyFilepathWithTilde`: Copy the absolute file
@@ -118,6 +105,19 @@ to the trash location.
   relative directory path.
 
 All commands use the system clipboard.
+
+### Other operations
+- `.chmodx` or `:Chmodx`: Makes current file executable. Equivalent to `chmod
+  +x`.
+- `.trashFile` or `:Trash`: Move the current file
+to the trash location.
+	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
+	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
+	  `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
+	  intact instead of `vim.cmd.bwipeout`.
+
+> [!NOTE]
+> The trash CLIs are usually not available by default, and must be installed.
 
 ### Disable Ex-Commands
 
