@@ -25,17 +25,17 @@ local function fileOp(op)
 
 	local promptStr, prefill
 	if op == "duplicate" then
-		promptStr = "Duplicate File as: "
+		promptStr = "Duplicate file as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = lspSupportsRenaming and "Rename File & Update Imports:" or "Rename File to:"
+		promptStr = lspSupportsRenaming and "Rename file & update imports:" or "Rename file to:"
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = lspSupportsRenaming and "Move-Rename File & Update Imports:"
-			or "Move & Rename File to:"
+		promptStr = lspSupportsRenaming and "Move and rename file & update imports:"
+			or "Move & rename file to:"
 		prefill = dir .. osPathSep
 	elseif op == "new" or op == "new-from-selection" then
-		promptStr = "Name for New File: "
+		promptStr = "Name for new file: "
 		prefill = ""
 	end
 
@@ -167,7 +167,7 @@ function M.moveToFolderInCwd()
 	})
 
 	-- prompt user and move
-	local promptStr = "Choose Destination Folder"
+	local promptStr = "Choose destination folder"
 	if lspSupportsRenaming then promptStr = promptStr .. " (with updated imports)" end
 	vim.ui.select(foldersInCwd, {
 		prompt = promptStr,
