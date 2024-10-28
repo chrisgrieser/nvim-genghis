@@ -1,16 +1,17 @@
 local M = {}
 --------------------------------------------------------------------------------
 
----@return string|string[]
+---@return string|string[]|false
 local function setDefaultTrashCmd()
 	local osTrashCmd
-	local system = jit.os:lower()
-	if system == "mac" or system == "osx" then
+	if jit.os == "osx" then
 		osTrashCmd = "trash"
-	elseif system == "windows" then
+	elseif jit.os == "Windows" then
 		osTrashCmd = "trash"
-	else
+	elseif jit.os == "Linux" then
 		osTrashCmd = { "gio", "trash" }
+	else
+		return false
 	end
 	return osTrashCmd
 end

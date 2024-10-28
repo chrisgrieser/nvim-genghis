@@ -13,19 +13,17 @@ function M.chmodx()
 	vim.cmd.edit() -- reload the file
 end
 
-function M.trashFile(opts)
-	---DEPRECATION
-	if opts then
-		u.notify("The `trashCmd` option has been moved to the setup call.", "warn")
-		return
-	end
-
+function M.trashFile()
 	vim.cmd("silent! update")
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
 
 	-- execute the trash command
 	local trashCmd = require("genghis.config").config.trashCmd
+	if not trashCmd then
+		u.notify("Unknown operating system. Please provide a custom `trashCmd`.", "warn")
+		return
+	end
 	if type(trashCmd) == "string" then trashCmd = { trashCmd } end
 	table.insert(trashCmd, oldFilePath)
 	local result = vim.system(trashCmd):wait()
