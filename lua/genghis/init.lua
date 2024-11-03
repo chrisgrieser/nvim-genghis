@@ -7,6 +7,9 @@ end
 
 local M = {}
 
+---@param userConfig? Genghis.config
+function M.setup(userConfig) require("genghis.config").setup(userConfig) end
+
 vim.api.nvim_create_user_command("Genghis", function(ctx) M[ctx.args]() end, {
 	nargs = 1,
 	complete = function()
@@ -22,11 +25,6 @@ vim.api.nvim_create_user_command("Genghis", function(ctx) M[ctx.args]() end, {
 setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
-			if key == "setup" then
-				require("genghis.config").setup(...)
-				return
-			end
-
 			local module = vim.startswith(key, "copy") and "copy" or "file"
 			if key == "chmodx" or key == "trashFile" then module = "other" end
 			require("genghis.operations." .. module)[key](...)
