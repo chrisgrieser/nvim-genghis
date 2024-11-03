@@ -39,6 +39,7 @@ Lightweight and quick file operations without being a full-blown file manager.
 { 
 	"chrisgrieser/nvim-genghis", 
 	dependencies = "stevearc/dressing.nvim"
+	cmd = "Genghis",
 },
 
 -- packer
