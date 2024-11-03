@@ -9,7 +9,7 @@ Table of Contents                                  *genghis-table-of-contents*
   - Configuration                        |genghis-nvim-genghis--configuration|
   - Usage                                        |genghis-nvim-genghis--usage|
   - Available commands              |genghis-nvim-genghis--available-commands|
-  - Why that Name                        |genghis-nvim-genghis--why-that-name|
+  - Why that name?                      |genghis-nvim-genghis--why-that-name?|
   - About the author                  |genghis-nvim-genghis--about-the-author|
 
 ==============================================================================
@@ -27,13 +27,13 @@ Lightweightand quick file operations without being a full-blown file manager.
     - |genghis-file-operations|
     - |genghis-path-copying|
     - |genghis-other-operations|
-- |genghis-why-that-name|
+- |genghis-why-that-name?|
 - |genghis-about-the-author|
 
 
 FEATURES                                      *genghis-nvim-genghis--features*
 
-- Commands for moving, renaming, creating, deleting, or, duplicating files and
+- Commands for moving, renaming, creating, deleting, or duplicating files and
     more.
 - Commands for copying the path or name of the current file in various formats.
 - All movement and renaming commands update `import` statements to the renamed
@@ -51,6 +51,7 @@ INSTALLATION                              *genghis-nvim-genghis--installation*
     { 
         "chrisgrieser/nvim-genghis", 
         dependencies = "stevearc/dressing.nvim"
+        cmd = "Genghis",
     },
     
     -- packer
@@ -72,7 +73,7 @@ The `setup` call is optional.
             enabled = true,
             blend = 50,
         },
-        -- default is ` "trash" ` on Mac/Windows, and `{ "gio", "trash" }` on Linux
+        -- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
         trashCmd = "trash",
     }
 <
@@ -150,7 +151,7 @@ OTHER OPERATIONS ~
   [!NOTE] The trash CLIs are usually not available by default, and must be
   installed.
 
-WHY THAT NAME                            *genghis-nvim-genghis--why-that-name*
+WHY THAT NAME?                          *genghis-nvim-genghis--why-that-name?*
 
 A nod to vim.eunuch <https://github.com/tpope/vim-eunuch>, an older vimscript
 plugin with a similar goal. As opposed to childless eunuchs, it is said that
@@ -170,7 +171,7 @@ I also occasionally blog about vim: Nano Tips for Vim
 <https://nanotipsforvim.prose.sh>
 
 - Academic Website <https://chris-grieser.de/>
-- Twitter <https://twitter.com/pseudo_meta>
+- Mastodon <https://pkm.social/@pseudometa>
 - ResearchGate <https://www.researchgate.net/profile/Christopher-Grieser>
 - LinkedIn <https://www.linkedin.com/in/christopher-grieser-ba693b17a/>
 
