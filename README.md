@@ -40,6 +40,7 @@ Lightweight and quick file operations without being a full-blown file manager.
 	"chrisgrieser/nvim-genghis", 
 	dependencies = "stevearc/dressing.nvim"
 	cmd = "Genghis",
+	opts = {}, -- empty table needed even for default config due to lazy.nvim bug, see #51
 },
 
 -- packer
