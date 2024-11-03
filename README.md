@@ -13,16 +13,16 @@ Lightweight and quick file operations without being a full-blown file manager.
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Available commands](#available-commands)
-	* [File Operations](#file-operations)
-	* [Path copying](#path-copying)
-	* [Other operations](#other-operations)
-- [Why that Name](#why-that-name)
+  * [File operations](#file-operations)
+  * [Path copying](#path-copying)
+  * [Other operations](#other-operations)
+- [Why that name?](#why-that-name)
 - [About the author](#about-the-author)
 
 <!-- tocstop -->
 
 ## Features
-- Commands for moving, renaming, creating, deleting, or, duplicating files and
+- Commands for moving, renaming, creating, deleting, or duplicating files and
   more.
 - Commands for copying the path or name of the current file in various formats.
 - All movement and renaming commands update `import` statements to the renamed
@@ -58,13 +58,12 @@ require("genghis").setup {
 		enabled = true,
 		blend = 50,
 	},
-	-- default is ` "trash" ` on Mac/Windows, and `{ "gio", "trash" }` on Linux
+	-- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
 	trashCmd = "trash",
 }
 ```
 
 ## Usage
-
 You can access a command via the lua API:
 
 ```lua
@@ -129,7 +128,7 @@ to the trash location.
 > [!NOTE]
 > The trash CLIs are usually not available by default, and must be installed.
 
-## Why that Name
+## Why that name?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
 plugin with a similar goal. As opposed to childless eunuchs, it is said that
 Genghis Khan [has fathered thousands of
@@ -145,7 +144,7 @@ compatibility. If you are interested in this subject, feel free to get in touch.
 I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
 
 - [Academic Website](https://chris-grieser.de/)
-- [Twitter](https://twitter.com/pseudo_meta)
+- [Mastodon](https://pkm.social/@pseudometa)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
 
