@@ -4,7 +4,7 @@ local M = {}
 ---@return string|string[]|false
 local function setDefaultTrashCmd()
 	local osTrashCmd
-	if jit.os == "osx" then
+	if jit.os == "OSX" then
 		osTrashCmd = "trash"
 	elseif jit.os == "Windows" then
 		osTrashCmd = "trash"
