@@ -14,6 +14,13 @@ function M.notify(msg, level, opts)
 	if not level then level = "info" end
 	if not opts then opts = {} end
 	opts.title = opts.title and "Genghis: " .. opts.title or "Genghis"
+
+	-- since nvim-notify does not support the `icon` field that snacks.nvim
+	if package.loaded["notify"] then
+		opts.title = vim.trim(opts.icon .. opts.title)
+		opts.icon = nil
+	end
+
 	vim.notify(msg, vim.log.levels[level:upper()], opts)
 end
 
