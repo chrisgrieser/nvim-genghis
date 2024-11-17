@@ -13,7 +13,7 @@ end
 function M.notify(msg, level, opts)
 	if not level then level = "info" end
 	if not opts then opts = {} end
-	opts.title = opts.title and "nvim-genghis: " .. opts.title or "nvim-genghis"
+	opts.title = opts.title and "Genghis: " .. opts.title or "Genghis"
 	vim.notify(msg, vim.log.levels[level:upper()], opts)
 end
 
