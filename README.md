@@ -40,7 +40,7 @@ Lightweight and quick file operations without being a full-blown file manager.
 	"chrisgrieser/nvim-genghis",
 	dependencies = "stevearc/dressing.nvim",
 	cmd = "Genghis",
-	opts = {}, -- empty table needed even for default config due to lazy.nvim bug, see #51
+	opts = {}, -- empty table needed even for default config, see #51
 },
 
 -- packer
@@ -51,7 +51,7 @@ use {
 ```
 
 ## Configuration
-The `setup` call is optional.
+The `setup` call is required for `lazy.nvim`, but otherwise optional.
 
 ```lua
 -- default config
