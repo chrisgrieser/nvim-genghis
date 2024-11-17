@@ -52,7 +52,7 @@ INSTALLATION                              *genghis-nvim-genghis--installation*
         "chrisgrieser/nvim-genghis",
         dependencies = "stevearc/dressing.nvim",
         cmd = "Genghis",
-        opts = {}, -- empty table needed even for default config due to lazy.nvim bug, see #51
+        opts = {}, -- empty table needed even for default config, see #51
     },
     
     -- packer
@@ -65,7 +65,7 @@ INSTALLATION                              *genghis-nvim-genghis--installation*
 
 CONFIGURATION                            *genghis-nvim-genghis--configuration*
 
-The `setup` call is optional.
+The `setup` call is required for `lazy.nvim`, but otherwise optional.
 
 >lua
     -- default config
@@ -76,6 +76,18 @@ The `setup` call is optional.
         },
         -- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
         trashCmd = "trash",
+    
+        -- set to empty string to disable
+        -- (some icons are only used for notification plugins like `snacks.nvim`)
+        icons = {
+            copyPath = "󰅍",
+            rename = "󰑕",
+            new = "",
+            duplicate = "",
+            move = "󰪹",
+            trash = "󰩹",
+            chmodx = "󰒃",
+        }
     }
 <
 
