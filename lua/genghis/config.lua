@@ -35,7 +35,7 @@ local defaultConfig = {
 		move = "󰪹",
 		trash = "󰩹",
 		chmodx = "󰒃",
-	}
+	},
 }
 
 M.config = defaultConfig
