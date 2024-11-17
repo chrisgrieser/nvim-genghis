@@ -42,7 +42,7 @@ local function fileOp(op)
 		promptStr = icons.new .. " Name for new file: "
 		prefill = ""
 	end
-	promptStr = vim.trim(promptStr) -- in case of emtpy icon
+	promptStr = vim.trim(promptStr) -- in case of empty icon
 
 	-- backdrop
 	vim.api.nvim_create_autocmd("FileType", {

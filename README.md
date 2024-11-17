@@ -66,7 +66,7 @@ require("genghis").setup {
 	-- set to empty string to disable
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
-		copy = "󰅍",
+		copyPath = "󰅍",
 		rename = "󰑕",
 		new = "",
 		duplicate = "",
