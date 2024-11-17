@@ -19,7 +19,8 @@ local function fileOp(op)
 	local prevReg
 	if op == "new-from-selection" then
 		prevReg = vim.fn.getreg("z")
-		u.leaveVisualMode()
+		-- leaves visual mode, needed for '<,'> marks to be set
+		vim.cmd.normal { vim.fn.mode(), bang = true }
 		vim.cmd([['<,'>delete z]])
 	end
 

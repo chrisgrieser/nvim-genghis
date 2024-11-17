@@ -7,12 +7,6 @@ function M.bwipeout(bufnr)
 	vim.api.nvim_buf_delete(bufnr, { force = true })
 end
 
--- https://github.com/neovim/neovim/issues/17735#issuecomment-1068525617
-function M.leaveVisualMode()
-	local escKey = vim.api.nvim_replace_termcodes("<Esc>", false, true, true)
-	vim.api.nvim_feedkeys(escKey, "nx", false)
-end
-
 ---@param msg string
 ---@param level? "info"|"trace"|"debug"|"warn"|"error"
 function M.notify(msg, level)
