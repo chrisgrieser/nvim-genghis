@@ -1,12 +1,16 @@
 local M = {}
+local u = require("genghis.support.utils")
 --------------------------------------------------------------------------------
 
 ---@param expandOperation string
 local function copyOp(expandOperation)
+	local icons = require("genghis.config").config.icons
+
 	local register = "+"
 	local toCopy = vim.fn.expand(expandOperation)
 	vim.fn.setreg(register, toCopy)
-	vim.notify(toCopy, vim.log.levels.INFO, { title = "Copied" })
+
+	u.notify(toCopy, "info", { title = "Copied", icon = icons.copyPath })
 end
 
 -- DOCS for the modifiers

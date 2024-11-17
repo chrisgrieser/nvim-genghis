@@ -24,6 +24,18 @@ local defaultConfig = {
 	},
 	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
 	trashCmd = setDefaultTrashCmd(),
+
+	-- set to empty string to disable
+	-- (some icons are only used for notification plugins like `snacks.nvim`)
+	icons = {
+		copyPath = "󰅍",
+		rename = "󰑕",
+		new = "",
+		duplicate = "",
+		move = "󰪹",
+		trash = "󰩹",
+		chmodx = "󰒃",
+	}
 }
 
 M.config = defaultConfig

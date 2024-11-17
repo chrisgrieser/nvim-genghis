@@ -14,6 +14,7 @@ local function fileOp(op)
 	local oldNameNoExt = oldName:gsub("%.%w+$", "")
 	local oldExt = vim.fn.expand("%:e")
 	if oldExt ~= "" then oldExt = "." .. oldExt end
+	local icons = require("genghis.config").config.icons
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
 
 	local prevReg
@@ -26,19 +27,22 @@ local function fileOp(op)
 
 	local promptStr, prefill
 	if op == "duplicate" then
-		promptStr = "Duplicate file as: "
+		promptStr = icons.duplicate .. " Duplicate file as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
-		promptStr = lspSupportsRenaming and "Rename file & update imports:" or "Rename file to:"
+		local text = lspSupportsRenaming and "Rename file & update imports:" or "Rename file to:"
+		promptStr = icons.rename .. " " .. text
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
-		promptStr = lspSupportsRenaming and "Move and rename file & update imports:"
-			or "Move & rename file to:"
+		local text = lspSupportsRenaming and " Move and rename file & update imports:"
+			or " Move & rename file to:"
+		promptStr = icons.rename .. " " .. text
 		prefill = dir .. osPathSep
 	elseif op == "new" or op == "new-from-selection" then
-		promptStr = "Name for new file: "
+		promptStr = icons.new .. " Name for new file: "
 		prefill = ""
 	end
+	promptStr = vim.trim(promptStr) -- in case of emtpy icon
 
 	-- backdrop
 	vim.api.nvim_create_autocmd("FileType", {
@@ -101,7 +105,8 @@ local function fileOp(op)
 			local success = vim.uv.fs_copyfile(oldFilePath, newFilePath)
 			if success then
 				vim.cmd.edit(newFilePath)
-				u.notify(("Duplicated %q as %q."):format(oldName, newName))
+				local msg = ("Duplicated %q as %q."):format(oldName, newName)
+				u.notify(msg, "info", { icon = icons.duplicate })
 			end
 		elseif op == "rename" or op == "move-rename" then
 			rename.sendWillRenameToLsp(oldFilePath, newFilePath)
@@ -109,7 +114,8 @@ local function fileOp(op)
 			if success then
 				vim.cmd.edit(newFilePath)
 				u.bwipeout("#")
-				u.notify(("Renamed %q to %q."):format(oldName, newName))
+				local msg = ("Renamed %q to %q."):format(oldName, newName)
+				u.notify(msg, "info", { icon = icons.rename })
 				if lspSupportsRenaming then vim.cmd.wall() end
 			end
 		elseif op == "new" or op == "new-from-selection" then
@@ -137,6 +143,7 @@ function M.moveToFolderInCwd()
 	local filename = vim.fs.basename(curFilePath)
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
 	local cwd = vim.uv.cwd() .. osPathSep
+	local icons = require("genghis.config").config.icons
 
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
@@ -168,7 +175,7 @@ function M.moveToFolderInCwd()
 	})
 
 	-- prompt user and move
-	local promptStr = "Choose destination folder"
+	local promptStr = icons.new .. " Choose destination folder"
 	if lspSupportsRenaming then promptStr = promptStr .. " (with updated imports)" end
 	vim.ui.select(foldersInCwd, {
 		prompt = promptStr,
@@ -194,7 +201,7 @@ function M.moveToFolderInCwd()
 			u.bwipeout("#")
 			local msg = ("Moved %q to %q"):format(filename, destination)
 			local append = lspSupportsRenaming and " and updated imports." or "."
-			u.notify(msg .. append)
+			u.notify(msg .. append, "info", { icon = icons.move })
 			if lspSupportsRenaming then vim.cmd.wall() end
 		end
 	end)

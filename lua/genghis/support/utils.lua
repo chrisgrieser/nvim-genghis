@@ -9,9 +9,12 @@ end
 
 ---@param msg string
 ---@param level? "info"|"trace"|"debug"|"warn"|"error"
-function M.notify(msg, level)
+---@param opts? table
+function M.notify(msg, level, opts)
 	if not level then level = "info" end
-	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-genghis" })
+	if not opts then opts = {} end
+	opts.title = opts.title and "nvim-genghis: " .. opts.title or "nvim-genghis"
+	vim.notify(msg, vim.log.levels[level:upper()], opts)
 end
 
 ---@nodiscard

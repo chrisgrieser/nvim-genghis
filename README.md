@@ -62,6 +62,18 @@ require("genghis").setup {
 	},
 	-- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
 	trashCmd = "trash",
+
+	-- set to empty string to disable
+	-- (some icons are only used for notification plugins like `snacks.nvim`)
+	icons = {
+		copy = "󰅍",
+		rename = "󰑕",
+		new = "",
+		duplicate = "",
+		move = "󰪹",
+		trash = "󰩹",
+		chmodx = "󰒃",
+	}
 }
 ```
 
