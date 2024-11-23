@@ -11,7 +11,7 @@ function M.chmodx()
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
 	vim.fn.setfperm(filename, perm)
 
-	u.notify("Execution Permission granted.", "info", { icon = icons.chmodx })
+	u.notify("Permission +x granted.", "info", { icon = icons.chmodx })
 	vim.cmd.edit() -- reload the file
 end
 
@@ -34,10 +34,10 @@ function M.trashFile()
 	-- handle the result
 	if result.code == 0 then
 		u.bwipeout()
-		u.notify(("%q put into trash."):format(oldName), "info", { icon = icons.trash })
+		u.notify(("%q moved to trash."):format(oldName), "info", { icon = icons.trash })
 	else
 		local outmsg = (result.stdout or "") .. (result.stderr or "")
-		u.notify(("Trashing %q failed: " .. outmsg):format(oldName), "error")
+		u.notify(("Trashing %q failed: %s"):format(oldName, outmsg), "error")
 	end
 end
 
