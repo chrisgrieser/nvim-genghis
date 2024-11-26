@@ -1,6 +1,18 @@
 *nvim-genghis.txt*           For Neovim          Last change: 2024 November 26
 
 ==============================================================================
+Table of Contents                             *nvim-genghis-table-of-contents*
+
+1. nvim-genghis                                   |nvim-genghis-nvim-genghis-|
+  - Features                             |nvim-genghis-nvim-genghis--features|
+  - Installation                     |nvim-genghis-nvim-genghis--installation|
+  - Configuration                   |nvim-genghis-nvim-genghis--configuration|
+  - Usage                                   |nvim-genghis-nvim-genghis--usage|
+  - Available commands         |nvim-genghis-nvim-genghis--available-commands|
+  - Why that name?                 |nvim-genghis-nvim-genghis--why-that-name?|
+  - About the author             |nvim-genghis-nvim-genghis--about-the-author|
+
+==============================================================================
 1. nvim-genghis                                   *nvim-genghis-nvim-genghis-*
 
 
