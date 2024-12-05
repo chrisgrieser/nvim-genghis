@@ -6,6 +6,10 @@
 
 Lightweight and quick file operations without being a full-blown file manager.
 
+<img alt="Showcase for renaming files" width=50% src="https://github.com/user-attachments/assets/010f3786-e4b2-4c4e-8cbb-a7618de93eb7">
+
+## Table of contents
+
 <!-- toc -->
 
 - [Features](#features)
