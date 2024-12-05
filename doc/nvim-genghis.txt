@@ -1,9 +1,10 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2024 November 26
+*nvim-genghis.txt*           For Neovim          Last change: 2024 December 05
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
 
 1. nvim-genghis                                   |nvim-genghis-nvim-genghis-|
+  - Table of contents           |nvim-genghis-nvim-genghis--table-of-contents|
   - Features                             |nvim-genghis-nvim-genghis--features|
   - Installation                     |nvim-genghis-nvim-genghis--installation|
   - Configuration                   |nvim-genghis-nvim-genghis--configuration|
@@ -19,6 +20,11 @@ Table of Contents                             *nvim-genghis-table-of-contents*
 
 Lightweightand quick file operations without being a full-blown file manager.
 
+
+
+
+TABLE OF CONTENTS               *nvim-genghis-nvim-genghis--table-of-contents*
+
 - |nvim-genghis-features|
 - |nvim-genghis-installation|
 - |nvim-genghis-configuration|
@@ -33,15 +39,15 @@ Lightweightand quick file operations without being a full-blown file manager.
 
 FEATURES                                 *nvim-genghis-nvim-genghis--features*
 
-- Commands for moving, renaming, creating, deleting, or duplicating files and
+- Perform **common file operations**moving, renaming, creating, deleting, or
+    duplicating files.
+- **Copy** the path or name of the current file in various formats.
+- All movement and renaming commands **update import statements** to the
+    renamed file (if the LSP supports `workspace/willRenameFiles`).
+- **Quality of life**automatically keep the extension when no extension is
+    given, use vim motions in the input field, confirmatory notifications, and
     more.
-- Commands for copying the path or name of the current file in various formats.
-- All movement and renaming commands update `import` statements to the renamed
-    file (if the LSP supports `workspace/willRenameFiles`).
-- Lightweight: no file management UI or file tree.
-- Various quality-of-life improvements like automatically keeping the extensions
-    when no extension is given, or the ability to use vim motions in the input
-    field.
+- **Lightweight**no file management UI or file tree.
 
 
 INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
@@ -52,7 +58,7 @@ INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
         "chrisgrieser/nvim-genghis",
         dependencies = "stevearc/dressing.nvim",
         cmd = "Genghis",
-        opts = {}, -- empty table needed even for default config, see #51
+        opts = {}, -- empty table needed even for default config
     },
     
     -- packer
@@ -107,12 +113,6 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 <
 
 
-  [!TIP] Previously, the plugins used ex commands such as `:New` or `:Move`. To
-  avoid conflicts, the ex commands are now only available as sub-commands of
-  `:Genghis`. If you prefer the old, shorter ex commands, you can use
-  abbreviations to re-create them, for example: `vim.cmd.cabbrev("New Genghis
-  createNewFile")`.
-
 AVAILABLE COMMANDS             *nvim-genghis-nvim-genghis--available-commands*
 
 
@@ -153,16 +153,13 @@ All commands use the system clipboard.
 OTHER OPERATIONS ~
 
 - `.chmodx`Makes current file executable. Equivalent to `chmod   +x`.
-- `.trashFile`Move the current file
-    to the trash location.
-    - Defaults to `gio trash` on _Linux_, `trash` on _Mac_ and _Windows_.
+- `.trashFile`Move the current file to the trash location. Defaults to `gio   trash` on _Linux_, and `trash` on _macOS_ or _Windows_.
     - If bufdelete.nvim <https://github.com/famiu/bufdelete.nvim> is available,
         `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
         intact instead of `vim.cmd.bwipeout`.
 
 
-  [!NOTE] The trash CLIs are usually not available by default, and must be
-  installed.
+  [!NOTE] The trash CLIs are not available by default, and must be installed.
 
 WHY THAT NAME?                     *nvim-genghis-nvim-genghis--why-that-name?*
 
