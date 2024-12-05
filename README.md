@@ -17,24 +17,24 @@ Lightweight and quick file operations without being a full-blown file manager.
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Available commands](#available-commands)
-  * [File operations](#file-operations)
-  * [Path copying](#path-copying)
-  * [Other operations](#other-operations)
+	* [File operations](#file-operations)
+	* [Path copying](#path-copying)
+	* [Other operations](#other-operations)
 - [Why that name?](#why-that-name)
 - [About the author](#about-the-author)
 
 <!-- tocstop -->
 
 ## Features
-- Commands for moving, renaming, creating, deleting, or duplicating files and
+- Perform **common file operations**: moving, renaming, creating, deleting, or
+  duplicating files.
+- **Copy** the path or name of the current file in various formats.
+- All movement and renaming commands **update `import` statements** to the
+  renamed file (if the LSP supports `workspace/willRenameFiles`).
+- **Quality of life**: automatically keep the extension when no extension is
+  given, use vim motions in the input field, confirmatory notifications, and
   more.
-- Commands for copying the path or name of the current file in various formats.
-- All movement and renaming commands update `import` statements to the renamed
-  file (if the LSP supports `workspace/willRenameFiles`).
-- Lightweight: no file management UI or file tree.
-- Various quality-of-life improvements like automatically keeping the extensions
-  when no extension is given, or the ability to use vim motions in the input
-  field.
+- **Lightweight**: no file management UI or file tree.
 
 ## Installation
 
@@ -44,7 +44,7 @@ Lightweight and quick file operations without being a full-blown file manager.
 	"chrisgrieser/nvim-genghis",
 	dependencies = "stevearc/dressing.nvim",
 	cmd = "Genghis",
-	opts = {}, -- empty table needed even for default config, see #51
+	opts = {}, -- empty table needed even for default config
 },
 
 -- packer
@@ -94,13 +94,6 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 :Genghis createNewFile
 ```
 
-> [!TIP]
-> Previously, the plugins used ex commands such as `:New` or `:Move`. To avoid
-> conflicts, the ex commands are now only available as sub-commands of
-> `:Genghis`. If you prefer the old, shorter ex commands, you can use
-> abbreviations to re-create them, for example: `vim.cmd.cabbrev("New Genghis
-> createNewFile")`.
-
 ## Available commands
 
 ### File operations
@@ -136,15 +129,14 @@ All commands use the system clipboard.
 ### Other operations
 - `.chmodx`: Makes current file executable. Equivalent to `chmod
   +x`.
-- `.trashFile`: Move the current file
-to the trash location.
-	* Defaults to `gio trash` on *Linux*, `trash` on *Mac* and *Windows*.
+- `.trashFile`: Move the current file to the trash location. Defaults to `gio
+  trash` on *Linux*, and `trash` on *macOS* or *Windows*.
 	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
 	  `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
 	  intact instead of `vim.cmd.bwipeout`.
 
 > [!NOTE]
-> The trash CLIs are usually not available by default, and must be installed.
+> The trash CLIs are not available by default, and must be installed.
 
 ## Why that name?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
