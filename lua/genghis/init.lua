@@ -12,12 +12,12 @@ function M.setup(userConfig) require("genghis.config").setup(userConfig) end
 
 vim.api.nvim_create_user_command("Genghis", function(ctx) M[ctx.args]() end, {
 	nargs = 1,
-	complete = function()
+	complete = function(query)
 		local allOps = {}
 		vim.list_extend(allOps, vim.tbl_keys(require("genghis.operations.file")))
 		vim.list_extend(allOps, vim.tbl_keys(require("genghis.operations.copy")))
 		vim.list_extend(allOps, vim.tbl_keys(require("genghis.operations.other")))
-		return allOps
+		return vim.tbl_filter(function(op) return op:lower():find(query, nil, true) end, allOps)
 	end,
 })
 
