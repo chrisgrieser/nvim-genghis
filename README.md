@@ -37,12 +37,14 @@ Lightweight and quick file operations without being a full-blown file manager.
 - **Lightweight**: no file management UI or file tree.
 
 ## Installation
+An `vim.ui.input` provider is not strictly needed, but recommended for the nicer
+input UI. [dressing.nvim](http://github.com/stevearc/dressing.nvim) and
+[snacks.nvim](http://github.com/folke/snacks.nvim) are such providers.
 
 ```lua
 -- lazy.nvim
 { 
 	"chrisgrieser/nvim-genghis",
-	dependencies = "stevearc/dressing.nvim",
 	cmd = "Genghis",
 	opts = {}, -- empty table needed even for default config
 },
@@ -50,7 +52,6 @@ Lightweight and quick file operations without being a full-blown file manager.
 -- packer
 use { 
 	"chrisgrieser/nvim-genghis", 
-	requires = "stevearc/dressing.nvim"
 }
 ```
 
@@ -60,10 +61,6 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 ```lua
 -- default config
 require("genghis").setup {
-	backdrop = {
-		enabled = true,
-		blend = 50,
-	},
 	-- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
 	trashCmd = "trash",
 
