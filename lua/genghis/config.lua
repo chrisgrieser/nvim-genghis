@@ -24,14 +24,14 @@ local defaultConfig = {
 	-- set to empty string to disable
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
-		copyPath = "󰅍",
-		file = "󰈔",
-		rename = "󰑕",
-		new = "",
-		duplicate = "",
-		move = "󰪹",
-		trash = "󰩹",
 		chmodx = "󰒃",
+		copyPath = "󰅍",
+		duplicate = "",
+		file = "󰈔",
+		move = "󰪹",
+		new = "",
+		rename = "󰑕",
+		trash = "󰩹",
 	},
 }
 

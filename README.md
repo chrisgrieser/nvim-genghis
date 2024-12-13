@@ -67,14 +67,14 @@ require("genghis").setup {
 	-- set to empty string to disable
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
-		copyPath = "󰅍",
-		file = "󰈔",
-		rename = "󰑕",
-		new = "",
-		duplicate = "",
-		move = "󰪹",
-		trash = "󰩹",
 		chmodx = "󰒃",
+		copyPath = "󰅍",
+		duplicate = "",
+		file = "󰈔",
+		move = "󰪹",
+		new = "",
+		rename = "󰑕",
+		trash = "󰩹",
 	}
 }
 ```
@@ -109,7 +109,7 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
 2. If the new file name includes a `/`, the new file is placed in the
-   respective subdirectory, creating any non-existing folders.
+   respective subdirectory, creating any non-existing intermediate folders.
 3. All movement and renaming commands update `import` statements to the renamed
    file (if the LSP supports `workspace/willRenameFiles`).
 
@@ -132,11 +132,11 @@ All commands use the system clipboard.
 - `.trashFile`: Move the current file to the trash location. Defaults to `gio
   trash` on *Linux*, and `trash` on *macOS* or *Windows*.
 	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
-	  `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
-	  intact instead of `vim.cmd.bwipeout`.
+	  `require("bufdelete.nvim").bufwipeout` is used to keep window layout intact
+	  instead of `vim.cmd.bwipeout`.
 
 > [!NOTE]
-> The trash CLIs are not available by default, and must be installed.
+> The trash CLIs are usually not available by default, and must be installed.
 
 ## Why that name?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
