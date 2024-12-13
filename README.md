@@ -5,6 +5,8 @@
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
 Lightweight and quick file operations without being a full-blown file manager.
+For when you prefer a fuzzy finder over a file tree, but still want some
+convenient file operations inside nvim.
 
 <img alt="Showcase for renaming files" width=50% src="https://github.com/user-attachments/assets/010f3786-e4b2-4c4e-8cbb-a7618de93eb7">
 
@@ -37,9 +39,12 @@ Lightweight and quick file operations without being a full-blown file manager.
 - **Lightweight**: no file management UI or file tree.
 
 ## Installation
-An `vim.ui.input` provider is not strictly needed, but recommended for the nicer
-input UI. [dressing.nvim](http://github.com/stevearc/dressing.nvim) and
-[snacks.nvim](http://github.com/folke/snacks.nvim) are such providers.
+**Requirements**
+- nvim 0.10 or higher
+- *for nice input UI*: a `vim.ui.input` provider such as
+  [dressing.nvim](http://github.com/stevearc/dressing.nvim) or
+  [snacks.nvim](http://github.com/folke/snacks.nvim)
+- *for the trash command*: an OS-specific trash CLI like `gio trash` or `trash`.
 
 ```lua
 -- lazy.nvim
