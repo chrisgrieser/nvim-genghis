@@ -1,4 +1,4 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2024 December 11
+*nvim-genghis.txt*           For Neovim          Last change: 2024 December 13
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -19,6 +19,8 @@ Table of Contents                             *nvim-genghis-table-of-contents*
 
 
 Lightweightand quick file operations without being a full-blown file manager.
+For when you prefer a fuzzy finder over a file tree, but still want some
+convenient file operations inside nvim.
 
 
 
@@ -31,7 +33,7 @@ TABLE OF CONTENTS               *nvim-genghis-nvim-genghis--table-of-contents*
 - |nvim-genghis-usage|
 - |nvim-genghis-available-commands|
     - |nvim-genghis-file-operations|
-    - |nvim-genghis-path-copying|
+    - |nvim-genghis-copy-operations|
     - |nvim-genghis-other-operations|
 - |nvim-genghis-why-that-name?|
 - |nvim-genghis-about-the-author|
@@ -52,9 +54,10 @@ FEATURES                                 *nvim-genghis-nvim-genghis--features*
 
 INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
 
-An `vim.ui.input` provider is not strictly needed, but recommended for the
-nicer input UI. dressing.nvim <http://github.com/stevearc/dressing.nvim> and
-snacks.nvim <http://github.com/folke/snacks.nvim> are such providers.
+**Requirements** - nvim 0.10 or higher - _for nice input UI_a `vim.ui.input`
+provider such as dressing.nvim <http://github.com/stevearc/dressing.nvim> or
+snacks.nvim <http://github.com/folke/snacks.nvim> - _for the trash command_an
+OS-specific trash CLI like `gio trash` or `trash`.
 
 >lua
     -- lazy.nvim
@@ -84,13 +87,14 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
         -- set to empty string to disable
         -- (some icons are only used for notification plugins like `snacks.nvim`)
         icons = {
-            copyPath = "󰅍",
-            rename = "󰑕",
-            new = "",
-            duplicate = "",
-            move = "󰪹",
-            trash = "󰩹",
             chmodx = "󰒃",
+            copyPath = "󰅍",
+            duplicate = "",
+            file = "󰈔",
+            move = "󰪹",
+            new = "",
+            rename = "󰑕",
+            trash = "󰩹",
         }
     }
 <
@@ -130,12 +134,12 @@ FILE OPERATIONS ~
 The following applies to all commands above: 1. If no extension has been
 provided, uses the extension of the original file. 2. If the new file name
 includes a `/`, the new file is placed in the respective subdirectory, creating
-any non-existing folders. 3. All movement and renaming commands update `import`
-statements to the renamed file (if the LSP supports
+any non-existing intermediate folders. 3. All movement and renaming commands
+update `import` statements to the renamed file (if the LSP supports
 `workspace/willRenameFiles`).
 
 
-PATH COPYING ~
+COPY OPERATIONS ~
 
 - `.copyFilename`Copy the file name.
 - `.copyFilepath`Copy the absolute file path.
@@ -144,6 +148,8 @@ PATH COPYING ~
 - `.copyRelativePath`Copy the relative file path.
 - `.copyDirectoryPath`Copy the absolute directory path.
 - `.copyRelativeDirectoryPath`Copy the relative directory path.
+- `.copyFileItself`Copies the file itself. This means you can paste it into
+    the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
 
@@ -153,11 +159,12 @@ OTHER OPERATIONS ~
 - `.chmodx`Makes current file executable. Equivalent to `chmod   +x`.
 - `.trashFile`Move the current file to the trash location. Defaults to `gio   trash` on _Linux_, and `trash` on _macOS_ or _Windows_.
     - If bufdelete.nvim <https://github.com/famiu/bufdelete.nvim> is available,
-        `require'bufdelete.nvim'.bufwipeout` would be used to keep window layout
-        intact instead of `vim.cmd.bwipeout`.
+        `require("bufdelete.nvim").bufwipeout` is used to keep window layout intact
+        instead of `vim.cmd.bwipeout`.
 
 
-  [!NOTE] The trash CLIs are not available by default, and must be installed.
+  [!NOTE] The trash CLIs are usually not available by default, and must be
+  installed.
 
 WHY THAT NAME?                     *nvim-genghis-nvim-genghis--why-that-name?*
 
