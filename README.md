@@ -18,7 +18,7 @@ Lightweight and quick file operations without being a full-blown file manager.
 - [Usage](#usage)
 - [Available commands](#available-commands)
 	* [File operations](#file-operations)
-	* [Path copying](#path-copying)
+	* [Copy operations](#copy-operations)
 	* [Other operations](#other-operations)
 - [Why that name?](#why-that-name)
 - [About the author](#about-the-author)
@@ -68,6 +68,7 @@ require("genghis").setup {
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
 		copyPath = "󰅍",
+		file = "󰈔",
 		rename = "󰑕",
 		new = "",
 		duplicate = "",
@@ -112,7 +113,7 @@ The following applies to all commands above:
 3. All movement and renaming commands update `import` statements to the renamed
    file (if the LSP supports `workspace/willRenameFiles`).
 
-### Path copying
+### Copy operations
 - `.copyFilename`: Copy the file name.
 - `.copyFilepath`: Copy the absolute file path.
 - `.copyFilepathWithTilde`: Copy the absolute file path, replacing the home
@@ -120,6 +121,8 @@ The following applies to all commands above:
 - `.copyRelativePath`: Copy the relative file path.
 - `.copyDirectoryPath`: Copy the absolute directory path.
 - `.copyRelativeDirectoryPath`: Copy the relative directory path.
+- `.copyFileItself`: Copies the file itself. This means you can paste it into
+  the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
 

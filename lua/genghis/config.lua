@@ -25,6 +25,7 @@ local defaultConfig = {
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
 		copyPath = "󰅍",
+		file = "󰈔",
 		rename = "󰑕",
 		new = "",
 		duplicate = "",
