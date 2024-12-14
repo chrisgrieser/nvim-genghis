@@ -21,7 +21,6 @@ convenient file operations inside nvim.
 - [Available commands](#available-commands)
 	* [File operations](#file-operations)
 	* [Copy operations](#copy-operations)
-	* [Other operations](#other-operations)
 - [Why that name?](#why-that-name)
 - [About the author](#about-the-author)
 
@@ -110,6 +109,10 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
   old name if the new path ends with `/`. Works like the Unix `mv` command.
 - `.moveToFolderInCwd`: Move the current file to an existing folder in the
   current working directory.
+- `.chmodx`: Makes current file executable. Equivalent to `chmod
+  +x`.
+- `.trashFile`: Move the current file to the trash location. Defaults to `gio
+  trash` on *Linux*, and `trash` on *macOS* or *Windows*.
 
 The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
@@ -130,15 +133,6 @@ The following applies to all commands above:
   the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
-
-### Other operations
-- `.chmodx`: Makes current file executable. Equivalent to `chmod
-  +x`.
-- `.trashFile`: Move the current file to the trash location. Defaults to `gio
-  trash` on *Linux*, and `trash` on *macOS* or *Windows*.
-	* If [bufdelete.nvim](https://github.com/famiu/bufdelete.nvim) is available,
-	  `require("bufdelete.nvim").bufwipeout` is used to keep window layout intact
-	  instead of `vim.cmd.bwipeout`.
 
 > [!NOTE]
 > The trash CLIs are usually not available by default, and must be installed.
