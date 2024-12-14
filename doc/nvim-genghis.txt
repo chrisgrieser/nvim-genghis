@@ -1,4 +1,4 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2024 December 13
+*nvim-genghis.txt*           For Neovim          Last change: 2024 December 14
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -34,7 +34,6 @@ TABLE OF CONTENTS               *nvim-genghis-nvim-genghis--table-of-contents*
 - |nvim-genghis-available-commands|
     - |nvim-genghis-file-operations|
     - |nvim-genghis-copy-operations|
-    - |nvim-genghis-other-operations|
 - |nvim-genghis-why-that-name?|
 - |nvim-genghis-about-the-author|
 
@@ -130,6 +129,8 @@ FILE OPERATIONS ~
     old name if the new path ends with `/`. Works like the Unix `mv` command.
 - `.moveToFolderInCwd`Move the current file to an existing folder in the
     current working directory.
+- `.chmodx`Makes current file executable. Equivalent to `chmod   +x`.
+- `.trashFile`Move the current file to the trash location. Defaults to `gio   trash` on _Linux_, and `trash` on _macOS_ or _Windows_.
 
 The following applies to all commands above: 1. If no extension has been
 provided, uses the extension of the original file. 2. If the new file name
@@ -152,15 +153,6 @@ COPY OPERATIONS ~
     the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
-
-
-OTHER OPERATIONS ~
-
-- `.chmodx`Makes current file executable. Equivalent to `chmod   +x`.
-- `.trashFile`Move the current file to the trash location. Defaults to `gio   trash` on _Linux_, and `trash` on _macOS_ or _Windows_.
-    - If bufdelete.nvim <https://github.com/famiu/bufdelete.nvim> is available,
-        `require("bufdelete.nvim").bufwipeout` is used to keep window layout intact
-        instead of `vim.cmd.bwipeout`.
 
 
   [!NOTE] The trash CLIs are usually not available by default, and must be
