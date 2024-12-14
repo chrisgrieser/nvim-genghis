@@ -7,6 +7,7 @@ local osPathSep = package.config:sub(1, 1)
 
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
 local function fileOp(op)
+	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
 	local dir = vim.fs.dirname(oldFilePath) -- same directory, *not* pwd
@@ -85,7 +86,7 @@ local function fileOp(op)
 		if not extProvided then newName = newName .. oldExt end
 		local newFilePath = (op == "move-rename") and newName or dir .. osPathSep .. newName
 
-		if u.fileExists(newFilePath) then
+		if vim.uv.fs_stat(newFilePath) ~= nil then
 			u.notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
 		end
@@ -104,7 +105,7 @@ local function fileOp(op)
 			local success = rename.moveFile(oldFilePath, newFilePath)
 			if success then
 				vim.cmd.edit(newFilePath)
-				u.bwipeout("#")
+				vim.api.nvim_buf_delete(origBufNr, { force = true })
 				local msg = ("Renamed %q to %q."):format(oldName, newName)
 				u.notify(msg, "info", { icon = icons.rename })
 				if lspSupportsRenaming then vim.cmd.wall() end
@@ -135,6 +136,7 @@ function M.moveToFolderInCwd()
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
 	local cwd = vim.uv.cwd() .. osPathSep
 	local icons = require("genghis.config").config.icons
+	local origBufNr = vim.api.nvim_get_current_buf()
 
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
@@ -170,7 +172,7 @@ function M.moveToFolderInCwd()
 		local newFilePath = destination .. osPathSep .. filename
 
 		-- GUARD
-		if u.fileExists(newFilePath) then
+		if vim.uv.fs_stat(newFilePath) ~= nil then
 			u.notify(("File %q already exists at %q."):format(filename, destination), "error")
 			return
 		end
@@ -179,7 +181,7 @@ function M.moveToFolderInCwd()
 		local success = rename.moveFile(curFilePath, newFilePath)
 		if success then
 			vim.cmd.edit(newFilePath)
-			u.bwipeout("#")
+			vim.api.nvim_buf_delete(origBufNr, { force = true })
 			local msg = ("Moved %q to %q"):format(filename, destination)
 			local append = lspSupportsRenaming and " and updated imports." or "."
 			u.notify(msg .. append, "info", { icon = icons.move })
@@ -218,7 +220,7 @@ function M.trashFile()
 
 	-- handle the result
 	if result.code == 0 then
-		u.bwipeout()
+		vim.api.nvim_buf_delete(0, { force = true })
 		u.notify(("%q moved to trash."):format(oldName), "info", { icon = icon })
 	else
 		local outmsg = (result.stdout or "") .. (result.stderr or "")
