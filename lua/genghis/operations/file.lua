@@ -2,7 +2,7 @@ local M = {}
 
 local rename = require("genghis.support.lsp-rename")
 local u = require("genghis.support.utils")
-local osPathSep = package.config:sub(1, 1)
+local pathSep = package.config:sub(1, 1)
 --------------------------------------------------------------------------------
 
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
@@ -37,7 +37,7 @@ local function fileOp(op)
 		local text = lspSupportsRenaming and " Move and rename file & update imports:"
 			or " Move & rename file to:"
 		promptStr = icons.rename .. " " .. text
-		prefill = dir .. osPathSep
+		prefill = dir .. pathSep
 	elseif op == "new" or op == "new-from-selection" then
 		promptStr = icons.new .. " Name for new file: "
 		prefill = ""
@@ -76,7 +76,7 @@ local function fileOp(op)
 		end
 
 		-- DETERMINE PATH AND EXTENSION
-		local hasPath = newName:find(osPathSep)
+		local hasPath = newName:find(pathSep)
 		if hasPath then
 			local newFolder = vim.fs.dirname(newName)
 			vim.fn.mkdir(newFolder, "p") -- create folders if necessary
@@ -84,7 +84,7 @@ local function fileOp(op)
 
 		local extProvided = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
 		if not extProvided then newName = newName .. oldExt end
-		local newFilePath = (op == "move-rename") and newName or dir .. osPathSep .. newName
+		local newFilePath = (op == "move-rename") and newName or dir .. pathSep .. newName
 
 		if vim.uv.fs_stat(newFilePath) ~= nil then
 			u.notify(("File with name %q already exists."):format(newFilePath), "error")
@@ -131,23 +131,22 @@ function M.moveSelectionToNewFile() fileOp("new-from-selection") end
 
 function M.moveToFolderInCwd()
 	local curFilePath = vim.api.nvim_buf_get_name(0)
-	local parentOfCurFile = vim.fs.dirname(curFilePath) .. osPathSep
+	local parentOfCurFile = vim.fs.dirname(curFilePath)
 	local filename = vim.fs.basename(curFilePath)
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
-	local cwd = vim.uv.cwd() .. osPathSep
+	local cwd = vim.uv.cwd()
 	local icons = require("genghis.config").config.icons
 	local origBufNr = vim.api.nvim_get_current_buf()
 
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
-		local fullPath = path .. osPathSep .. name .. osPathSep
-		local relative_path = osPathSep .. vim.fn.fnamemodify(fullPath, ":~:.")
-		local ignoreDirs = relative_path:find("/%.git/")
-			or relative_path:find("%.app/") -- macos pseudo-folders
-			or relative_path:find("/node_modules/")
-			or relative_path:find("/%.venv/")
-			or relative_path:find("/%.") -- hidden folders
-			or fullPath == parentOfCurFile
+		local absPath = vim.fs.joinpath(path, name)
+		local relPath = absPath:sub(#cwd + 1) .. pathSep
+		local ignoreDirs = absPath == parentOfCurFile
+			or relPath:find("/node_modules/") -- js/ts
+			or relPath:find("/typings/") -- python
+			or relPath:find("%.app/") -- macos pseudo-folders
+			or relPath:find("/%.") -- hidden folders
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
 
@@ -166,10 +165,13 @@ function M.moveToFolderInCwd()
 	vim.ui.select(foldersInCwd, {
 		prompt = promptStr,
 		kind = "genghis.moveToFolderInCwd",
-		format_item = function(path) return path:sub(#cwd) end, -- only relative path
+		format_item = function(path)
+			local relPath = path:sub(#cwd + 1)
+			return (relPath == "" and "/" or relPath)
+		end,
 	}, function(destination)
 		if not destination then return end
-		local newFilePath = destination .. osPathSep .. filename
+		local newFilePath = vim.fs.joinpath(destination, filename)
 
 		-- GUARD
 		if vim.uv.fs_stat(newFilePath) ~= nil then
