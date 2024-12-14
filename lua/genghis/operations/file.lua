@@ -195,10 +195,10 @@ end
 function M.chmodx()
 	local icons = require("genghis.config").config.icons
 
-	local filename = vim.api.nvim_buf_get_name(0)
-	local perm = vim.fn.getfperm(filename)
+	local filepath = vim.api.nvim_buf_get_name(0)
+	local perm = vim.fn.getfperm(filepath)
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
-	vim.fn.setfperm(filename, perm)
+	vim.fn.setfperm(filepath, perm)
 
 	u.notify("Permission +x granted.", "info", { icon = icons.chmodx })
 	vim.cmd.edit() -- reload the file
@@ -206,8 +206,8 @@ end
 
 function M.trashFile()
 	vim.cmd("silent! update")
-	local oldFilePath = vim.api.nvim_buf_get_name(0)
-	local oldName = vim.fs.basename(oldFilePath)
+	local filepath = vim.api.nvim_buf_get_name(0)
+	local filename = vim.fs.basename(filepath)
 	local icon = require("genghis.config").config.icons.trash
 
 	-- execute the trash command
@@ -217,16 +217,16 @@ function M.trashFile()
 		return
 	end
 	if type(trashCmd) == "string" then trashCmd = { trashCmd } end
-	table.insert(trashCmd, oldFilePath)
-	local result = vim.system(trashCmd):wait()
+	table.insert(trashCmd, filepath)
+	local out = vim.system(trashCmd):wait()
 
 	-- handle the result
-	if result.code == 0 then
+	if out.code == 0 then
 		vim.api.nvim_buf_delete(0, { force = true })
-		u.notify(("%q moved to trash."):format(oldName), "info", { icon = icon })
+		u.notify(("%q moved to trash."):format(filename), "info", { icon = icon })
 	else
-		local outmsg = (result.stdout or "") .. (result.stderr or "")
-		u.notify(("Trashing %q failed: %s"):format(oldName, outmsg), "error")
+		local outmsg = (out.stdout or "") .. (out.stderr or "")
+		u.notify(("Trashing %q failed: %s"):format(filename, outmsg), "error")
 	end
 end
 
