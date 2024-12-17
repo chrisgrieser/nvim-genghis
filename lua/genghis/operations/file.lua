@@ -230,5 +230,17 @@ function M.trashFile()
 	end
 end
 
+function M.showInSystemExplorer()
+	if jit.os ~= "OSX" then
+		u.notify("Currently only available on macOS.", "warn")
+		return
+	end
+
+	local out = vim.system({ "open", "-R", vim.api.nvim_buf_get_name(0) }):wait()
+	if out.code ~= 0 then
+		local icon = require("genghis.config").config.icons.file
+		u.notify("Failed: " .. out.stderr, "error", { icon = icon })
+	end
+end
 --------------------------------------------------------------------------------
 return M
