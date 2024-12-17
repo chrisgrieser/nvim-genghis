@@ -26,10 +26,11 @@ local defaultConfig = {
 	icons = {
 		chmodx = "󰒃",
 		copyPath = "󰅍",
+		copyFile = "󱉥",
 		duplicate = "",
 		file = "󰈔",
 		move = "󰪹",
-		new = "",
+		new = "󰝒",
 		rename = "󰑕",
 		trash = "󰩹",
 	},

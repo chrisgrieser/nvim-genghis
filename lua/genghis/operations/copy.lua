@@ -29,7 +29,7 @@ function M.copyFileItself()
 		return
 	end
 
-	local icon = require("genghis.config").config.icons.file
+	local icon = require("genghis.config").config.icons.copyFile
 	local path = vim.api.nvim_buf_get_name(0)
 	local applescript = 'tell application "Finder" to set the clipboard to '
 		.. ("POSIX file %q"):format(path)
