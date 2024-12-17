@@ -1,4 +1,4 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2024 December 14
+*nvim-genghis.txt*           For Neovim          Last change: 2024 December 17
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -131,6 +131,8 @@ FILE OPERATIONS ~
     current working directory.
 - `.chmodx`Makes current file executable. Equivalent to `chmod   +x`.
 - `.trashFile`Move the current file to the trash location. Defaults to `gio   trash` on _Linux_, and `trash` on _macOS_ or _Windows_.
+- `.showInSystemExplorer`Reveals the current file in the system explorer, such
+    as macOS Finder. (Currently only on macOS, PRs welcome.)
 
 The following applies to all commands above: 1. If no extension has been
 provided, uses the extension of the original file. 2. If the new file name
