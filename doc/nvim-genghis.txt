@@ -88,10 +88,11 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
         icons = {
             chmodx = "󰒃",
             copyPath = "󰅍",
+            copyFile = "󱉥",
             duplicate = "",
             file = "󰈔",
             move = "󰪹",
-            new = "",
+            new = "󰝒",
             rename = "󰑕",
             trash = "󰩹",
         }
