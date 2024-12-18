@@ -32,18 +32,19 @@ convenient file operations inside nvim.
 - **Copy** the path or name of the current file in various formats.
 - All movement and renaming commands **update `import` statements** to the
   renamed file (if the LSP supports `workspace/willRenameFiles`).
-- **Quality of life**: automatically keep the extension when no extension is
+- **Quality-of-life**: automatically keep the extension when no extension is
   given, use vim motions in the input field, confirmatory notifications, and
   more.
 - **Lightweight**: no file management UI or file tree.
 
 ## Installation
 **Requirements**
-- nvim 0.10 or higher
-- *for nice input UI*: a `vim.ui.input` provider such as
+- nvim 0.10+
+- a `vim.ui.input` provider such as
   [dressing.nvim](http://github.com/stevearc/dressing.nvim) or
-  [snacks.nvim](http://github.com/folke/snacks.nvim)
-- *for the trash command*: an OS-specific trash CLI like `gio trash` or `trash`.
+  [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
+  **supports vim motions** and also looks much nicer
+- *for the trash command*: an OS-specific trash CLI like `trash` or `gio trash`
 
 ```lua
 -- lazy.nvim
@@ -103,17 +104,17 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 - `.createNewFile`: Create a new file.
 - `.duplicateFile`: Duplicate the current file.
 - `.moveSelectionToNewFile`: Prompts for a new file name
-  and moves the current selection to that new file. (Note that this is a Visual
-  Line mode command, the selection is moved linewise.)
+  and moves the current selection to that new file. (Visual
+  Line command, the selection is moved linewise.)
 - `.renameFile`: Rename the current file.
 - `.moveAndRenameFile`: Move and Rename the current file. Keeps the
   old name if the new path ends with `/`. Works like the Unix `mv` command.
 - `.moveToFolderInCwd`: Move the current file to an existing folder in the
   current working directory.
-- `.chmodx`: Makes current file executable. Equivalent to `chmod
-  +x`.
-- `.trashFile`: Move the current file to the trash location. Defaults to `gio
-  trash` on *Linux*, and `trash` on *macOS* or *Windows*.
+- `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
+- `.trashFile`: Move the current file to the trash. Defaults to `gio trash` on
+  *Linux*, and `trash` on *macOS* or *Windows*. (The trash CLIs must usually be
+  installed.)
 - `.showInSystemExplorer`: Reveals the current file in the system explorer, such
   as macOS Finder. (Currently only on macOS, PRs welcome.)
 
@@ -136,9 +137,6 @@ The following applies to all commands above:
   the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
-
-> [!NOTE]
-> The trash CLIs are usually not available by default, and must be installed.
 
 ## Why that name?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
