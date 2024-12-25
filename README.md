@@ -18,10 +18,9 @@ convenient file operations inside nvim.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Available commands](#available-commands)
 	* [File operations](#file-operations)
 	* [Copy operations](#copy-operations)
-- [Why that name?](#why-that-name)
+- [Why the name "Genghis"?](#why-the-name-genghis)
 - [About the author](#about-the-author)
 
 <!-- tocstop -->
@@ -48,15 +47,10 @@ convenient file operations inside nvim.
 
 ```lua
 -- lazy.nvim
-{ 
-	"chrisgrieser/nvim-genghis",
-	cmd = "Genghis",
-},
+{ "chrisgrieser/nvim-genghis" },
 
 -- packer
-use { 
-	"chrisgrieser/nvim-genghis", 
-}
+use { "chrisgrieser/nvim-genghis" }
 ```
 
 ## Configuration
@@ -85,7 +79,7 @@ require("genghis").setup {
 ```
 
 ## Usage
-You can access a command via the lua API:
+You can access a command as lua function:
 
 ```lua
 require("genghis").createNewFile()
@@ -93,11 +87,9 @@ require("genghis").createNewFile()
 
 Or you can use the ex command `:Genghis` with the respective sub-command:
 
-```txt
+```vim
 :Genghis createNewFile
 ```
-
-## Available commands
 
 ### File operations
 - `.createNewFile`: Create a new file.
@@ -137,7 +129,7 @@ The following applies to all commands above:
 
 All commands use the system clipboard.
 
-## Why that name?
+## Why the name "Genghis"?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
 plugin with a similar goal. As opposed to childless eunuchs, it is said that
 Genghis Khan [has fathered thousands of
