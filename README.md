@@ -51,7 +51,6 @@ convenient file operations inside nvim.
 { 
 	"chrisgrieser/nvim-genghis",
 	cmd = "Genghis",
-	opts = {}, -- empty table needed even for default config
 },
 
 -- packer
