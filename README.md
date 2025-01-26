@@ -27,15 +27,19 @@ convenient file operations inside nvim.
 <!-- tocstop -->
 
 ## Features
+**Commands**
 - Perform **common file operations**: moving, renaming, creating, deleting, or
   duplicating files.
 - **Copy** the path or name of the current file in various formats.
+- **Navigate** to the next or previous file in the current folder.
+- **Lightweight**: This plugin only provides utility file operations, it does
+  not provide a full-blown file manager UI.
+
+**Quality-of-life**
 - All movement and renaming commands **update `import` statements** to the
   renamed file (if the LSP supports `workspace/willRenameFiles`).
-- **Quality-of-life**: automatically keep the extension when no extension is
-  given, use vim motions in the input field, confirmatory notifications, and
-  more.
-- **Lightweight**: no file management UI or file tree.
+- Automatically keep the extension when no extension is given.
+- Use vim motions in the input field.
 
 ## Installation
 **Requirements**
@@ -140,7 +144,7 @@ All commands use the system clipboard.
 
 ### File navigation
 `.navigateToFileInFolder("next"|"prev")`: Move to the next/previous file in the
-current folder (in alphabetical order).
+current folder of the current file, in alphabetical order.
 - If `snacks.nvim` is installed, displays a cycling notification.
 
 ## Why the name "Genghis"?
