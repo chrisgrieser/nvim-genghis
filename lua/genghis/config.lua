@@ -34,6 +34,8 @@ local defaultConfig = {
 		rename = "󰑕",
 		trash = "󰩹",
 	},
+
+	successNotifications = true,
 }
 
 M.config = defaultConfig

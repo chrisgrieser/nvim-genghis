@@ -42,7 +42,7 @@ convenient file operations inside nvim.
 - a `vim.ui.input` provider such as
   [dressing.nvim](http://github.com/stevearc/dressing.nvim) or
   [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
-  **supports vim motions** and also looks much nicer
+  **supports vim motions** and looks much nicer
 - *for the trash command*: an OS-specific trash CLI like `trash` or `gio trash`
 
 ```lua
@@ -75,6 +75,8 @@ require("genghis").setup {
 		rename = "󰑕",
 		trash = "󰩹",
 	}
+
+	successNotifications = true,
 }
 ```
 
