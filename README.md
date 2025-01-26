@@ -20,6 +20,7 @@ convenient file operations inside nvim.
 - [Usage](#usage)
 	* [File operations](#file-operations)
 	* [Copy operations](#copy-operations)
+	* [File navigation](#file-navigation)
 - [Why the name "Genghis"?](#why-the-name-genghis)
 - [About the author](#about-the-author)
 
@@ -59,22 +60,28 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 ```lua
 -- default config
 require("genghis").setup {
-	-- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
-	trashCmd = "trash",
+	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+	trashCmd = setDefaultTrashCmd(),
 
 	-- set to empty string to disable
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
 		chmodx = "󰒃",
-		copyPath = "󰅍",
 		copyFile = "󱉥",
+		copyPath = "󰅍",
 		duplicate = "",
 		file = "󰈔",
 		move = "󰪹",
 		new = "󰝒",
+		nextFile = "󰖽",
+		prevFile = "󰖿",
 		rename = "󰑕",
 		trash = "󰩹",
-	}
+	},
+
+	navigation = {
+		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip" },
+	},
 
 	successNotifications = true,
 }
@@ -130,6 +137,11 @@ The following applies to all commands above:
   the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
+
+### File navigation
+`.navigateToFileInFolder("next"|"prev")`: Move to the next/previous file in the
+current folder (in alphabetical order).
+- If `snacks.nvim` is installed, displays a cycling notification.
 
 ## Why the name "Genghis"?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript

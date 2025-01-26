@@ -25,14 +25,20 @@ local defaultConfig = {
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
 	icons = {
 		chmodx = "󰒃",
-		copyPath = "󰅍",
 		copyFile = "󱉥",
+		copyPath = "󰅍",
 		duplicate = "",
 		file = "󰈔",
 		move = "󰪹",
 		new = "󰝒",
+		nextFile = "󰖽",
+		prevFile = "󰖿",
 		rename = "󰑕",
 		trash = "󰩹",
+	},
+
+	navigation = {
+		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip" },
 	},
 
 	successNotifications = true,

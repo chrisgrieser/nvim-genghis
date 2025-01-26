@@ -10,6 +10,11 @@ local M = {}
 ---@param userConfig? Genghis.config
 function M.setup(userConfig) require("genghis.config").setup(userConfig) end
 
+---@param direction? "next"|"prev"
+function M.navigateToFileInFolder(direction)
+	require("genghis.operations.navigation").fileInFolder(direction)
+end
+
 setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
