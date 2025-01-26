@@ -1,4 +1,4 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2024 December 25
+*nvim-genghis.txt*           For Neovim           Last change: 2025 January 26
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -32,21 +32,23 @@ TABLE OF CONTENTS               *nvim-genghis-nvim-genghis--table-of-contents*
 - |nvim-genghis-usage|
     - |nvim-genghis-file-operations|
     - |nvim-genghis-copy-operations|
+    - |nvim-genghis-file-navigation|
 - |nvim-genghis-why-the-name-"genghis"?|
 - |nvim-genghis-about-the-author|
 
 
 FEATURES                                 *nvim-genghis-nvim-genghis--features*
 
-- Perform **common file operations**moving, renaming, creating, deleting, or
-    duplicating files.
-- **Copy** the path or name of the current file in various formats.
-- All movement and renaming commands **update import statements** to the
-    renamed file (if the LSP supports `workspace/willRenameFiles`).
-- **Quality-of-life**automatically keep the extension when no extension is
-    given, use vim motions in the input field, confirmatory notifications, and
-    more.
-- **Lightweight**no file management UI or file tree.
+**Commands** - Perform **common file operations**moving, renaming, creating,
+deleting, or duplicating files. - **Copy** the path or name of the current file
+in various formats. - **Navigate** to the next or previous file in the current
+folder. - **Lightweight**This plugin only provides utility file operations, it
+does not provide a full-blown file manager UI.
+
+**Quality-of-life** - All movement and renaming commands **update import
+statements** to the renamed file (if the LSP supports
+`workspace/willRenameFiles`). - Automatically keep the extension when no
+extension is given. - Use vim motions in the input field.
 
 
 INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
@@ -54,8 +56,8 @@ INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
 **Requirements** - nvim 0.10+ - a `vim.ui.input` provider such as dressing.nvim
 <http://github.com/stevearc/dressing.nvim> or snacks.nvim
 <http://github.com/folke/snacks.nvim> for an input UI that **supports vim
-motions** and also looks much nicer - _for the trash command_an OS-specific
-trash CLI like `trash` or `gio trash`
+motions** and looks much nicer - _for the trash command_an OS-specific trash
+CLI like `trash` or `gio trash`
 
 >lua
     -- lazy.nvim
@@ -73,22 +75,30 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 >lua
     -- default config
     require("genghis").setup {
-        -- default is `"trash"` on Mac/Windows, and `{ "gio", "trash" }` on Linux
-        trashCmd = "trash",
+        -- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+        trashCmd = setDefaultTrashCmd(),
     
         -- set to empty string to disable
         -- (some icons are only used for notification plugins like `snacks.nvim`)
         icons = {
             chmodx = "󰒃",
-            copyPath = "󰅍",
             copyFile = "󱉥",
+            copyPath = "󰅍",
             duplicate = "",
             file = "󰈔",
             move = "󰪹",
             new = "󰝒",
+            nextFile = "󰖽",
+            prevFile = "󰖿",
             rename = "󰑕",
             trash = "󰩹",
-        }
+        },
+    
+        navigation = {
+            ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip" },
+        },
+    
+        successNotifications = true,
     }
 <
 
@@ -148,6 +158,13 @@ COPY OPERATIONS ~
     the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
+
+
+FILE NAVIGATION ~
+
+`.navigateToFileInFolder("next"|"prev")`Move to the next/previous file in the
+current folder of the current file, in alphabetical order. - If `snacks.nvim`
+is installed, displays a cycling notification.
 
 
 WHY THE NAME “GENGHIS”?*nvim-genghis-nvim-genghis--why-the-name-“genghis”?*
