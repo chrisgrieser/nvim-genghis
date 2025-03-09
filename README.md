@@ -47,8 +47,10 @@ convenient file operations inside nvim.
 - a `vim.ui.input` provider such as
   [dressing.nvim](http://github.com/stevearc/dressing.nvim) or
   [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
-  **supports vim motions** and looks much nicer
-- *for the trash command*: an OS-specific trash CLI like `trash` or `gio trash`
+  **supports vim motions** and looks much nicer.
+- *For the trash command*: an OS-specific trash CLI like `trash` or `gio trash`.
+  On macOS 14+, there is a `trash` cli already built-in, so there is no need to
+  install anything.
 
 ```lua
 -- lazy.nvim
@@ -65,6 +67,7 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 -- default config
 require("genghis").setup {
 	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+	---@type string|string[]|false
 	trashCmd = setDefaultTrashCmd(),
 
 	-- set to empty string to disable

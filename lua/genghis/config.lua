@@ -5,7 +5,7 @@ local M = {}
 local function setDefaultTrashCmd()
 	local osTrashCmd
 	if jit.os == "OSX" then
-		osTrashCmd = "trash"
+		osTrashCmd = "trash" -- builtin since macOS 14,  needs `macos-trash`
 	elseif jit.os == "Windows" then
 		osTrashCmd = "trash"
 	elseif jit.os == "Linux" then
@@ -19,6 +19,7 @@ end
 ---@class Genghis.config
 local defaultConfig = {
 	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+	---@type string|string[]|false
 	trashCmd = setDefaultTrashCmd(),
 
 	-- set to empty string to disable
