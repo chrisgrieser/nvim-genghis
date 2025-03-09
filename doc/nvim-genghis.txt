@@ -1,4 +1,4 @@
-*nvim-genghis.txt*           For Neovim           Last change: 2025 January 26
+*nvim-genghis.txt*            For Neovim            Last change: 2025 March 09
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -53,11 +53,12 @@ extension is given. - Use vim motions in the input field.
 
 INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
 
-**Requirements** - nvim 0.10+ - a `vim.ui.input` provider such as dressing.nvim
+**Requirements** - nvim 0.10+ - A `vim.ui.input` provider such as dressing.nvim
 <http://github.com/stevearc/dressing.nvim> or snacks.nvim
 <http://github.com/folke/snacks.nvim> for an input UI that **supports vim
-motions** and looks much nicer - _for the trash command_an OS-specific trash
-CLI like `trash` or `gio trash`
+motions** and looks much nicer. - _For the trash command_an OS-specific trash
+CLI like `trash` or `gio trash`. On macOS 14+, there is a `trash` cli already
+built-in, so there is no need to install anything.
 
 >lua
     -- lazy.nvim
@@ -76,6 +77,7 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
     -- default config
     require("genghis").setup {
         -- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
+        ---@type string|string[]|false
         trashCmd = setDefaultTrashCmd(),
     
         -- set to empty string to disable
@@ -122,7 +124,7 @@ FILE OPERATIONS ~
 
 - `.createNewFile`Create a new file.
 - `.duplicateFile`Duplicate the current file.
-- `.moveSelectionToNewFile`Prompts for a new file name
+- `.moveSelectionToNewFile`Prompts for a new filename
     and moves the current selection to that new file. (Visual
     Line command, the selection is moved linewise.)
 - `.renameFile`Rename the current file.
@@ -138,7 +140,7 @@ FILE OPERATIONS ~
     as macOS Finder. (Currently only on macOS, PRs welcome.)
 
 The following applies to all commands above: 1. If no extension has been
-provided, uses the extension of the original file. 2. If the new file name
+provided, uses the extension of the original file. 2. If the new filename
 includes a `/`, the new file is placed in the respective subdirectory, creating
 any non-existing intermediate folders. 3. All movement and renaming commands
 update `import` statements to the renamed file (if the LSP supports
@@ -147,7 +149,7 @@ update `import` statements to the renamed file (if the LSP supports
 
 COPY OPERATIONS ~
 
-- `.copyFilename`Copy the file name.
+- `.copyFilename`Copy the filename.
 - `.copyFilepath`Copy the absolute file path.
 - `.copyFilepathWithTilde`Copy the absolute file path, replacing the home
     directory with `~`.
