@@ -44,7 +44,7 @@ convenient file operations inside nvim.
 ## Installation
 **Requirements**
 - nvim 0.10+
-- a `vim.ui.input` provider such as
+- A `vim.ui.input` provider such as
   [dressing.nvim](http://github.com/stevearc/dressing.nvim) or
   [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
   **supports vim motions** and looks much nicer.
@@ -110,7 +110,7 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 ### File operations
 - `.createNewFile`: Create a new file.
 - `.duplicateFile`: Duplicate the current file.
-- `.moveSelectionToNewFile`: Prompts for a new file name
+- `.moveSelectionToNewFile`: Prompts for a new filename
   and moves the current selection to that new file. (Visual
   Line command, the selection is moved linewise.)
 - `.renameFile`: Rename the current file.
@@ -127,13 +127,13 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 
 The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
-2. If the new file name includes a `/`, the new file is placed in the
+2. If the new filename includes a `/`, the new file is placed in the
    respective subdirectory, creating any non-existing intermediate folders.
 3. All movement and renaming commands update `import` statements to the renamed
    file (if the LSP supports `workspace/willRenameFiles`).
 
 ### Copy operations
-- `.copyFilename`: Copy the file name.
+- `.copyFilename`: Copy the filename.
 - `.copyFilepath`: Copy the absolute file path.
 - `.copyFilepathWithTilde`: Copy the absolute file path, replacing the home
   directory with `~`.
