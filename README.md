@@ -108,21 +108,21 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 ```
 
 ### File operations
-- `.createNewFile`: Create a new file.
-- `.duplicateFile`: Duplicate the current file.
-- `.moveSelectionToNewFile`: Prompts for a new filename
+- `createNewFile`: Create a new file.
+- `duplicateFile`: Duplicate the current file.
+- `moveSelectionToNewFile`: Prompts for a new filename
   and moves the current selection to that new file. (Visual
   Line command, the selection is moved linewise.)
-- `.renameFile`: Rename the current file.
-- `.moveAndRenameFile`: Move and Rename the current file. Keeps the
+- `renameFile`: Rename the current file.
+- `moveAndRenameFile`: Move and Rename the current file. Keeps the
   old name if the new path ends with `/`. Works like the Unix `mv` command.
-- `.moveToFolderInCwd`: Move the current file to an existing folder in the
+- `moveToFolderInCwd`: Move the current file to an existing folder in the
   current working directory.
-- `.chmodx`: Makes current file executable. Equivalent to `chmod +x`.
-- `.trashFile`: Move the current file to the trash. Defaults to `gio trash` on
+- `chmodx`: Makes current file executable. Equivalent to `chmod +x`.
+- `trashFile`: Move the current file to the trash. Defaults to `gio trash` on
   *Linux*, and `trash` on *macOS* or *Windows*. (The trash CLIs must usually be
   installed.)
-- `.showInSystemExplorer`: Reveals the current file in the system explorer, such
+- `showInSystemExplorer`: Reveals the current file in the system explorer, such
   as macOS Finder. (Currently only on macOS, PRs welcome.)
 
 The following applies to all commands above:
@@ -133,14 +133,14 @@ The following applies to all commands above:
    file (if the LSP supports `workspace/willRenameFiles`).
 
 ### Copy operations
-- `.copyFilename`: Copy the filename.
-- `.copyFilepath`: Copy the absolute file path.
-- `.copyFilepathWithTilde`: Copy the absolute file path, replacing the home
+- `copyFilename`: Copy the filename.
+- `copyFilepath`: Copy the absolute file path.
+- `copyFilepathWithTilde`: Copy the absolute file path, replacing the home
   directory with `~`.
-- `.copyRelativePath`: Copy the relative file path.
-- `.copyDirectoryPath`: Copy the absolute directory path.
-- `.copyRelativeDirectoryPath`: Copy the relative directory path.
-- `.copyFileItself`: Copies the file itself. This means you can paste it into
+- `copyRelativePath`: Copy the relative file path.
+- `copyDirectoryPath`: Copy the absolute directory path.
+- `copyRelativeDirectoryPath`: Copy the relative directory path.
+- `copyFileItself`: Copies the file itself. This means you can paste it into
   the browser or file manager. (Currently only on macOS, PRs welcome.)
 
 All commands use the system clipboard.
