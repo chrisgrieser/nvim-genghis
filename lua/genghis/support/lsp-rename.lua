@@ -9,8 +9,8 @@ local M = {}
 function M.sendWillRenameToLsp(fromName, toName)
 	local clients = vim.lsp.get_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
-		if client.supports_method("workspace/willRenameFiles") then
-			local response = client.request_sync("workspace/willRenameFiles", {
+		if client:supports_method("workspace/willRenameFiles") then
+			local response = client:request_sync("workspace/willRenameFiles", {
 				files = {
 					{ oldUri = vim.uri_from_fname(fromName), newUri = vim.uri_from_fname(toName) },
 				},
@@ -25,16 +25,9 @@ end
 ---@nodiscard
 ---@return boolean
 function M.lspSupportsRenaming()
-	-- INFO `client.supports_method()` seems often falsely returning true. This
-	-- does not affect `onRename`, but here we need to check for the server
-	-- capabilities to properly identify whether our LSP supports renaming or not.
 	local clients = vim.lsp.get_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
-		local workspaceCap = client.server_capabilities.workspace
-		local supports = workspaceCap
-			and workspaceCap.fileOperations
-			and workspaceCap.fileOperations.willRename
-		if supports then return true end
+		if client:supports_method("workspace/willRenameFiles") then return true end
 	end
 	return false
 end
