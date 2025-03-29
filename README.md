@@ -66,9 +66,13 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 ```lua
 -- default config
 require("genghis").setup {
-	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
-	---@type string|string[]|false
-	trashCmd = setDefaultTrashCmd(),
+	---@type fun(): string|string[]
+	trashCmd = function()
+		if jit.os == "OSX" then return "trash" end -- builtin since macOS 14
+		if jit.os == "Windows" then return "trash" end
+		if jit.os == "Linux" then return { "gio", "trash" } end
+		return "trash-cli"
+	end,
 
 	-- set to empty string to disable
 	-- (some icons are only used for notification plugins like `snacks.nvim`)

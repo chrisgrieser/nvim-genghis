@@ -209,16 +209,18 @@ function M.trashFile()
 	local filepath = vim.api.nvim_buf_get_name(0)
 	local filename = vim.fs.basename(filepath)
 	local icon = require("genghis.config").config.icons.trash
+	local trashCmd = require("genghis.config").config.trashCmd
 
 	-- execute the trash command
-	local trashCmd = require("genghis.config").config.trashCmd
-	if not trashCmd then
-		u.notify("Unknown operating system. Please provide a custom `trashCmd`.", "warn")
+	if type(trashCmd) ~= "function" then
+		-- DEPRECATION (2025-03-29)
+		u.notify("`trashCmd` now expects a function, see the README.", "warn")
 		return
 	end
-	if type(trashCmd) == "string" then trashCmd = { trashCmd } end
-	table.insert(trashCmd, filepath)
-	local out = vim.system(trashCmd):wait()
+	local cmd = trashCmd()
+	if type(cmd) ~= "table" then cmd = { cmd } end
+	table.insert(cmd, filepath)
+	local out = vim.system(cmd):wait()
 
 	-- handle the result
 	if out.code == 0 then

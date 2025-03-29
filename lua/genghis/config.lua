@@ -1,26 +1,15 @@
 local M = {}
 --------------------------------------------------------------------------------
 
----@return string|string[]|false
-local function setDefaultTrashCmd()
-	local osTrashCmd
-	if jit.os == "OSX" then
-		osTrashCmd = "trash" -- builtin since macOS 14,  needs `macos-trash`
-	elseif jit.os == "Windows" then
-		osTrashCmd = "trash"
-	elseif jit.os == "Linux" then
-		osTrashCmd = { "gio", "trash" }
-	else
-		return false
-	end
-	return osTrashCmd
-end
-
 ---@class Genghis.config
 local defaultConfig = {
-	-- cli name, default is `trash` on Mac and Windows, and `gio trash` on Linux
-	---@type string|string[]|false
-	trashCmd = setDefaultTrashCmd(),
+	---@type fun(): string|string[]
+	trashCmd = function()
+		if jit.os == "OSX" then return "trash" end -- builtin since macOS 14
+		if jit.os == "Windows" then return "trash" end
+		if jit.os == "Linux" then return { "gio", "trash" } end
+		return "trash-cli"
+	end,
 
 	-- set to empty string to disable
 	-- (some icons are only used for notification plugins like `snacks.nvim`)
