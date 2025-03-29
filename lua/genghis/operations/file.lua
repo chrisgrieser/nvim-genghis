@@ -102,7 +102,7 @@ local function fileOp(op)
 			end
 		elseif op == "rename" or op == "move-rename" then
 			rename.sendWillRenameToLsp(oldFilePath, newFilePath)
-			local success = rename.moveFile(oldFilePath, newFilePath)
+			local success = u.moveFileConsideringPartition(oldFilePath, newFilePath)
 			if success then
 				vim.cmd.edit(newFilePath)
 				vim.api.nvim_buf_delete(origBufNr, { force = true })
@@ -180,7 +180,7 @@ function M.moveToFolderInCwd()
 		end
 
 		rename.sendWillRenameToLsp(curFilePath, newFilePath)
-		local success = rename.moveFile(curFilePath, newFilePath)
+		local success = u.moveFileConsideringPartition(curFilePath, newFilePath)
 		if success then
 			vim.cmd.edit(newFilePath)
 			vim.api.nvim_buf_delete(origBufNr, { force = true })

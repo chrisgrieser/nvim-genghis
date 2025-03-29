@@ -32,30 +32,5 @@ function M.lspSupportsRenaming()
 	return false
 end
 
----@param oldFilePath string
----@param newFilePath string
-function M.moveFile(oldFilePath, newFilePath)
-	local u = require("genghis.support.utils")
-
-	local renamed, _ = vim.uv.fs_rename(oldFilePath, newFilePath)
-	if renamed then return true end
-
-	---try `fs_copyfile` to support moving across partitions
-	local copied, copiedError = vim.uv.fs_copyfile(oldFilePath, newFilePath)
-	if copied then
-		local deleted, deletedError = vim.uv.fs_unlink(oldFilePath)
-		if deleted then
-			return true
-		else
-			u.notify(("Failed to delete %q: %q"):format(oldFilePath, deletedError), "error")
-			return false
-		end
-	else
-		local msg = ("Failed to copy %q to %q: %q"):format(oldFilePath, newFilePath, copiedError)
-		u.notify(msg, "error")
-		return false
-	end
-end
-
 --------------------------------------------------------------------------------
 return M
