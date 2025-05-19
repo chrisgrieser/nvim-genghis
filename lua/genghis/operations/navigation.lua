@@ -39,9 +39,12 @@ function M.fileInFolder(direction)
 		return acc
 	end)
 
-	-- GUARD if currently at a hidden file and there are only hidden files in the dir
-	if #filesInFolder == 0 then
-		vim.notify("No valid files found in folder.", vim.log.levels.ERROR, notifyOpts)
+	-- GUARD no files to navigate to
+	if #filesInFolder == 0 then -- if currently at a hidden file and there are only hidden files in the dir
+		vim.notify("No valid files found in folder.", vim.log.levels.WARN, notifyOpts)
+		return
+	elseif #filesInFolder == 1 then
+		vim.notify("Already at the only valid file.", vim.log.levels.WARN, notifyOpts)
 		return
 	end
 
