@@ -12,16 +12,14 @@ function M.fileInFolder(direction)
 		return
 	end
 
-	local ignoreExt = require("genghis.config").config.navigation.ignoreExt
-	local icons = require("genghis.config").config.icons
-
+	local config = require("genghis.config").config
 	local curPath = vim.api.nvim_buf_get_name(0)
 	local curFile = vim.fs.basename(curPath)
 	local curFolder = vim.fs.dirname(curPath)
 
 	local notifyOpts = {
 		title = direction:sub(1, 1):upper() .. direction:sub(2) .. " file",
-		icon = direction == "next" and icons.nextFile or "󰖿",
+		icon = direction == "next" and config.icons.nextFile or "󰖿",
 		id = "next-in-folder", -- replace notifications when quickly cycling
 		ft = "markdown", -- so `h1` is highlighted
 	}
@@ -30,8 +28,14 @@ function M.fileInFolder(direction)
 	local itemsInFolder = vim.fs.dir(curFolder) -- INFO `fs.dir` already returns them sorted
 	local filesInFolder = vim.iter(itemsInFolder):fold({}, function(acc, name, type)
 		local ext = name:match("%.(%w+)$")
-		if type ~= "file" or name:find("^%.") or vim.tbl_contains(ignoreExt, ext) then return acc end
-		table.insert(acc, name) -- select only name
+		local curExt = curFile:match("%.(%w+)$")
+		local sameExt = config.navigation.onlySameExtAsCurrentFile and ext == curExt
+		local ignoredExt = vim.tbl_contains(config.navigation.ignoreExt, ext)
+		local dotfile = name:find("^%.")
+
+		if type == "file" and not dotfile and not ignoredExt and sameExt then
+			table.insert(acc, name) -- select only name
+		end
 		return acc
 	end)
 

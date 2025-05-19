@@ -28,6 +28,7 @@ local defaultConfig = {
 	},
 
 	navigation = {
+		onlySameExtAsCurrentFile = false,
 		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip" },
 	},
 
