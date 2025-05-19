@@ -29,11 +29,11 @@ function M.fileInFolder(direction)
 	local filesInFolder = vim.iter(itemsInFolder):fold({}, function(acc, name, type)
 		local ext = name:match("%.(%w+)$")
 		local curExt = curFile:match("%.(%w+)$")
-		local sameExt = config.navigation.onlySameExtAsCurrentFile and ext == curExt
-		local ignoredExt = vim.tbl_contains(config.navigation.ignoreExt, ext)
-		local dotfile = name:find("^%.")
 
-		if type == "file" and not dotfile and not ignoredExt and sameExt then
+		local sameExt = config.navigation.onlySameExtAsCurrentFile and ext == curExt
+		local notIgnoredExt = not vim.tbl_contains(config.navigation.ignoreExt, ext)
+		local notDotfile = config.navigation.ignoreDotfiles and not vim.startswith(name, ".")
+		if type == "file" and notDotfile and notIgnoredExt and sameExt then
 			table.insert(acc, name) -- select only name
 		end
 		return acc
