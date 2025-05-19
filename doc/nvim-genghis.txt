@@ -1,4 +1,4 @@
-*nvim-genghis.txt*             For Neovim             Last change: 2025 May 03
+*nvim-genghis.txt*             For Neovim             Last change: 2025 May 19
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -101,6 +101,8 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
         },
     
         navigation = {
+            onlySameExtAsCurrentFile = false,
+            ignoreDotfiles = true,
             ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip" },
         },
     
