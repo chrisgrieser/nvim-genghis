@@ -4,7 +4,7 @@ local u = require("genghis.support.utils")
 
 ---Notification specific to file switching
 ---@param msg string
----@param level "info"|"warn"|"error" 
+---@param level "info"|"warn"|"error"
 ---@param opts? table
 local function notify(msg, level, opts)
 	opts = opts or {}
@@ -41,10 +41,11 @@ function M.fileInFolder(direction)
 		local ext = name:match("%.(%w+)$")
 		local curExt = curFile:match("%.(%w+)$")
 
-		local sameExt = config.navigation.onlySameExtAsCurrentFile and ext == curExt
-		local notIgnoredExt = not vim.tbl_contains(config.navigation.ignoreExt, ext)
-		local notDotfile = config.navigation.ignoreDotfiles and not vim.startswith(name, ".")
-		if type == "file" and notDotfile and notIgnoredExt and sameExt then
+		local ignored = (config.navigation.onlySameExtAsCurrentFile and ext ~= curExt)
+			or vim.tbl_contains(config.navigation.ignoreExt, ext)
+			or (config.navigation.ignoreDotfiles and vim.startswith(name, "."))
+
+		if type == "file" and not ignored then
 			table.insert(acc, name) -- select only name
 		end
 		return acc

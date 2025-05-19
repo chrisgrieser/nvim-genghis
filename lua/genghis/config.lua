@@ -30,7 +30,7 @@ local defaultConfig = {
 	navigation = {
 		onlySameExtAsCurrentFile = false,
 		ignoreDotfiles = true,
-		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip" },
+		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip", "DS_Store" },
 	},
 
 	successNotifications = true,
