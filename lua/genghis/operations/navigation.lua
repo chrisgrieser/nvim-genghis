@@ -2,6 +2,19 @@ local M = {}
 local u = require("genghis.support.utils")
 --------------------------------------------------------------------------------
 
+---Notification specific to file switching
+---@param msg string
+---@param level "info"|"warn"|"error" 
+---@param opts? table
+local function notify(msg, level, opts)
+	opts = opts or {}
+	opts = vim.tbl_extend("force", opts, {
+		id = "next-in-folder", -- replace notifications when quickly cycling
+		ft = "markdown", -- so `h1` is highlighted
+	})
+	vim.notify(msg, vim.log.levels[level:upper()], opts)
+end
+
 ---Cycles files in folder in alphabetical order.
 ---If snacks.nvim is installed, adds cycling notification.
 ---@param direction? "next"|"prev"
@@ -19,9 +32,7 @@ function M.fileInFolder(direction)
 
 	local notifyOpts = {
 		title = direction:sub(1, 1):upper() .. direction:sub(2) .. " file",
-		icon = direction == "next" and config.icons.nextFile or "󰖿",
-		id = "next-in-folder", -- replace notifications when quickly cycling
-		ft = "markdown", -- so `h1` is highlighted
+		icon = direction == "next" and config.icons.nextFile or config.icons.prevFile,
 	}
 
 	-- get list of files
@@ -41,10 +52,10 @@ function M.fileInFolder(direction)
 
 	-- GUARD no files to navigate to
 	if #filesInFolder == 0 then -- if currently at a hidden file and there are only hidden files in the dir
-		vim.notify("No valid files found in folder.", vim.log.levels.WARN, notifyOpts)
+		notify("No valid files found in folder.", "warn")
 		return
 	elseif #filesInFolder == 1 then
-		vim.notify("Already at the only valid file.", vim.log.levels.WARN, notifyOpts)
+		notify("Already at the only valid file.", "warn")
 		return
 	end
 
@@ -76,7 +87,7 @@ function M.fileInFolder(direction)
 			:slice(nextIdx - 5, nextIdx + 5) -- display ~5 files before/after
 			:join("\n")
 		notifyOpts.title = notifyOpts.title .. (" (%d/%d)"):format(nextIdx, #filesInFolder)
-		vim.notify(msg, nil, notifyOpts)
+		notify(msg, "info", notifyOpts)
 	end
 end
 
