@@ -1,4 +1,4 @@
-*nvim-genghis.txt*             For Neovim             Last change: 2025 May 19
+*nvim-genghis.txt*             For Neovim             Last change: 2025 May 20
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -84,9 +84,15 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
             return "trash-cli"
         end,
     
-        -- set to empty string to disable
-        -- (some icons are only used for notification plugins like `snacks.nvim`)
-        icons = {
+        navigation = {
+            onlySameExtAsCurrentFile = false,
+            ignoreDotfiles = true,
+            ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip", "DS_Store" },
+        },
+    
+        successNotifications = true,
+    
+        icons = { -- set to empty string to disable
             chmodx = "󰒃",
             copyFile = "󱉥",
             copyPath = "󰅍",
@@ -99,14 +105,6 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
             rename = "󰑕",
             trash = "󰩹",
         },
-    
-        navigation = {
-            onlySameExtAsCurrentFile = false,
-            ignoreDotfiles = true,
-            ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip", "DS_Store" },
-        },
-    
-        successNotifications = true,
     }
 <
 
