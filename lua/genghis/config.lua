@@ -11,9 +11,15 @@ local defaultConfig = {
 		return "trash-cli"
 	end,
 
-	-- set to empty string to disable
-	-- (some icons are only used for notification plugins like `snacks.nvim`)
-	icons = {
+	navigation = {
+		onlySameExtAsCurrentFile = false,
+		ignoreDotfiles = true,
+		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip", "DS_Store" },
+	},
+
+	successNotifications = true,
+
+	icons = { -- set to empty string to disable
 		chmodx = "󰒃",
 		copyFile = "󱉥",
 		copyPath = "󰅍",
@@ -26,14 +32,6 @@ local defaultConfig = {
 		rename = "󰑕",
 		trash = "󰩹",
 	},
-
-	navigation = {
-		onlySameExtAsCurrentFile = false,
-		ignoreDotfiles = true,
-		ignoreExt = { "png", "svg", "webp", "jpg", "jpeg", "gif", "pdf", "zip", "DS_Store" },
-	},
-
-	successNotifications = true,
 }
 
 M.config = defaultConfig
