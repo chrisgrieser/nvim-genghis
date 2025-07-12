@@ -30,11 +30,6 @@ function M.fileInFolder(direction)
 	local curFile = vim.fs.basename(curPath)
 	local curFolder = vim.fs.dirname(curPath)
 
-	local notifyOpts = {
-		title = direction:sub(1, 1):upper() .. direction:sub(2) .. " file",
-		icon = direction == "next" and config.icons.nextFile or config.icons.prevFile,
-	}
-
 	-- get list of files
 	local itemsInFolder = vim.fs.dir(curFolder) -- INFO `fs.dir` already returns them sorted
 	local filesInFolder = vim.iter(itemsInFolder):fold({}, function(acc, name, type)
@@ -87,7 +82,14 @@ function M.fileInFolder(direction)
 			end)
 			:slice(nextIdx - 5, nextIdx + 5) -- display ~5 files before/after
 			:join("\n")
-		notifyOpts.title = notifyOpts.title .. (" (%d/%d)"):format(nextIdx, #filesInFolder)
+		local title = direction:sub(1, 1):upper()
+			.. direction:sub(2)
+			.. " file"
+			.. (" (%d/%d)"):format(nextIdx, #filesInFolder)
+		local notifyOpts = {
+			title = title,
+			icon = direction == "next" and config.icons.nextFile or config.icons.prevFile,
+		}
 		notify(msg, "info", notifyOpts)
 	end
 end
