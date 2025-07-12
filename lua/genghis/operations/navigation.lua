@@ -89,6 +89,7 @@ function M.fileInFolder(direction)
 		local notifyOpts = {
 			title = title,
 			icon = direction == "next" and config.icons.nextFile or config.icons.prevFile,
+			history = false,
 		}
 		notify(msg, "info", notifyOpts)
 	end
