@@ -21,6 +21,7 @@ local function fileOp(op)
 	if not oldNameNoExt then oldNameNoExt = oldName end
 	if not oldExt then oldExt = "" end
 
+	local autoAddExt = require("genghis.config").config.fileOperations.autoAddExt
 	local icons = require("genghis.config").config.icons
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
 
@@ -35,11 +36,11 @@ local function fileOp(op)
 	local prompt, prefill
 	if op == "duplicate" then
 		prompt = icons.duplicate .. " Duplicate file as: "
-		prefill = oldNameNoExt .. "-1"
+		prefill = (autoAddExt and oldNameNoExt or oldName) .. "-1"
 	elseif op == "rename" then
 		local text = lspSupportsRenaming and "Rename file & update imports:" or "Rename file to:"
 		prompt = icons.rename .. " " .. text
-		prefill = oldNameNoExt
+		prefill = autoAddExt and oldNameNoExt or oldName
 	elseif op == "move-rename" then
 		local text = lspSupportsRenaming and " Move and rename file & update imports:"
 			or " Move & rename file to:"
@@ -89,7 +90,7 @@ local function fileOp(op)
 		end
 
 		local userProvidedNoExt = newName:find(".%.[^/]*$") == nil -- non-leading dot to not include dotfiles without extension
-		if userProvidedNoExt then newName = newName .. oldExt end
+		if userProvidedNoExt and autoAddExt then newName = newName .. oldExt end
 		local newFilePath = op == "move-rename" and newName or (dir .. pathSep .. newName)
 
 		if vim.uv.fs_stat(newFilePath) ~= nil then

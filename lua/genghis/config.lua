@@ -10,6 +10,11 @@ local defaultConfig = {
 		return "trash-cli"
 	end,
 
+	fileOperations = {
+		-- automatically keep the extension when no file extension is given
+		autoAddExt = true,
+	},
+
 	navigation = {
 		onlySameExtAsCurrentFile = false,
 		ignoreDotfiles = true,
