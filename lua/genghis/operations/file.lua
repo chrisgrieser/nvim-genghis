@@ -59,16 +59,18 @@ local function fileOp(op)
 		vim.cmd.redraw() -- clear message area from vim.ui.input prompt
 		if not newName then return end -- input has been canceled
 
-		if op == "move-rename" and newName:find("/$") then newName = newName .. oldName end
-		if op == "new" and newName == "" then newName = "Untitled" end
+		if op == "move-rename" and vim.endswith(newName, pathSep) then -- user just provided a folder
+			newName = newName .. oldName
+		elseif (op == "new" or op == "new-from-selection") and newName == "" then
+			newName = "Untitled"
+		end
 
 		-- GUARD Validate filename
 		local invalidName = newName:find("^%s+$")
-			or newName:find("[\\:]")
-			or (newName:find("^/") and not op == "move-rename")
+			or newName:find(":")
+			or (vim.startswith(newName, pathSep) and not op ~= "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
-
 		if invalidName or sameName or emptyInput then
 			if op == "new-from-selection" then
 				vim.cmd.undo() -- undo deletion
@@ -83,16 +85,15 @@ local function fileOp(op)
 		end
 
 		-- DETERMINE PATH AND EXTENSION
-		local hasPath = newName:find(pathSep)
-		if hasPath then
+		if newName:find(pathSep) then
 			local newFolder = vim.fs.dirname(newName)
 			vim.fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
 		local userProvidedNoExt = newName:find(".%.[^/]*$") == nil -- non-leading dot to not include dotfiles without extension
 		if userProvidedNoExt and autoAddExt then newName = newName .. oldExt end
-		local newFilePath = op == "move-rename" and newName or (dir .. pathSep .. newName)
 
+		local newFilePath = op == "move-rename" and newName or (dir .. pathSep .. newName)
 		if vim.uv.fs_stat(newFilePath) ~= nil then
 			u.notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
