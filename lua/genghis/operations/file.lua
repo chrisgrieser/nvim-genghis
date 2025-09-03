@@ -10,10 +10,16 @@ local function fileOp(op)
 	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
-	local dir = vim.fs.dirname(oldFilePath) -- same directory, *not* pwd
-	local oldNameNoExt = oldName:gsub("%.%w+$", "")
-	local oldExt = vim.fn.expand("%:e")
-	if oldExt ~= "" then oldExt = "." .. oldExt end
+	local dir = vim.fs.dirname(oldFilePath)
+
+	-- * non-greedy 1st capture, so 2nd capture matches double-extensions (see #60)
+	-- * 1st capture requires at least one char, to not match empty string for dotfiles
+	local oldNameNoExt, oldExt = oldName:match("(..-)(%.[%w.]*)")
+
+	-- handle files without extension
+	if not oldNameNoExt then oldNameNoExt = oldName end
+	if not oldExt then oldExt = "" end
+
 	local icons = require("genghis.config").config.icons
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
 
@@ -82,8 +88,8 @@ local function fileOp(op)
 			vim.fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
-		local extProvided = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
-		if not extProvided then newName = newName .. oldExt end
+		local userProvidedExt = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
+		if not userProvidedExt then newName = newName .. oldExt end
 		local newFilePath = (op == "move-rename") and newName or dir .. pathSep .. newName
 
 		if vim.uv.fs_stat(newFilePath) ~= nil then
