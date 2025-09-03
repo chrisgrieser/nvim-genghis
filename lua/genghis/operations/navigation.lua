@@ -39,6 +39,7 @@ function M.fileInFolder(direction)
 		local ignored = (config.navigation.onlySameExtAsCurrentFile and ext ~= curExt)
 			or vim.tbl_contains(config.navigation.ignoreExt, ext)
 			or (config.navigation.ignoreDotfiles and vim.startswith(name, "."))
+			or vim.tbl_contains(config.navigation.ignoreFilesWithName, name)
 
 		if type == "file" and not ignored then
 			table.insert(acc, name) -- select only name
