@@ -73,6 +73,7 @@ require("genghis").setup {
 
 	fileOperations = {
 		-- automatically keep the extension when no file extension is given
+		-- (everything after the first non-leading dot is treated as the extension)
 		autoAddExt = true,
 	},
 
@@ -85,7 +86,7 @@ require("genghis").setup {
 
 	successNotifications = true,
 
-	icons = { -- set to empty string to disable
+	icons = { -- set an icon to empty string to disable it
 		chmodx = "󰒃",
 		copyFile = "󱉥",
 		copyPath = "󰅍",
@@ -134,8 +135,10 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 
 The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
-2. If the new filename includes a `/`, the new file is placed in the
-   respective subdirectory, creating any non-existing intermediate folders.
+   (Everything after the first non-leading dot is treated as the extension; this
+   behavior can be disabled with the config `fileOperations.autoAddExt = false`.)
+2. If the new filename includes a `/`, the new file is placed in the respective
+   subdirectory, creating any non-existing intermediate folders.
 3. All movement and renaming commands update `import` statements to the renamed
    file (if the LSP supports `workspace/willRenameFiles`).
 

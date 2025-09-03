@@ -12,6 +12,7 @@ local defaultConfig = {
 
 	fileOperations = {
 		-- automatically keep the extension when no file extension is given
+		-- (everything after the first non-leading dot is treated as the extension)
 		autoAddExt = true,
 	},
 
@@ -24,7 +25,7 @@ local defaultConfig = {
 
 	successNotifications = true,
 
-	icons = { -- set to empty string to disable
+	icons = { -- set an icon to empty string to disable it
 		chmodx = "󰒃",
 		copyFile = "󱉥",
 		copyPath = "󰅍",
