@@ -3,8 +3,7 @@ local M = {}
 
 ---@class Genghis.config
 local defaultConfig = {
-	---@type fun(): string|string[]
-	trashCmd = function()
+	trashCmd = function() ---@type fun(): string|string[]
 		if jit.os == "OSX" then return "trash" end -- builtin since macOS 14
 		if jit.os == "Windows" then return "trash" end
 		if jit.os == "Linux" then return { "gio", "trash" } end

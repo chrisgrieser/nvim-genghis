@@ -32,8 +32,6 @@ convenient file operations inside nvim.
   duplicating files.
 - **Copy** the path or name of the current file in various formats.
 - **Navigate** to the next or previous file in the current folder.
-- **Lightweight**: This plugin only provides utility file operations, it does
-  not provide a full-blown file manager UI.
 
 **Quality-of-life**
 - All movement and renaming commands **update `import` statements** to the
@@ -49,12 +47,12 @@ convenient file operations inside nvim.
   [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
   **supports vim motions** and looks much nicer.
 - *For the trash command*: an OS-specific trash CLI like `trash` or `gio trash`.
-  On macOS 14+, there is a `trash` cli already built-in, so there is no need to
-  install anything.
+  (Since macOS 14+, there is a `trash` cli already built-in, so there is no need
+  to install anything.)
 
 ```lua
 -- lazy.nvim
-{ "chrisgrieser/nvim-genghis" },
+{ "chrisgrieser/nvim-genghis" }
 
 -- packer
 use { "chrisgrieser/nvim-genghis" }
@@ -66,8 +64,7 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 ```lua
 -- default config
 require("genghis").setup {
-	---@type fun(): string|string[]
-	trashCmd = function()
+	trashCmd = function() ---@type fun(): string|string[]
 		if jit.os == "OSX" then return "trash" end -- builtin since macOS 14
 		if jit.os == "Windows" then return "trash" end
 		if jit.os == "Linux" then return { "gio", "trash" } end
@@ -138,10 +135,10 @@ The following applies to all commands above:
 
 ### Copy operations
 - `copyFilename`: Copy the filename.
-- `copyFilepath`: Copy the absolute file path.
-- `copyFilepathWithTilde`: Copy the absolute file path, replacing the home
+- `copyFilepath`: Copy the absolute filepath.
+- `copyFilepathWithTilde`: Copy the absolute filepath, replacing the home
   directory with `~`.
-- `copyRelativePath`: Copy the relative file path.
+- `copyRelativePath`: Copy the relative filepath.
 - `copyDirectoryPath`: Copy the absolute directory path.
 - `copyRelativeDirectoryPath`: Copy the relative directory path.
 - `copyFileItself`: Copies the file itself. This means you can paste it into

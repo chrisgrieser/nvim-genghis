@@ -7,6 +7,7 @@ local pathSep = package.config:sub(1, 1)
 
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
 local function fileOp(op)
+	--PARAMETERS
 	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
@@ -23,39 +24,38 @@ local function fileOp(op)
 	local icons = require("genghis.config").config.icons
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
 
+	-- PREPARE
 	local prevReg
 	if op == "new-from-selection" then
 		prevReg = vim.fn.getreg("z")
-		-- leaves visual mode, needed for '<,'> marks to be set
-		vim.cmd.normal { vim.fn.mode(), bang = true }
+		vim.cmd.normal { vim.fn.mode(), bang = true } -- leave visual mode, so '<,'> marks are set
 		vim.cmd([['<,'>delete z]])
 	end
 
-	local promptStr, prefill
+	local prompt, prefill
 	if op == "duplicate" then
-		promptStr = icons.duplicate .. " Duplicate file as: "
+		prompt = icons.duplicate .. " Duplicate file as: "
 		prefill = oldNameNoExt .. "-1"
 	elseif op == "rename" then
 		local text = lspSupportsRenaming and "Rename file & update imports:" or "Rename file to:"
-		promptStr = icons.rename .. " " .. text
+		prompt = icons.rename .. " " .. text
 		prefill = oldNameNoExt
 	elseif op == "move-rename" then
 		local text = lspSupportsRenaming and " Move and rename file & update imports:"
 			or " Move & rename file to:"
-		promptStr = icons.rename .. " " .. text
+		prompt = icons.rename .. " " .. text
 		prefill = dir .. pathSep
 	elseif op == "new" or op == "new-from-selection" then
-		promptStr = icons.new .. " Name for new file: "
+		prompt = icons.new .. " Name for new file: "
 		prefill = ""
 	end
-	promptStr = vim.trim(promptStr) -- in case of empty icon
 
+	-- INPUT
 	vim.ui.input({
-		prompt = promptStr,
+		prompt = vim.trim(prompt),
 		default = prefill,
-		completion = "dir", -- allows for completion via cmp-omni
 	}, function(newName)
-		vim.cmd.redraw() -- Clear message area from ui.input prompt
+		vim.cmd.redraw() -- clear message area from vim.ui.input prompt
 		if not newName then return end -- input has been canceled
 
 		if op == "move-rename" and newName:find("/$") then newName = newName .. oldName end
@@ -88,9 +88,9 @@ local function fileOp(op)
 			vim.fn.mkdir(newFolder, "p") -- create folders if necessary
 		end
 
-		local userProvidedExt = newName:find(".%.[^/]*$") -- non-leading dot to not include dotfiles without extension
-		if not userProvidedExt then newName = newName .. oldExt end
-		local newFilePath = (op == "move-rename") and newName or dir .. pathSep .. newName
+		local userProvidedNoExt = newName:find(".%.[^/]*$") == nil -- non-leading dot to not include dotfiles without extension
+		if userProvidedNoExt then newName = newName .. oldExt end
+		local newFilePath = op == "move-rename" and newName or (dir .. pathSep .. newName)
 
 		if vim.uv.fs_stat(newFilePath) ~= nil then
 			u.notify(("File with name %q already exists."):format(newFilePath), "error")
@@ -98,7 +98,7 @@ local function fileOp(op)
 		end
 
 		-- EXECUTE FILE OPERATION
-		vim.cmd.update()
+		vim.cmd("silent! update")
 		if op == "duplicate" then
 			local success = vim.uv.fs_copyfile(oldFilePath, newFilePath)
 			if success then
@@ -119,8 +119,8 @@ local function fileOp(op)
 		elseif op == "new" or op == "new-from-selection" then
 			vim.cmd.edit(newFilePath)
 			if op == "new-from-selection" then
-				vim.cmd("put z") -- cmd.put("z") does not work
-				vim.fn.setreg("z", prevReg) -- restore register content
+				vim.cmd("put z") -- `vim.cmd.put("z")` does not work
+				vim.fn.setreg("z", prevReg)
 			end
 			vim.cmd.write(newFilePath)
 		end
