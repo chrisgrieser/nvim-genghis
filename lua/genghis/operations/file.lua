@@ -68,7 +68,7 @@ local function fileOp(op)
 		-- GUARD Validate filename
 		local invalidName = newName:find("^%s+$")
 			or newName:find(":")
-			or (vim.startswith(newName, pathSep) and not op ~= "move-rename")
+			or (vim.startswith(newName, pathSep) and op ~= "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
 		if invalidName or sameName or emptyInput then
