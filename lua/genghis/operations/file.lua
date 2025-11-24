@@ -1,6 +1,4 @@
 local M = {}
-
-local pathSep = package.config:sub(1, 1)
 --------------------------------------------------------------------------------
 
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
@@ -8,25 +6,25 @@ local pathSep = package.config:sub(1, 1)
 local function fileOp(op, targetDir)
 	local moveFileConsideringPartition = require("genghis.support.move-considering-partition")
 	local notify = require("genghis.support.notify")
-	local rename = require("genghis.support.lsp-rename")
+	local lspRename = require("genghis.support.lsp-rename")
 
 	-- PARAMETERS
 	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
+	local pathSep = package.config:sub(1, 1)
 	if not targetDir then targetDir = vim.fs.dirname(oldFilePath) end
 
 	-- * non-greedy 1st capture, so 2nd capture matches double-extensions (see #60)
 	-- * 1st capture requires at least one char, to not match empty string for dotfiles
 	local oldNameNoExt, oldExt = oldName:match("(..-)(%.[%w.]*)")
-
 	-- handle files without extension
 	if not oldNameNoExt then oldNameNoExt = oldName end
 	if not oldExt then oldExt = "" end
 
 	local autoAddExt = require("genghis.config").config.fileOperations.autoAddExt
 	local icons = require("genghis.config").config.icons
-	local lspSupportsRenaming = rename.lspSupportsRenaming()
+	local lspSupportsRenaming = lspRename.supported()
 
 	-- PREPARE
 	local prevReg
@@ -96,7 +94,7 @@ local function fileOp(op, targetDir)
 		local userProvidedNoExt = newName:find(".%.[^/]*$") == nil -- non-leading dot to not include dotfiles without extension
 		if userProvidedNoExt and autoAddExt then newName = newName .. oldExt end
 
-		local newFilePath = op == "move-rename" and newName or (targetDir .. pathSep .. newName)
+		local newFilePath = op == "move-rename" and newName or vim.fs.joinpath(targetDir, newName)
 		if vim.uv.fs_stat(newFilePath) ~= nil then
 			notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
@@ -112,7 +110,7 @@ local function fileOp(op, targetDir)
 				notify(msg, "info", { icon = icons.duplicate })
 			end
 		elseif op == "rename" or op == "move-rename" then
-			rename.sendWillRenameToLsp(oldFilePath, newFilePath)
+			lspRename.willRename(oldFilePath, newFilePath)
 			local success = moveFileConsideringPartition(oldFilePath, newFilePath)
 			if success then
 				vim.cmd.edit(newFilePath)
@@ -144,12 +142,12 @@ function M.moveSelectionToNewFile() fileOp("new-from-selection") end
 local function folderSelection(op)
 	local moveFileConsideringPartition = require("genghis.support.move-considering-partition")
 	local notify = require("genghis.support.notify")
-	local rename = require("genghis.support.lsp-rename")
+	local lspRenaming = require("genghis.support.lsp-rename")
 
 	local curFilePath = vim.api.nvim_buf_get_name(0)
 	local parentOfCurFile = vim.fs.dirname(curFilePath)
 	local filename = vim.fs.basename(curFilePath)
-	local lspSupportsRenaming = rename.lspSupportsRenaming()
+	local lspSupportsRenaming = lspRenaming.supported()
 	local cwd = assert(vim.uv.cwd(), "Could not get current working directory.")
 	local icons = require("genghis.config").config.icons
 	local origBufNr = vim.api.nvim_get_current_buf()
@@ -157,7 +155,7 @@ local function folderSelection(op)
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
 		local absPath = vim.fs.joinpath(path, name)
-		local relPath = absPath:sub(#cwd + 1) .. pathSep
+		local relPath = absPath:sub(#cwd + 1) .. "/"
 		local ignoreDirs = absPath == parentOfCurFile
 			or relPath:find("/node_modules/") -- js/ts
 			or relPath:find("/typings/") -- python
@@ -199,7 +197,7 @@ local function folderSelection(op)
 				return
 			end
 
-			rename.sendWillRenameToLsp(curFilePath, newFilePath)
+			lspRenaming.willRename(curFilePath, newFilePath)
 			local success = moveFileConsideringPartition(curFilePath, newFilePath)
 			if success then return end
 

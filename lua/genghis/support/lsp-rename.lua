@@ -6,7 +6,7 @@ local M = {}
 ---SOURCE https://github.com/LazyVim/LazyVim/blob/ac092289f506052cfdd1879f462be05075fe3081/lua/lazyvim/util/lsp.lua#L99-L119
 ---@param fromName string
 ---@param toName string
-function M.sendWillRenameToLsp(fromName, toName)
+function M.willRename(fromName, toName)
 	local clients = vim.lsp.get_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
 		if client:supports_method("workspace/willRenameFiles") then
@@ -24,7 +24,7 @@ end
 
 ---@nodiscard
 ---@return boolean
-function M.lspSupportsRenaming()
+function M.supported()
 	local clients = vim.lsp.get_clients { bufnr = 0 }
 	for _, client in ipairs(clients) do
 		if client:supports_method("workspace/willRenameFiles") then return true end
