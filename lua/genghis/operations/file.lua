@@ -229,7 +229,7 @@ function M.trashFile()
 	local filepath = vim.api.nvim_buf_get_name(0)
 	local filename = vim.fs.basename(filepath)
 	local icon = require("genghis.config").config.icons.trash
-	local trashCmd = require("genghis.config").config.trashCmd
+	local trashCmd = require("genghis.config").config.fileOperations.trashCmd
 
 	-- execute the trash command
 	if type(trashCmd) ~= "function" then
