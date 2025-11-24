@@ -1,13 +1,15 @@
 local M = {}
 
-local rename = require("genghis.support.lsp-rename")
-local u = require("genghis.support.utils")
 local pathSep = package.config:sub(1, 1)
 --------------------------------------------------------------------------------
 
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
 ---@param targetDir? string
 local function fileOp(op, targetDir)
+	local moveFileConsideringPartition = require("genghis.support.move-considering-partition")
+	local notify = require("genghis.support.notify")
+	local rename = require("genghis.support.lsp-rename")
+
 	-- PARAMETERS
 	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
@@ -78,9 +80,9 @@ local function fileOp(op, targetDir)
 				vim.fn.setreg("z", prevReg) -- restore register content
 			end
 			if invalidName or emptyInput then
-				u.notify("Invalid filename.", "error")
+				notify("Invalid filename.", "error")
 			elseif sameName then
-				u.notify("Cannot use the same filename.", "warn")
+				notify("Cannot use the same filename.", "warn")
 			end
 			return
 		end
@@ -96,7 +98,7 @@ local function fileOp(op, targetDir)
 
 		local newFilePath = op == "move-rename" and newName or (targetDir .. pathSep .. newName)
 		if vim.uv.fs_stat(newFilePath) ~= nil then
-			u.notify(("File with name %q already exists."):format(newFilePath), "error")
+			notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
 		end
 
@@ -107,16 +109,16 @@ local function fileOp(op, targetDir)
 			if success then
 				vim.cmd.edit(newFilePath)
 				local msg = ("Duplicated %q as %q."):format(oldName, newName)
-				u.notify(msg, "info", { icon = icons.duplicate })
+				notify(msg, "info", { icon = icons.duplicate })
 			end
 		elseif op == "rename" or op == "move-rename" then
 			rename.sendWillRenameToLsp(oldFilePath, newFilePath)
-			local success = u.moveFileConsideringPartition(oldFilePath, newFilePath)
+			local success = moveFileConsideringPartition(oldFilePath, newFilePath)
 			if success then
 				vim.cmd.edit(newFilePath)
 				vim.api.nvim_buf_delete(origBufNr, { force = true })
 				local msg = ("Renamed %q to %q."):format(oldName, newName)
-				u.notify(msg, "info", { icon = icons.rename })
+				notify(msg, "info", { icon = icons.rename })
 				if lspSupportsRenaming then vim.cmd.wall() end
 			end
 		elseif op == "new" or op == "new-from-selection" then
@@ -140,6 +142,10 @@ function M.moveSelectionToNewFile() fileOp("new-from-selection") end
 
 ---@param op "move-file"|"new-in-folder"
 local function folderSelection(op)
+	local moveFileConsideringPartition = require("genghis.support.move-considering-partition")
+	local notify = require("genghis.support.notify")
+	local rename = require("genghis.support.lsp-rename")
+
 	local curFilePath = vim.api.nvim_buf_get_name(0)
 	local parentOfCurFile = vim.fs.dirname(curFilePath)
 	local filename = vim.fs.basename(curFilePath)
@@ -189,19 +195,19 @@ local function folderSelection(op)
 		elseif op == "move-file" then
 			local newFilePath = vim.fs.joinpath(destination, filename)
 			if vim.uv.fs_stat(newFilePath) ~= nil then
-				u.notify(("File %q already exists at %q."):format(filename, destination), "error")
+				notify(("File %q already exists at %q."):format(filename, destination), "error")
 				return
 			end
 
 			rename.sendWillRenameToLsp(curFilePath, newFilePath)
-			local success = u.moveFileConsideringPartition(curFilePath, newFilePath)
+			local success = moveFileConsideringPartition(curFilePath, newFilePath)
 			if success then return end
 
 			vim.cmd.edit(newFilePath)
 			vim.api.nvim_buf_delete(origBufNr, { force = true })
 			local msg = ("Moved %q to %q"):format(filename, destination)
 			local append = lspSupportsRenaming and " and updated imports." or "."
-			u.notify(msg .. append, "info", { icon = icons.move })
+			notify(msg .. append, "info", { icon = icons.move })
 			if lspSupportsRenaming then vim.cmd.wall() end
 		end
 	end)
@@ -220,7 +226,8 @@ function M.chmodx()
 	perm = perm:gsub("r(.)%-", "r%1x") -- add x to every group that has r
 	vim.fn.setfperm(filepath, perm)
 
-	u.notify("Permission +x granted.", "info", { icon = icons.chmodx })
+	local notify = require("genghis.support.notify")
+	notify("Permission +x granted.", "info", { icon = icons.chmodx })
 	vim.cmd.edit() -- reload the file
 end
 
@@ -232,36 +239,33 @@ function M.trashFile()
 	local trashCmd = require("genghis.config").config.fileOperations.trashCmd
 
 	-- execute the trash command
-	if type(trashCmd) ~= "function" then
-		-- DEPRECATION (2025-03-29)
-		u.notify("`trashCmd` now expects a function, see the README.", "warn")
-		return
-	end
 	local cmd = trashCmd()
 	if type(cmd) ~= "table" then cmd = { cmd } end
 	table.insert(cmd, filepath)
 	local out = vim.system(cmd):wait()
 
 	-- handle the result
+	local notify = require("genghis.support.notify")
 	if out.code == 0 then
 		vim.api.nvim_buf_delete(0, { force = true })
-		u.notify(("%q moved to trash."):format(filename), "info", { icon = icon })
+		notify(("%q moved to trash."):format(filename), "info", { icon = icon })
 	else
 		local outmsg = (out.stdout or "") .. (out.stderr or "")
-		u.notify(("Trashing %q failed: %s"):format(filename, outmsg), "error")
+		notify(("Trashing %q failed: %s"):format(filename, outmsg), "error")
 	end
 end
 
 function M.showInSystemExplorer()
+	local notify = require("genghis.support.notify")
 	if jit.os ~= "OSX" then
-		u.notify("Currently only available on macOS.", "warn")
+		notify("Currently only available on macOS.", "warn")
 		return
 	end
 
 	local out = vim.system({ "open", "-R", vim.api.nvim_buf_get_name(0) }):wait()
 	if out.code ~= 0 then
 		local icon = require("genghis.config").config.icons.file
-		u.notify("Failed: " .. out.stderr, "error", { icon = icon })
+		notify("Failed: " .. out.stderr, "error", { icon = icon })
 	end
 end
 --------------------------------------------------------------------------------

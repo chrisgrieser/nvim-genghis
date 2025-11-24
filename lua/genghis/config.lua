@@ -49,7 +49,7 @@ function M.setup(userConfig)
 	---@diagnostic disable: undefined-field
 	if M.config.trashCmd then
 		M.config.fileOperations.trashCmd = M.config.trashCmd
-		local notify = require("genghis.support.utils").notify
+		local notify = require("genghis.support.notify")
 		notify("config `.trashCmd` is deprecated, use `.fileOperations.trashCmd` instead.", "warn")
 	end
 	---@diagnostic enable: undefined-field
