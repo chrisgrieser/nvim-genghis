@@ -173,6 +173,8 @@ local function folderSelection(op)
 	end)
 	-- insert cwd at bottom, since moving to it unlikely
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
+	-- insert current dir at top, since moving to it likely
+	if op == "new-in-folder" then table.insert(foldersInCwd, 1, parentOfCurFile) end
 
 	-- PROMPT & MOVE
 	local prompt
