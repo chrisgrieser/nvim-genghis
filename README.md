@@ -116,7 +116,9 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 ```
 
 ### File operations
-- `createNewFile`: Create a new file.
+- `createNewFile`: Create a new file in the same directory as the current file.
+- `createNewFileInFolder`: Create a new file in a folder in the current working
+  directory.
 - `duplicateFile`: Duplicate the current file.
 - `moveSelectionToNewFile`: Create a new file and move the current selection
   to it. (Visual Line command, the selection is moved linewise.)

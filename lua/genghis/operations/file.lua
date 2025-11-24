@@ -6,13 +6,13 @@ local pathSep = package.config:sub(1, 1)
 --------------------------------------------------------------------------------
 
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
-local function fileOp(op)
-	--PARAMETERS
+---@param targetDir? string
+local function fileOp(op, targetDir)
 	-- PARAMETERS
 	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
-	local dir = vim.fs.dirname(oldFilePath)
+	if not targetDir then targetDir = vim.fs.dirname(oldFilePath) end
 
 	-- * non-greedy 1st capture, so 2nd capture matches double-extensions (see #60)
 	-- * 1st capture requires at least one char, to not match empty string for dotfiles
@@ -46,7 +46,7 @@ local function fileOp(op)
 		local text = lspSupportsRenaming and " Move and rename file & update imports:"
 			or " Move & rename file to:"
 		prompt = icons.rename .. " " .. text
-		prefill = dir .. pathSep
+		prefill = targetDir .. pathSep
 	elseif op == "new" or op == "new-from-selection" then
 		prompt = icons.new .. " Name for new file: "
 		prefill = ""
@@ -94,7 +94,7 @@ local function fileOp(op)
 		local userProvidedNoExt = newName:find(".%.[^/]*$") == nil -- non-leading dot to not include dotfiles without extension
 		if userProvidedNoExt and autoAddExt then newName = newName .. oldExt end
 
-		local newFilePath = op == "move-rename" and newName or (dir .. pathSep .. newName)
+		local newFilePath = op == "move-rename" and newName or (targetDir .. pathSep .. newName)
 		if vim.uv.fs_stat(newFilePath) ~= nil then
 			u.notify(("File with name %q already exists."):format(newFilePath), "error")
 			return
@@ -138,12 +138,13 @@ function M.moveSelectionToNewFile() fileOp("new-from-selection") end
 
 --------------------------------------------------------------------------------
 
-function M.moveToFolderInCwd()
+---@param op "move-file"|"new-in-folder"
+local function folderSelection(op)
 	local curFilePath = vim.api.nvim_buf_get_name(0)
 	local parentOfCurFile = vim.fs.dirname(curFilePath)
 	local filename = vim.fs.basename(curFilePath)
 	local lspSupportsRenaming = rename.lspSupportsRenaming()
-	local cwd = vim.uv.cwd()
+	local cwd = assert(vim.uv.cwd(), "Could not get current working directory.")
 	local icons = require("genghis.config").config.icons
 	local origBufNr = vim.api.nvim_get_current_buf()
 
@@ -169,28 +170,33 @@ function M.moveToFolderInCwd()
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
 	-- prompt user and move
-	local promptStr = icons.new .. " Choose destination folder"
-	if lspSupportsRenaming then promptStr = promptStr .. " (with updated imports)" end
+	local prompt = icons.new .. " Choose destination folder"
+	if lspSupportsRenaming and op == "move-file" then
+		prompt = prompt .. " (with updated imports)"
+	end
 	vim.ui.select(foldersInCwd, {
-		prompt = promptStr,
-		kind = "genghis.moveToFolderInCwd",
+		prompt = prompt,
+		kind = "genghis.select-folder",
 		format_item = function(path)
 			local relPath = path:sub(#cwd + 1)
 			return (relPath == "" and "/" or relPath)
 		end,
 	}, function(destination)
 		if not destination then return end
-		local newFilePath = vim.fs.joinpath(destination, filename)
 
-		-- GUARD
-		if vim.uv.fs_stat(newFilePath) ~= nil then
-			u.notify(("File %q already exists at %q."):format(filename, destination), "error")
-			return
-		end
+		if op == "new-in-folder" then
+			fileOp("new", destination)
+		elseif op == "move-file" then
+			local newFilePath = vim.fs.joinpath(destination, filename)
+			if vim.uv.fs_stat(newFilePath) ~= nil then
+				u.notify(("File %q already exists at %q."):format(filename, destination), "error")
+				return
+			end
 
-		rename.sendWillRenameToLsp(curFilePath, newFilePath)
-		local success = u.moveFileConsideringPartition(curFilePath, newFilePath)
-		if success then
+			rename.sendWillRenameToLsp(curFilePath, newFilePath)
+			local success = u.moveFileConsideringPartition(curFilePath, newFilePath)
+			if success then return end
+
 			vim.cmd.edit(newFilePath)
 			vim.api.nvim_buf_delete(origBufNr, { force = true })
 			local msg = ("Moved %q to %q"):format(filename, destination)
@@ -200,6 +206,11 @@ function M.moveToFolderInCwd()
 		end
 	end)
 end
+
+function M.moveToFolderInCwd() folderSelection("move-file") end
+function M.createNewFileInFolder() folderSelection("new-in-folder") end
+
+--------------------------------------------------------------------------------
 
 function M.chmodx()
 	local icons = require("genghis.config").config.icons
