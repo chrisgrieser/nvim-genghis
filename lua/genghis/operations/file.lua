@@ -4,7 +4,7 @@ local M = {}
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
 ---@param targetDir? string
 local function fileOp(op, targetDir)
-	local moveFileConsideringPartition = require("genghis.support.move-considering-partition")
+	local moveConsideringPartition = require("genghis.support.move-considering-partition")
 	local notify = require("genghis.support.notify")
 	local lspRename = require("genghis.support.lsp-rename")
 
@@ -111,7 +111,7 @@ local function fileOp(op, targetDir)
 			end
 		elseif op == "rename" or op == "move-rename" then
 			lspRename.willRename(oldFilePath, newFilePath)
-			local success = moveFileConsideringPartition(oldFilePath, newFilePath)
+			local success = moveConsideringPartition(oldFilePath, newFilePath)
 			if success then
 				vim.cmd.edit(newFilePath)
 				vim.api.nvim_buf_delete(origBufNr, { force = true })
@@ -140,10 +140,11 @@ function M.moveSelectionToNewFile() fileOp("new-from-selection") end
 
 ---@param op "move-file"|"new-in-folder"
 local function folderSelection(op)
-	local moveFileConsideringPartition = require("genghis.support.move-considering-partition")
+	local moveConsideringPartition = require("genghis.support.move-considering-partition")
 	local notify = require("genghis.support.notify")
 	local lspRenaming = require("genghis.support.lsp-rename")
 
+	-- PARAMETERS
 	local curFilePath = vim.api.nvim_buf_get_name(0)
 	local parentOfCurFile = vim.fs.dirname(curFilePath)
 	local filename = vim.fs.basename(curFilePath)
@@ -152,28 +153,28 @@ local function folderSelection(op)
 	local icons = require("genghis.config").config.icons
 	local origBufNr = vim.api.nvim_get_current_buf()
 
-	-- determine destinations in cwd
+	-- GET OTHER FOLDERS IN CWD
 	local foldersInCwd = vim.fs.find(function(name, path)
 		local absPath = vim.fs.joinpath(path, name)
 		local relPath = absPath:sub(#cwd + 1) .. "/" -- not pathSep, since `joinpath` uses `/`
-		local ignoreDirs = absPath == parentOfCurFile
-			or relPath:find("/node_modules/") -- js/ts
+		local sameFolder = absPath == parentOfCurFile
+		local ignoredDir = relPath:find("/node_modules/") -- js/ts
 			or relPath:find("/typings/") -- python
 			or relPath:find("%.app/") -- macOS pseudo-folders
 			or relPath:find("/%.") -- hidden folders
-		return not ignoreDirs
+		return not (ignoredDir or sameFolder)
 	end, { type = "directory", limit = math.huge })
 
-	-- sort by modification time
+	-- ORDER OF FOLDERS
 	table.sort(foldersInCwd, function(a, b)
 		local aMtime = vim.uv.fs_stat(a).mtime.sec
 		local bMtime = vim.uv.fs_stat(b).mtime.sec
 		return aMtime > bMtime
 	end)
-	-- insert cwd at bottom, since movement is to a subfolder
+	-- insert cwd at bottom, since moving to it unlikely
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
-	-- prompt user and move
+	-- PROMPT & MOVE
 	local prompt
 	if op == "move-file" then
 		prompt = icons.move .. " Move file to"
@@ -202,7 +203,7 @@ local function folderSelection(op)
 			end
 
 			lspRenaming.willRename(curFilePath, newFilePath)
-			local success = moveFileConsideringPartition(curFilePath, newFilePath)
+			local success = moveConsideringPartition(curFilePath, newFilePath)
 			if success then return end
 
 			vim.cmd.edit(newFilePath)
