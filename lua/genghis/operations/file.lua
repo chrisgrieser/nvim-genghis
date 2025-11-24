@@ -8,6 +8,7 @@ local pathSep = package.config:sub(1, 1)
 ---@param op "rename"|"duplicate"|"new"|"new-from-selection"|"move-rename"
 local function fileOp(op)
 	--PARAMETERS
+	-- PARAMETERS
 	local origBufNr = vim.api.nvim_get_current_buf()
 	local oldFilePath = vim.api.nvim_buf_get_name(0)
 	local oldName = vim.fs.basename(oldFilePath)
@@ -153,7 +154,7 @@ function M.moveToFolderInCwd()
 		local ignoreDirs = absPath == parentOfCurFile
 			or relPath:find("/node_modules/") -- js/ts
 			or relPath:find("/typings/") -- python
-			or relPath:find("%.app/") -- macos pseudo-folders
+			or relPath:find("%.app/") -- macOS pseudo-folders
 			or relPath:find("/%.") -- hidden folders
 		return not ignoreDirs
 	end, { type = "directory", limit = math.huge })
@@ -164,7 +165,7 @@ function M.moveToFolderInCwd()
 		local bMtime = vim.uv.fs_stat(b).mtime.sec
 		return aMtime > bMtime
 	end)
-	-- insert cwd at bottom, since modification of is likely due to subfolders
+	-- insert cwd at bottom, since movement is to a subfolder
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
 	-- prompt user and move
