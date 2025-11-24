@@ -174,9 +174,13 @@ local function folderSelection(op)
 	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
 
 	-- prompt user and move
-	local prompt = icons.new .. " Choose destination folder"
-	if lspSupportsRenaming and op == "move-file" then
-		prompt = prompt .. " (with updated imports)"
+	local prompt
+	if op == "move-file" then
+		prompt = icons.move .. " Move file to"
+		if lspSupportsRenaming then prompt = prompt .. " (with updated imports)" end
+		prompt = prompt .. ":"
+	elseif op == "new-in-folder" then
+		prompt = icons.new .. " Folder for new file:"
 	end
 	vim.ui.select(foldersInCwd, {
 		prompt = prompt,
