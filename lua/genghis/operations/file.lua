@@ -155,7 +155,7 @@ local function folderSelection(op)
 	-- determine destinations in cwd
 	local foldersInCwd = vim.fs.find(function(name, path)
 		local absPath = vim.fs.joinpath(path, name)
-		local relPath = absPath:sub(#cwd + 1) .. "/"
+		local relPath = absPath:sub(#cwd + 1) .. "/" -- not pathSep, since `joinpath` uses `/`
 		local ignoreDirs = absPath == parentOfCurFile
 			or relPath:find("/node_modules/") -- js/ts
 			or relPath:find("/typings/") -- python
