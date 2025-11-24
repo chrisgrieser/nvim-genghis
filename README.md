@@ -118,18 +118,16 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 ### File operations
 - `createNewFile`: Create a new file.
 - `duplicateFile`: Duplicate the current file.
-- `moveSelectionToNewFile`: Prompts for a new filename
-  and moves the current selection to that new file. (Visual
-  Line command, the selection is moved linewise.)
+- `moveSelectionToNewFile`: Create a new file and move the current selection
+  to it. (Visual Line command, the selection is moved linewise.)
 - `renameFile`: Rename the current file.
-- `moveAndRenameFile`: Move and rename the current file. Keeps the
-  old name if the new path ends with `/`. Works like the UNIX `mv` command.
 - `moveToFolderInCwd`: Move the current file to an existing folder in the
   current working directory.
+- `moveAndRenameFile`: Move and rename the current file. Keeps the
+  old name if the new path ends with `/`. Works like the UNIX `mv` command.
 - `chmodx`: Makes current file executable. Equivalent to `chmod +x`.
-- `trashFile`: Move the current file to the trash. Defaults to `gio trash` on
-  *Linux*, and `trash` on *macOS* or *Windows*. (The trash CLIs must usually be
-  installed.)
+- `trashFile`: Move the current file to the trash. (Defaults to `gio trash` on
+  *Linux*, and `trash` on *macOS* or *Windows*.)
 - `showInSystemExplorer`: Reveals the current file in the system explorer, such
   as macOS Finder. (Currently only on macOS, PRs welcome.)
 
@@ -139,8 +137,8 @@ The following applies to all commands above:
    behavior can be disabled with the config `fileOperations.autoAddExt = false`.)
 2. If the new filename includes a `/`, the new file is placed in the respective
    subdirectory, creating any non-existing intermediate folders.
-3. All movement and renaming commands update `import` statements to the renamed
-   file (if the LSP supports `workspace/willRenameFiles`).
+3. All movement and renaming commands update `import` statements, if the LSP
+   supports `workspace/willRenameFiles`.
 
 ### Copy operations
 - `copyFilename`: Copy the filename.
