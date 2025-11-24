@@ -47,7 +47,7 @@ convenient file operations inside nvim.
   [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
   **supports vim motions** and looks much nicer.
 - *For the trash command*: an OS-specific trash CLI like `trash` or `gio trash`.
-  (Since macOS 14+, there is a `trash` cli already built-in, so there is no need
+  (Since macOS 14+, there is a `trash` CLI already built-in, so there is no need
   to install anything.)
 
 ```lua
@@ -103,7 +103,7 @@ require("genghis").setup {
 ```
 
 ## Usage
-You can access a command as lua function:
+You can access a command as Lua function:
 
 ```lua
 require("genghis").createNewFile()
@@ -122,8 +122,8 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
   and moves the current selection to that new file. (Visual
   Line command, the selection is moved linewise.)
 - `renameFile`: Rename the current file.
-- `moveAndRenameFile`: Move and Rename the current file. Keeps the
-  old name if the new path ends with `/`. Works like the Unix `mv` command.
+- `moveAndRenameFile`: Move and rename the current file. Keeps the
+  old name if the new path ends with `/`. Works like the UNIX `mv` command.
 - `moveToFolderInCwd`: Move the current file to an existing folder in the
   current working directory.
 - `chmodx`: Makes current file executable. Equivalent to `chmod +x`.
