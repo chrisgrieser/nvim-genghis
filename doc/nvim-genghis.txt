@@ -56,7 +56,7 @@ INSTALLATION                         *nvim-genghis-nvim-genghis--installation*
 <http://github.com/stevearc/dressing.nvim> or snacks.nvim
 <http://github.com/folke/snacks.nvim> for an input UI that **supports vim
 motions** and looks much nicer. - _For the trash command_: an OS-specific trash
-CLI like `trash` or `gio trash`. (Since macOS 14+, there is a `trash` cli
+CLI like `trash` or `gio trash`. (Since macOS 14+, there is a `trash` CLI
 already built-in, so there is no need to install anything.)
 
 >lua
@@ -75,17 +75,17 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 >lua
     -- default config
     require("genghis").setup {
-        trashCmd = function() ---@type fun(): string|string[]
-            if jit.os == "OSX" then return "trash" end -- builtin since macOS 14
-            if jit.os == "Windows" then return "trash" end
-            if jit.os == "Linux" then return { "gio", "trash" } end
-            return "trash-cli"
-        end,
-    
         fileOperations = {
             -- automatically keep the extension when no file extension is given
             -- (everything after the first non-leading dot is treated as the extension)
             autoAddExt = true,
+    
+            trashCmd = function() ---@type fun(): string|string[]
+                if jit.os == "OSX" then return "trash" end -- builtin since macOS 14
+                if jit.os == "Windows" then return "trash" end
+                if jit.os == "Linux" then return { "gio", "trash" } end
+                return "trash-cli"
+            end,
         },
     
         navigation = {
@@ -116,7 +116,7 @@ The `setup` call is required for `lazy.nvim`, but otherwise optional.
 
 USAGE                                       *nvim-genghis-nvim-genghis--usage*
 
-You can access a command as lua function:
+You can access a command as Lua function:
 
 >lua
     require("genghis").createNewFile()
@@ -131,20 +131,20 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 
 FILE OPERATIONS ~
 
-- `createNewFile`: Create a new file.
+- `createNewFile`: Create a new file in the same directory as the current file.
+- `createNewFileInFolder`: Create a new file in a folder in the current working
+    directory.
 - `duplicateFile`: Duplicate the current file.
-- `moveSelectionToNewFile`: Prompts for a new filename
-    and moves the current selection to that new file. (Visual
-    Line command, the selection is moved linewise.)
+- `moveSelectionToNewFile`: Create a new file and move the current selection
+    to it. (Visual Line command, the selection is moved linewise.)
 - `renameFile`: Rename the current file.
-- `moveAndRenameFile`: Move and Rename the current file. Keeps the
-    old name if the new path ends with `/`. Works like the Unix `mv` command.
 - `moveToFolderInCwd`: Move the current file to an existing folder in the
     current working directory.
+- `moveAndRenameFile`: Move and rename the current file. Keeps the
+    old name if the new path ends with `/`. Works like the UNIX `mv` command.
 - `chmodx`: Makes current file executable. Equivalent to `chmod +x`.
-- `trashFile`: Move the current file to the trash. Defaults to `gio trash` on
-    _Linux_, and `trash` on _macOS_ or _Windows_. (The trash CLIs must usually be
-    installed.)
+- `trashFile`: Move the current file to the trash. (Defaults to `gio trash` on
+    _Linux_, and `trash` on _macOS_ or _Windows_.)
 - `showInSystemExplorer`: Reveals the current file in the system explorer, such
     as macOS Finder. (Currently only on macOS, PRs welcome.)
 
@@ -154,8 +154,7 @@ non-leading dot is treated as the extension; this behavior can be disabled with
 the config `fileOperations.autoAddExt = false`.) 2. If the new filename
 includes a `/`, the new file is placed in the respective subdirectory, creating
 any non-existing intermediate folders. 3. All movement and renaming commands
-update `import` statements to the renamed file (if the LSP supports
-`workspace/willRenameFiles`).
+update `import` statements, if the LSP supports `workspace/willRenameFiles`.
 
 
 COPY OPERATIONS ~
