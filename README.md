@@ -17,6 +17,7 @@ convenient file operations inside nvim.
 - [Features](#features)
 - [Installation](#installation)
 - [Configuration](#configuration)
+	* [UI Plugin](#ui-plugin)
 - [Usage](#usage)
 	* [File operations](#file-operations)
 	* [Copy operations](#copy-operations)
@@ -42,13 +43,12 @@ convenient file operations inside nvim.
 ## Installation
 **Requirements**
 - nvim 0.10+
-- A `vim.ui.input` provider such as
-  [dressing.nvim](http://github.com/stevearc/dressing.nvim) or
-  [snacks.nvim](http://github.com/folke/snacks.nvim) for an input UI that
-  **supports vim motions** and looks much nicer.
 - *For the trash command*: an OS-specific trash CLI like `trash` or `gio trash`.
   (Since macOS 14+, there is a `trash` CLI already built-in, so there is no need
   to install anything.)
+- **Recommended:** A provider for `vim.ui.input` and `vim.ui.select` such as
+  [snacks.nvim](http://github.com/folke/snacks.nvim). Enables vim motions in the
+  input field, and looks better.
 
 ```lua
 -- lazy.nvim
@@ -59,7 +59,7 @@ use { "chrisgrieser/nvim-genghis" }
 ```
 
 ## Configuration
-The `setup` call is required for `lazy.nvim`, but otherwise optional.
+The `.setup()` call is optional.
 
 ```lua
 -- default config
@@ -108,6 +108,19 @@ require("genghis").setup {
 		trash = "󰩹",
 	},
 }
+```
+
+### UI Plugin
+A UI plugin for `vim.ui.input` and `vim.ui.select`, such as
+[snacks.nvim](http://github.com/folke/snacks.nvim), is recommended since it
+enables for vim motions in the input field. (It also looks better.)
+
+```lua
+-- minimal snacks.nvim config to use it for `vim.ui.input` and `vim.ui.select`
+require("snacks").setup({
+	input = { enabled = true },
+	picker = { enabled = true },
+}),
 ```
 
 ## Usage
