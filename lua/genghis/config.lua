@@ -14,6 +14,14 @@ local defaultConfig = {
 			if jit.os == "Linux" then return { "gio", "trash" } end
 			return "trash-cli"
 		end,
+
+		ignoreInFolderSelection = { -- using lua pattern matching (e.g., escape `-` as `%-`)
+			"/node_modules/", -- nodejs
+			"/typings/", -- python
+			"/doc", -- vim help files folders
+			"%.app/", -- macOS pseudo-folders
+			"/%.", -- hidden folders
+		},
 	},
 
 	navigation = {

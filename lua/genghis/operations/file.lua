@@ -143,6 +143,7 @@ local function folderSelection(op)
 	local moveConsideringPartition = require("genghis.support.move-considering-partition")
 	local notify = require("genghis.support.notify")
 	local lspRenaming = require("genghis.support.lsp-rename")
+	local ignoreFolders = require("genghis.config").config.fileOperations.ignoreInFolderSelection
 
 	-- PARAMETERS
 	local curFilePath = vim.api.nvim_buf_get_name(0)
@@ -157,11 +158,11 @@ local function folderSelection(op)
 	local foldersInCwd = vim.fs.find(function(name, path)
 		local absPath = vim.fs.joinpath(path, name)
 		local relPath = absPath:sub(#cwd + 1) .. "/" -- not pathSep, since `joinpath` uses `/`
+
 		local sameFolder = absPath == parentOfCurFile
-		local ignoredDir = relPath:find("/node_modules/") -- js/ts
-			or relPath:find("/typings/") -- python
-			or relPath:find("%.app/") -- macOS pseudo-folders
-			or relPath:find("/%.") -- hidden folders
+		local ignoredDir = vim.iter(ignoreFolders)
+			:any(function(dir) return relPath:find(dir) ~= nil end)
+
 		return not (ignoredDir or sameFolder)
 	end, { type = "directory", limit = math.huge })
 
