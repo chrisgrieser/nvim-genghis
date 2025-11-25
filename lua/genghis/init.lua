@@ -19,8 +19,6 @@ end
 setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
-			local warn = require("various-textobjs.utils").warn
-
 			local fileOps = vim.tbl_keys(require("genghis.operations.file"))
 			local copyOps = vim.tbl_keys(require("genghis.operations.copy"))
 
@@ -31,9 +29,10 @@ setmetatable(M, {
 			if module then
 				require("genghis.operations." .. module)[key](...)
 			else
+				local notify = require("genghis.support.notify")
 				local msg = ("There is no operation called `%s`.\n\n"):format(key)
 					.. "Make sure it exists in the list of operations, and that you haven't misspelled it."
-				warn(msg)
+				notify(msg, "error", { ft = "markdown" })
 			end
 		end
 	end,

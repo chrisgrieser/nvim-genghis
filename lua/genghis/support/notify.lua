@@ -8,6 +8,6 @@ return function(msg, level, opts)
 	if not opts then opts = {} end
 
 	opts.title = opts.title and "Genghis: " .. opts.title or "Genghis"
-	opts.ft = "text" -- prevent `~` from creating strikethroughs in `snacks.notifier`
+	if not opts.ft then opts.ft = "text" end -- prevent `~` from creating strikethroughs in `snacks.notifier`
 	vim.notify(msg, vim.log.levels[level:upper()], opts)
 end
