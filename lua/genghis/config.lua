@@ -18,7 +18,7 @@ local defaultConfig = {
 		ignoreInFolderSelection = { -- using lua pattern matching (e.g., escape `-` as `%-`)
 			"/node_modules/", -- nodejs
 			"/typings/", -- python
-			"/doc", -- vim help files folders
+			"/doc/", -- vim help files folders
 			"%.app/", -- macOS pseudo-folders
 			"/%.", -- hidden folders
 		},
