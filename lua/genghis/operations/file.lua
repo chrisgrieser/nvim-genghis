@@ -77,7 +77,8 @@ local function fileOp(op, targetDir)
 		-- DETERMINE PATH AND EXTENSION
 		if newName:find(pathSep) then
 			local newFolder = vim.fs.dirname(newName)
-			vim.fn.mkdir(newFolder, "p") -- create folders if necessary
+			local absFolder = vim.fs.joinpath(targetDir, newFolder)
+			vim.fn.mkdir(absFolder, "p")
 		end
 
 		local userProvidedNoExt = newName:find(".%.[^/]*$") == nil -- non-leading dot to not include dotfiles without extension
