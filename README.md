@@ -47,8 +47,8 @@ convenient file operations inside nvim.
   (Since macOS 14+, there is a `trash` CLI already built-in, so there is no need
   to install anything.)
 - **Recommended:** A provider for `vim.ui.input` and `vim.ui.select` such as
-  [snacks.nvim](http://github.com/folke/snacks.nvim). Enables vim motions in the
-  input field, and looks better.
+  [snacks.nvim](http://github.com/folke/snacks.nvim). This enables vim motions
+  in the input field, and looks better.
 
 ```lua
 -- lazy.nvim
