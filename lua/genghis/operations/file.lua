@@ -27,13 +27,6 @@ local function fileOp(op, targetDir)
 	local lspSupportsRenaming = lspRename.supported()
 
 	-- PREPARE
-	local prevReg
-	if op == "new-from-selection" then
-		prevReg = vim.fn.getreg("z")
-		vim.cmd.normal { vim.fn.mode(), bang = true } -- leave visual mode, so '<,'> marks are set
-		vim.cmd([['<,'>delete z]])
-	end
-
 	local prompt, prefill
 	if op == "duplicate" then
 		prompt = icons.duplicate .. " Duplicate file as: "
@@ -66,17 +59,13 @@ local function fileOp(op, targetDir)
 			newName = "Untitled"
 		end
 
-		-- GUARD Validate filename
+		-- GUARD validate filename
 		local invalidName = newName:find("^%s+$")
 			or newName:find(":")
 			or (vim.startswith(newName, pathSep) and op ~= "move-rename")
 		local sameName = newName == oldName
 		local emptyInput = newName == ""
 		if invalidName or sameName or emptyInput then
-			if op == "new-from-selection" then
-				vim.cmd.undo() -- undo deletion
-				vim.fn.setreg("z", prevReg) -- restore register content
-			end
 			if invalidName or emptyInput then
 				notify("Invalid filename.", "error")
 			elseif sameName then
@@ -119,12 +108,17 @@ local function fileOp(op, targetDir)
 				notify(msg, "info", { icon = icons.rename })
 				if lspSupportsRenaming then vim.cmd.wall() end
 			end
-		elseif op == "new" or op == "new-from-selection" then
+		elseif op == "new" then
 			vim.cmd.edit(newFilePath)
-			if op == "new-from-selection" then
-				vim.cmd("put z") -- `vim.cmd.put("z")` does not work
-				vim.fn.setreg("z", prevReg)
-			end
+			vim.cmd.write(newFilePath)
+		elseif op == "new-from-selection" then
+			local prevReg = vim.fn.getreg("z")
+			vim.cmd.normal { vim.fn.mode(), bang = true } -- leave visual mode, so '<,'> are set
+			vim.cmd([['<,'>delete z]])
+
+			vim.cmd.edit(newFilePath)
+			vim.cmd("put z") -- `vim.cmd.put("z")` does not work
+			vim.fn.setreg("z", prevReg)
 			vim.cmd.write(newFilePath)
 		end
 	end)
