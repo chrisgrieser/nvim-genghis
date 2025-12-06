@@ -144,14 +144,14 @@ local function folderSelection(op)
 	local notify = require("genghis.support.notify")
 	local lspRenaming = require("genghis.support.lsp-rename")
 	local ignoreFolders = require("genghis.config").config.fileOperations.ignoreInFolderSelection
+	local icons = require("genghis.config").config.icons
 
 	-- PARAMETERS
-	local curFilePath = vim.api.nvim_buf_get_name(0)
-	local parentOfCurFile = vim.fs.dirname(curFilePath)
-	local filename = vim.fs.basename(curFilePath)
+	local oldAbsPath = vim.api.nvim_buf_get_name(0)
+	local oldAbsParent = vim.fs.dirname(oldAbsPath)
+	local filename = vim.fs.basename(oldAbsPath)
 	local lspSupportsRenaming = lspRenaming.supported()
 	local cwd = assert(vim.uv.cwd(), "Could not get current working directory.")
-	local icons = require("genghis.config").config.icons
 	local origBufNr = vim.api.nvim_get_current_buf()
 
 	-- GET OTHER FOLDERS IN CWD
@@ -159,7 +159,7 @@ local function folderSelection(op)
 		local absPath = vim.fs.joinpath(path, name)
 		local relPath = absPath:sub(#cwd + 1) .. "/" -- not pathSep, since `joinpath` uses `/`
 
-		local sameFolder = absPath == parentOfCurFile
+		local sameFolder = absPath == oldAbsParent
 		local ignoredDir = vim.iter(ignoreFolders)
 			:any(function(dir) return relPath:find(dir) ~= nil end)
 
@@ -173,9 +173,9 @@ local function folderSelection(op)
 		return aMtime > bMtime
 	end)
 	-- insert cwd at bottom, since moving to it unlikely
-	if cwd ~= parentOfCurFile then table.insert(foldersInCwd, cwd) end
+	if cwd ~= oldAbsParent then table.insert(foldersInCwd, cwd) end
 	-- insert current dir at top, since moving to it likely
-	if op == "new-in-folder" then table.insert(foldersInCwd, 1, parentOfCurFile) end
+	if op == "new-in-folder" then table.insert(foldersInCwd, 1, oldAbsParent) end
 
 	-- PROMPT & MOVE
 	local prompt
@@ -193,25 +193,25 @@ local function folderSelection(op)
 			local relPath = path:sub(#cwd + 1)
 			return (relPath == "" and "/" or relPath)
 		end,
-	}, function(destination)
-		if not destination then return end
+	}, function(newAbsParent)
+		if not newAbsParent then return end
 
 		if op == "new-in-folder" then
-			fileOp("new", destination)
+			fileOp("new", newAbsParent)
 		elseif op == "move-file" then
-			local newFilePath = vim.fs.joinpath(destination, filename)
-			if vim.uv.fs_stat(newFilePath) ~= nil then
-				notify(("File %q already exists at %q."):format(filename, destination), "error")
+			local newAbsPath = vim.fs.joinpath(newAbsParent, filename)
+			if vim.uv.fs_stat(newAbsPath) ~= nil then
+				notify(("File %q already exists at %q."):format(filename, newAbsParent), "error")
 				return
 			end
 
-			lspRenaming.willRename(curFilePath, newFilePath)
-			local success = moveConsideringPartition(curFilePath, newFilePath)
+			lspRenaming.willRename(oldAbsPath, newAbsPath)
+			local success = moveConsideringPartition(oldAbsPath, newAbsPath)
 			if not success then return end
 
-			vim.cmd.edit(newFilePath)
+			vim.cmd.edit(newAbsPath)
 			vim.api.nvim_buf_delete(origBufNr, { force = true })
-			local msg = ("Moved %q to %q"):format(filename, destination)
+			local msg = ("Moved %q to %q"):format(filename, newAbsParent)
 			local append = lspSupportsRenaming and " and updated imports." or "."
 			notify(msg .. append, "info", { icon = icons.move })
 			if lspSupportsRenaming then vim.cmd.wall() end
