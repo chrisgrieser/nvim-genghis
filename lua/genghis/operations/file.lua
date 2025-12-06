@@ -207,6 +207,7 @@ local function folderSelection(op)
 				return
 			end
 
+			vim.cmd("silent! update")
 			lspRenaming.willRename(oldAbsPath, newAbsPath)
 			local success = moveConsideringPartition(oldAbsPath, newAbsPath)
 			if not success then return end
