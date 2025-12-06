@@ -207,7 +207,7 @@ local function folderSelection(op)
 
 			lspRenaming.willRename(curFilePath, newFilePath)
 			local success = moveConsideringPartition(curFilePath, newFilePath)
-			if success then return end
+			if not success then return end
 
 			vim.cmd.edit(newFilePath)
 			vim.api.nvim_buf_delete(origBufNr, { force = true })
