@@ -195,13 +195,15 @@ local function folderSelection(op)
 		end,
 	}, function(newAbsParent)
 		if not newAbsParent then return end
+		local newRelParent = newAbsParent:sub(#cwd + 1)
+		newRelParent = newRelParent == "" and "/" or newRelParent
 
 		if op == "new-in-folder" then
 			fileOp("new", newAbsParent)
 		elseif op == "move-file" then
 			local newAbsPath = vim.fs.joinpath(newAbsParent, filename)
 			if vim.uv.fs_stat(newAbsPath) ~= nil then
-				notify(("File %q already exists at %q."):format(filename, newAbsParent), "error")
+				notify(("File %q already exists at %q."):format(filename, newRelParent), "error")
 				return
 			end
 
@@ -211,7 +213,7 @@ local function folderSelection(op)
 
 			vim.cmd.edit(newAbsPath)
 			vim.api.nvim_buf_delete(origBufNr, { force = true })
-			local msg = ("Moved %q to %q"):format(filename, newAbsParent)
+			local msg = ("Moved %q to %q"):format(filename, newRelParent)
 			local append = lspSupportsRenaming and " and updated imports." or "."
 			notify(msg .. append, "info", { icon = icons.move })
 			if lspSupportsRenaming then vim.cmd.wall() end
