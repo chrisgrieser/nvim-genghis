@@ -48,7 +48,7 @@ convenient file operations inside nvim.
   to install anything.)
 - **Recommended:** A provider for `vim.ui.input` and `vim.ui.select` such as
   [snacks.nvim](http://github.com/folke/snacks.nvim). This enables vim motions
-  in the input field, and looks better.
+  in the input field and also looks nicer.
 
 ```lua
 -- lazy.nvim
@@ -113,7 +113,7 @@ require("genghis").setup {
 ### UI Plugin
 A UI plugin for `vim.ui.input` and `vim.ui.select`, such as
 [snacks.nvim](http://github.com/folke/snacks.nvim), is recommended since it
-enables for vim motions in the input field. (It also looks better.)
+enables for vim motions in the input field. It also looks much nicer. 
 
 ```lua
 -- minimal snacks.nvim config to use it for `vim.ui.input` and `vim.ui.select`
