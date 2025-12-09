@@ -1,4 +1,4 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2025 December 06
+*nvim-genghis.txt*           For Neovim          Last change: 2025 December 09
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -58,7 +58,7 @@ CLI like `trash` or `gio trash`. (Since macOS 14+, there is a `trash` CLI
 already built-in, so there is no need to install anything.) - **Recommended:**
 A provider for `vim.ui.input` and `vim.ui.select` such as snacks.nvim
 <http://github.com/folke/snacks.nvim>. This enables vim motions in the input
-field, and looks better.
+field and also looks nicer.
 
 >lua
     -- lazy.nvim
@@ -127,7 +127,7 @@ UI PLUGIN ~
 
 A UI plugin for `vim.ui.input` and `vim.ui.select`, such as snacks.nvim
 <http://github.com/folke/snacks.nvim>, is recommended since it enables for vim
-motions in the input field. (It also looks better.)
+motions in the input field. It also looks much nicer.
 
 >lua
     -- minimal snacks.nvim config to use it for `vim.ui.input` and `vim.ui.select`
