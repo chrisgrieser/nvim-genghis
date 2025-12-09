@@ -113,7 +113,7 @@ require("genghis").setup {
 ### UI Plugin
 A UI plugin for `vim.ui.input` and `vim.ui.select`, such as
 [snacks.nvim](http://github.com/folke/snacks.nvim), is recommended since it
-enables for vim motions in the input field. It also looks much nicer. 
+enables for vim motions in the input field. (It also looks much nicer.)
 
 ```lua
 -- minimal snacks.nvim config to use it for `vim.ui.input` and `vim.ui.select`
@@ -177,9 +177,11 @@ The following applies to all commands above:
 All commands use the system clipboard.
 
 ### File navigation
-`.navigateToFileInFolder("next"|"prev")`: Move to the next/previous file in the
-current folder of the current file, in alphabetical order.
-- If `snacks.nvim` is installed, displays a cycling notification.
+`require("genghis").navigateToFileInFolder("next"|"prev")`: Move to the 
+next/previous file in the current folder of the current file, in alphabetical 
+order.
+
+If `snacks.nvim` is installed, displays a cycling notification.
 
 ## Why the name "Genghis"?
 A nod to [vim.eunuch](https://github.com/tpope/vim-eunuch), an older vimscript
