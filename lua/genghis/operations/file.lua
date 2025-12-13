@@ -77,7 +77,8 @@ local function fileOp(op, targetDir)
 		-- DETERMINE PATH AND EXTENSION
 		if newName:find(pathSep) then
 			local newFolder = vim.fs.dirname(newName)
-			local absFolder = vim.fs.joinpath(targetDir, newFolder)
+			local absFolder = op == "move-rename" and newFolder
+				or vim.fs.joinpath(targetDir, newFolder)
 			vim.fn.mkdir(absFolder, "p")
 		end
 
