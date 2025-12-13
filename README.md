@@ -1,6 +1,4 @@
-<!-- LTeX: enabled=false -->
 # nvim-genghis ⚔️
-<!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
@@ -48,7 +46,7 @@ convenient file operations inside nvim.
   to install anything.)
 - **Recommended:** A provider for `vim.ui.input` and `vim.ui.select` such as
   [snacks.nvim](http://github.com/folke/snacks.nvim). This enables vim motions
-  in the input field and also looks nicer.
+  in the input field and looks nicer.
 
 ```lua
 -- lazy.nvim
@@ -177,8 +175,8 @@ The following applies to all commands above:
 All commands use the system clipboard.
 
 ### File navigation
-`require("genghis").navigateToFileInFolder("next"|"prev")`: Move to the 
-next/previous file in the current folder of the current file, in alphabetical 
+`require("genghis").navigateToFileInFolder("next"|"prev")`: Move to the
+next/previous file in the current folder of the current file, in alphabetical
 order.
 
 If `snacks.nvim` is installed, displays a cycling notification.
