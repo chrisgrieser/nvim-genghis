@@ -17,7 +17,7 @@ Table of Contents                             *nvim-genghis-table-of-contents*
 
 
 
-Lightweightand quick file operations without being a full-blown file manager.
+Lightweight and quick file operations without being a full-blown file manager.
 For when you prefer a fuzzy finder over a file tree, but still want some
 convenient file operations inside nvim.
 
