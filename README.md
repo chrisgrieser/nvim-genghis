@@ -26,20 +26,20 @@ convenient file operations inside nvim.
 <!-- tocstop -->
 
 ## Features
-**Commands**
+**Commands** <!-- rumdl-disable-line MD036 -->
 - Perform **common file operations**: moving, renaming, creating, deleting, or
   duplicating files.
 - **Copy** the path or name of the current file in various formats.
 - **Navigate** to the next or previous file in the current folder.
 
-**Quality-of-life**
+**Quality-of-life** <!-- rumdl-disable-line MD036 -->
 - All movement and renaming commands **update `import` statements** to the
   renamed file (if the LSP supports `workspace/willRenameFiles`).
 - Automatically keep the extension when no extension is given.
 - Use vim motions in the input field.
 
 ## Installation
-**Requirements**
+**Requirements** <!-- rumdl-disable-line MD036 -->
 - nvim 0.10+
 - *For the trash command*: an OS-specific trash CLI like `trash` or `gio trash`.
   (Since macOS 14+, there is a `trash` CLI already built-in, so there is no need
@@ -128,7 +128,7 @@ You can access a command as Lua function:
 require("genghis").createNewFile()
 ```
 
-Or you can use the ex command `:Genghis` with the respective sub-command:
+Or you can use the ex command `:Genghis` with the respective subcommand:
 
 ```vim
 :Genghis createNewFile
@@ -155,7 +155,8 @@ Or you can use the ex command `:Genghis` with the respective sub-command:
 The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
    (Everything after the first non-leading dot is treated as the extension; this
-   behavior can be disabled with the config `fileOperations.autoAddExt = false`.)
+   behavior can be disabled with the config `fileOperations.autoAddExt =
+   false`.)
 2. If the new filename includes a `/`, the new file is placed in the respective
    subdirectory, creating any non-existing intermediate folders.
 3. All movement and renaming commands update `import` statements, if the LSP
