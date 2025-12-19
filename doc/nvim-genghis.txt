@@ -146,7 +146,7 @@ You can access a command as Lua function:
     require("genghis").createNewFile()
 <
 
-Or you can use the ex command `:Genghis` with the respective sub-command:
+Or you can use the ex command `:Genghis` with the respective subcommand:
 
 >vim
     :Genghis createNewFile
