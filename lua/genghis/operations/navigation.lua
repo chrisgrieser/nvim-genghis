@@ -53,6 +53,11 @@ function M.fileInFolder(direction)
 			break
 		end
 	end
+	if not curIdx then
+		local msg = "Cannot determine next file, current file itself is excluded."
+		notify(msg, "warn", { icon = icon })
+		return
+	end
 	local nextIdx = curIdx + (direction == "next" and 1 or -1)
 	if nextIdx < 1 then nextIdx = #filesInFolder end
 	if nextIdx > #filesInFolder then nextIdx = 1 end
