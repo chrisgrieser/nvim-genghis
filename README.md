@@ -1,4 +1,4 @@
-# nvim-genghis ⚔️
+# nvim-genghis ⚔️ <!-- rumdl-disable-line MD063 `nvim` lowercased -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
@@ -108,7 +108,7 @@ require("genghis").setup {
 }
 ```
 
-### UI Plugin
+### UI plugin
 A UI plugin for `vim.ui.input` and `vim.ui.select`, such as
 [snacks.nvim](http://github.com/folke/snacks.nvim), is recommended since it
 enables for vim motions in the input field. (It also looks much nicer.)
