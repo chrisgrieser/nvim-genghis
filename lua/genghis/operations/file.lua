@@ -95,21 +95,20 @@ local function fileOp(op, targetDir)
 		vim.cmd("silent! update")
 		if op == "duplicate" then
 			local success = vim.uv.fs_copyfile(oldFilePath, newFilePath)
-			if success then
-				vim.cmd.edit(newFilePath)
-				local msg = ("Duplicated %q as %q."):format(oldName, newName)
-				notify(msg, "info", { icon = icons.duplicate })
-			end
+			if not success then return end
+			vim.cmd.edit(newFilePath)
+			vim.cmd("silent! write")
+			local msg = ("Duplicated %q as %q."):format(oldName, newName)
+			notify(msg, "info", { icon = icons.duplicate })
 		elseif op == "rename" or op == "move-rename" then
 			lspRename.willRename(oldFilePath, newFilePath)
 			local success = moveConsideringPartition(oldFilePath, newFilePath)
-			if success then
-				vim.cmd.edit(newFilePath)
-				vim.api.nvim_buf_delete(origBufNr, { force = true })
-				local msg = ("Renamed %q to %q."):format(oldName, newName)
-				notify(msg, "info", { icon = icons.rename })
-				if lspSupportsRenaming then vim.cmd.wall() end
-			end
+			if not success then return end
+			vim.cmd.edit(newFilePath)
+			vim.api.nvim_buf_delete(origBufNr, { force = true })
+			local msg = ("Renamed %q to %q."):format(oldName, newName)
+			notify(msg, "info", { icon = icons.rename })
+			vim.cmd(lspSupportsRenaming and "wall" or "silent! write")
 		elseif op == "new" then
 			vim.cmd.edit(newFilePath)
 			vim.cmd.write(newFilePath)
@@ -213,7 +212,7 @@ local function folderSelection(op)
 			local msg = ("Moved %q to %q"):format(filename, newRelParent)
 			local append = lspSupportsRenaming and " and updated imports." or "."
 			notify(msg .. append, "info", { icon = icons.move })
-			if lspSupportsRenaming then vim.cmd.wall() end
+			vim.cmd(lspSupportsRenaming and "wall" or "silent! write")
 		end
 	end)
 end
