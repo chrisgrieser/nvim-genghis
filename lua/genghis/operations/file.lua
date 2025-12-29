@@ -114,8 +114,7 @@ local function fileOp(op, targetDir)
 			vim.cmd.write(newFilePath)
 		elseif op == "new-from-selection" then
 			local prevReg = vim.fn.getreg("z")
-			vim.cmd.normal { vim.fn.mode(), bang = true } -- leave visual mode, so '<,'> are set
-			vim.cmd([['<,'>delete z]])
+			vim.cmd([['<,'>delete z]]) -- will have already left visual for input, so '<,'> are set
 
 			vim.cmd.edit(newFilePath)
 			vim.cmd("put z") -- `vim.cmd.put("z")` does not work
