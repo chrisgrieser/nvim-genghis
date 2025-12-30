@@ -1,4 +1,4 @@
-# nvim-genghis ⚔️ <!-- rumdl-disable-line MD063 `nvim` lowercased -->
+# nvim-genghis ⚔️ <!-- rumdl-disable-line MD063 -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
