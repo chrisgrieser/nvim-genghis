@@ -1,4 +1,4 @@
-# nvim-genghis ⚔️ <!-- rumdl-disable-line MD063 -->
+# Nvim-genghis ⚔️ <!-- rumdl-disable-line MD063 -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-genghis/shield"/></a>
 
@@ -11,18 +11,16 @@ convenient file operations inside nvim.
 ## Table of contents
 
 <!-- toc -->
-
 - [Features](#features)
 - [Installation](#installation)
 - [Configuration](#configuration)
-    - [UI Plugin](#ui-plugin)
+    - [UI plugin](#ui-plugin)
 - [Usage](#usage)
     - [File operations](#file-operations)
     - [Copy operations](#copy-operations)
     - [File navigation](#file-navigation)
 - [Why the name "Genghis"?](#why-the-name-genghis)
 - [About the author](#about-the-author)
-
 <!-- tocstop -->
 
 ## Features
