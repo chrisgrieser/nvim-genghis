@@ -258,14 +258,42 @@ function M.trashFile()
 	end
 end
 
+-- Return the first available file manager on Linux, with a "reveal" flag, or nil.
+---@return { exec: string, flag: string }?
+local function getLinuxFileManager()
+	local fileManagers = {
+		{ exec = "dolphin", flag = "--select" }, -- KDE
+		{ exec = "nautilus", flag = "--select" }, -- GNOME
+		{ exec = "nemo", flag = "--" }, -- Cinnamon
+	}
+
+	for _, item in ipairs(fileManagers) do
+		if vim.fn.executable(item.exec) == 1 then return item end
+	end
+
+	return nil
+end
+
 function M.showInSystemExplorer()
 	local notify = require("genghis.support.notify")
-	if jit.os ~= "OSX" then
-		notify("Currently only available on macOS.", "warn")
+	local filepath = vim.api.nvim_buf_get_name(0)
+	local cmd
+
+	if jit.os == "OSX" then
+		cmd = { "open", "-R", filepath }
+	elseif jit.os == "Linux" then
+		local fileManager = getLinuxFileManager()
+		if fileManager then
+			cmd = { fileManager.exec, fileManager.flag, filepath }
+		else -- Fallback: open parent directory, without revealing current file.
+			cmd = { "xdg-open", vim.fs.dirname(filepath) }
+		end
+	else
+		notify("Currently only available on macOS and Linux.", "warn")
 		return
 	end
 
-	local out = vim.system({ "open", "-R", vim.api.nvim_buf_get_name(0) }):wait()
+	local out = vim.system(cmd):wait()
 	if out.code ~= 0 then
 		local icon = require("genghis.config").config.icons.file
 		notify("Failed: " .. out.stderr, "error", { icon = icon })
