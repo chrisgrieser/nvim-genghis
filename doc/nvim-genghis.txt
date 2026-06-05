@@ -1,4 +1,5 @@
-*nvim-genghis.txt*           For Neovim          Last change: 2026 February 06
+*nvim-genghis.txt*
+                                       For Neovim    Last change: 2026 June 05
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
@@ -170,7 +171,7 @@ FILE OPERATIONS ~
 - `trashFile`: Move the current file to the trash. (Defaults to `gio trash` on
     _Linux_, and `trash` on _macOS_ or _Windows_.)
 - `showInSystemExplorer`: Reveals the current file in the system explorer, such
-    as macOS Finder. (Currently only on macOS, PRs welcome.)
+    as macOS Finder. (Currently only on macOS and Linux, PRs welcome.)
 
 The following applies to all commands above: 1. If no extension has been
 provided, uses the extension of the original file. (Everything after the first
