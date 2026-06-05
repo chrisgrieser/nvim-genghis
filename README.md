@@ -148,7 +148,7 @@ Or you can use the ex command `:Genghis` with the respective subcommand:
 - `trashFile`: Move the current file to the trash. (Defaults to `gio trash` on
   *Linux*, and `trash` on *macOS* or *Windows*.)
 - `showInSystemExplorer`: Reveals the current file in the system explorer, such
-  as macOS Finder. (Currently only on macOS, PRs welcome.)
+  as macOS Finder. (Currently only on macOS and Linux, PRs welcome.)
 
 The following applies to all commands above:
 1. If no extension has been provided, uses the extension of the original file.
