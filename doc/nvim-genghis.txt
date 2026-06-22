@@ -1,5 +1,5 @@
 *nvim-genghis.txt*
-                                       For Neovim    Last change: 2026 June 05
+                                       For Neovim    Last change: 2026 June 22
 
 ==============================================================================
 Table of Contents                             *nvim-genghis-table-of-contents*
